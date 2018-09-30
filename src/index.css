@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans');
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.App {
+    display: flex;
+    justify-content: center;
+}
+
+.App-content {
+    width: 90vw;
+    display: flex;
+}
