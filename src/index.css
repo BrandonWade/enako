@@ -17,3 +17,27 @@ body {
     width: 90vw;
     display: flex;
 }
+
+.Payments__none {
+    background-color: #ffffff;
+}
+
+.Payments__red {
+    background-color: #ffb3ba;
+}
+
+.Payments__orange {
+    background-color: #ffdfba;
+}
+
+.Payments__yellow {
+    background-color: #ffffba;
+}
+
+.Payments__green {
+    background-color: #baffc9;
+}
+
+.Payments__blue {
+    background-color: #bae1ff;
+}

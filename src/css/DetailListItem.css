@@ -1,0 +1,12 @@
+.DetailListItem {
+    display: flex;
+    list-style-type: none;
+}
+
+.DetailListItem-name {
+    flex: 1;
+}
+
+.DetailListItem-amount {
+    flex: 1;
+}
