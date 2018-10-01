@@ -7,15 +7,23 @@ class App extends Component {
         super(props);
 
         this.state = {
-            selectedDate: 'September 29', 
+            selectedDate: 'September 29th',
         };
     }
+
+    setSelectedDate = (selectedDate) => {
+        this.setState({
+            selectedDate,
+        });
+    };
 
     render() {
         return (
             <div className='App'>
                 <div className='App-content'>
-                <Calendar />
+                    <Calendar
+                        setSelectedDate={this.setSelectedDate}
+                    />
                     <Details
                         selectedDate={this.state.selectedDate}
                     />

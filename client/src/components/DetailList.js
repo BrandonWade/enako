@@ -25,8 +25,8 @@ class DetailList extends Component {
     render() {
         return (
             <div>
-                <h3>One-Time Payments</h3>
-                <ul className='DetailList-oneTimePayments'>
+                <h3 className='DetailList-sectionHeading'>One-Time Payments</h3>
+                <ul className='DetailList'>
                     {
                         this.filterPayments('one-time').map(payment => {
                             return (
@@ -40,8 +40,8 @@ class DetailList extends Component {
                         })
                     }
                 </ul>
-                <h3>Recurring Payments</h3>
-                <ul className='DetailList-recurringPayments'>
+                <h3 className='DetailList-sectionHeading'>Recurring Payments</h3>
+                <ul className='DetailList'>
                     {
                         this.filterPayments('recurring').map(payment => {
                             return (
@@ -55,7 +55,7 @@ class DetailList extends Component {
                         })
                     }
                 </ul>
-                <h3>Totals</h3>
+                <h3 className='DetailList-sectionHeading'>Totals</h3>
                 <ul className='DetailList'>
                     {
                         Object.entries(this.getPaymentTotals()).map(total => {
