@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import DetailListItem from './DetailListItem';
 import '../css/DetailList.css';
 
@@ -15,7 +15,7 @@ class DetailList extends Component {
 
     renderPaymentsSection = () => {
         return this.props.payments.length > 0 ? (
-            <Fragment>
+            <>
                 <h4 className='DetailList-sectionHeading'>Payments</h4>
                 <ul className='DetailList'>
                     {
@@ -31,7 +31,7 @@ class DetailList extends Component {
                         })
                     }
                 </ul>
-            </Fragment>
+            </>
         ) : null;
     };
 
@@ -39,7 +39,7 @@ class DetailList extends Component {
         const total = this.getTotal();
 
         return total > 0 ? (
-            <Fragment>
+            <>
                 <h4 className='DetailList-sectionHeading'>Totals</h4>
                 <ul className='DetailList'>
                     <DetailListItem
@@ -47,7 +47,7 @@ class DetailList extends Component {
                         amount={total}
                     />
                 </ul>
-            </Fragment>
+            </>
         ) : (
             'No expenses to display.'
         );
