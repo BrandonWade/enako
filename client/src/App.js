@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Calendar from './components/Calendar';
 import Details from './components/Details';
+import moment from 'moment';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedDate: 'September 29th',
+            selectedDate: moment().format('MMMM Do YYYY'),
         };
     }
 

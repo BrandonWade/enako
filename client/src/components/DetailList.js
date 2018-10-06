@@ -3,47 +3,23 @@ import DetailListItem from './DetailListItem';
 import '../css/DetailList.css';
 
 class DetailList extends Component {
-    filterPayments(type) {
-        return this.props.payments.filter(payment => payment.type === type);
-    }
-
-    getPaymentTotals() {
-        const totals = {
-            'one-time': 0.0,
-            'recurring': 0.0,
-            'total': 0.0,
-        };
+    getTotal() {
+        let total = 0.0;
 
         this.props.payments.forEach((payment) => {
-            totals[payment.type] += payment.amount;
-            totals['total'] += payment.amount;
+            total += payment.amount;
         });
 
-        return totals;
+        return total;
     }
 
     render() {
         return (
             <div>
-                <h3 className='DetailList-sectionHeading'>One-Time Payments</h3>
+                <h3 className='DetailList-sectionHeading'>Payments</h3>
                 <ul className='DetailList'>
                     {
-                        this.filterPayments('one-time').map(payment => {
-                            return (
-                                <DetailListItem
-                                    key={payment.id}
-                                    name={payment.description}
-                                    amount={payment.amount}
-                                    colour={payment.colour}
-                                />
-                            );
-                        })
-                    }
-                </ul>
-                <h3 className='DetailList-sectionHeading'>Recurring Payments</h3>
-                <ul className='DetailList'>
-                    {
-                        this.filterPayments('recurring').map(payment => {
+                        this.props.payments.map(payment => {
                             return (
                                 <DetailListItem
                                     key={payment.id}
@@ -57,17 +33,10 @@ class DetailList extends Component {
                 </ul>
                 <h3 className='DetailList-sectionHeading'>Totals</h3>
                 <ul className='DetailList'>
-                    {
-                        Object.entries(this.getPaymentTotals()).map(total => {
-                            return (
-                                <DetailListItem
-                                    key={total[0]}
-                                    name={total[0]}
-                                    amount={total[1]}
-                                />
-                            );
-                        })
-                    }
+                    <DetailListItem
+                        name='Total'
+                        amount={this.getTotal()}
+                    />
                 </ul>
             </div>
         );
