@@ -4,10 +4,7 @@
     padding: 0.25rem 0;
 }
 
-.DetailListItem-name {
-    flex: 1;
-}
-
 .DetailListItem-amount {
     flex: 1;
+    text-align: right;
 }

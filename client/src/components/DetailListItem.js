@@ -11,7 +11,7 @@ class DetailListItem extends Component {
                     {this.props.name}
                 </div>
                 <div className='DetailListItem-amount'>
-                    {this.props.amount}
+                    {this.props.amount.toFixed(2)}
                 </div>
             </li>
         );

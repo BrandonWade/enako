@@ -16,7 +16,7 @@ class Details extends Component {
     render() {
         return (
             <div className='Details'>
-                <h1 className='Details-heading'>Breakdown for {this.props.selectedDate}</h1>
+                <h2 className='Details-heading'>{this.props.selectedDate}</h2>
                 <DetailList
                     payments={this.filterPayments(this.props.selectedDate)}
                 />

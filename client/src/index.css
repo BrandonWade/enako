@@ -1,25 +1,26 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans');
 
-html, body {
+html, body, #root {
     height: 100%;
 }
 
 body {
+    margin: 0;
     font-family: 'Fira Sans', sans-serif;
 }
 
 .App {
+    height: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    background-color: #ff903e;
 }
 
 .App-content {
     width: 90vw;
     display: flex;
-}
-
-.Payments__none {
-    background-color: #ffffff;
+    justify-content: center
 }
 
 .Payments__red {
@@ -40,4 +41,12 @@ body {
 
 .Payments__blue {
     background-color: #bae1ff;
+}
+
+.rbc-btn-group button {
+    background-color: white;
+}
+
+.rbc-month-view {
+    background-color: white;
 }
