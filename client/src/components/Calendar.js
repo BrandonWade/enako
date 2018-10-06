@@ -9,7 +9,7 @@ const views = ['month'];
 
 class Calendar extends Component {
     onDateSelected = (evt) => {
-        this.props.setSelectedDate(moment(evt.start).format('MMMM Do YYYY'));
+        this.props.setSelectedDate(evt.start);
     };
 
     render() {

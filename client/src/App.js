@@ -12,9 +12,9 @@ class App extends Component {
         };
     }
 
-    setSelectedDate = (selectedDate) => {
+    setSelectedDate = (date) => {
         this.setState({
-            selectedDate,
+            selectedDate: moment(date).format('MMMM Do YYYY'),
         });
     };
 
