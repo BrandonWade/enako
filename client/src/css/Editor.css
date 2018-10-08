@@ -1,0 +1,15 @@
+.Editor {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Editor-content {
+    height: 90vh;
+    width: 35vw;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #afafaf;
+    padding: 1rem;
+}

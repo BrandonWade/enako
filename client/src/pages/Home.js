@@ -20,14 +20,10 @@ class Home extends Component {
 
     render() {
         return (
-            <div className='App'>
-                <div className='App-content'>
-                    <Calendar
-                        setSelectedDate={this.setSelectedDate}
-                    />
-                    <Details
-                        selectedDate={this.state.selectedDate}
-                    />
+            <div className='Home'>
+                <div className='Home-content'>
+                    <Calendar setSelectedDate={this.setSelectedDate} />
+                    <Details selectedDate={this.state.selectedDate} />
                 </div>
             </div>
         );

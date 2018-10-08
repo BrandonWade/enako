@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import DetailListItem from './DetailListItem';
 import '../css/DetailList.css';
 
@@ -57,6 +58,9 @@ class DetailList extends Component {
         return (
             <div>
                 { this.renderPaymentsSection() }
+                <Link to='/edit'>
+                    <button>+</button>
+                </Link>
                 { this.renderTotalsSection() }
             </div>
         );

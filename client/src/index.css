@@ -7,17 +7,17 @@ html, body, #root {
 body {
     margin: 0;
     font-family: 'Fira Sans', sans-serif;
+    background-color: #ff903e;
 }
 
-.App {
+.Home {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ff903e;
 }
 
-.App-content {
+.Home-content {
     width: 90vw;
     display: flex;
     justify-content: center
