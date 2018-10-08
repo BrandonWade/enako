@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DetailList from './DetailList';
-import payments from './SamplePayments';
+import payments from '../data/SamplePayments';
 import '../css/Details.css';
 
 class Details extends Component {

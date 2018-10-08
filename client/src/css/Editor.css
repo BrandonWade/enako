@@ -12,4 +12,32 @@
     border-radius: 5px;
     border: 1px solid #afafaf;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.Editor-heading {
+    text-align: center;
+}
+
+.Editor-form {
+    flex: 1;
+}
+
+.Editor-formSection {
+    margin-bottom: 2rem;
+}
+
+.Editor-fieldLabel {
+    display: block;
+}
+
+.Editor-fieldDescription {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.Editor-formButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
