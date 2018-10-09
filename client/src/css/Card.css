@@ -1,0 +1,14 @@
+.Card {
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.Card-heading {
+    text-align: center;
+    margin-top: 0;
+}

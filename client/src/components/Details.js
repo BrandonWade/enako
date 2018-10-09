@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DetailList from './DetailList';
+import Card from './Card';
 import payments from '../data/SamplePayments';
 import '../css/Details.css';
 
@@ -16,10 +17,11 @@ class Details extends Component {
     render() {
         return (
             <div className='Details'>
-                <h2 className='Details-heading'>{this.props.selectedDate}</h2>
-                <DetailList
-                    payments={this.filterPayments(this.props.selectedDate)}
-                />
+                <Card heading={this.props.selectedDate}>
+                    <DetailList
+                        payments={this.filterPayments(this.props.selectedDate)}
+                    />
+                </Card>
             </div>
         );
     }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Calendar from '../components/Calendar';
 import Details from '../components/Details';
 import moment from 'moment';
+import '../css/Home.css';
 
 class Home extends Component {
     constructor(props) {

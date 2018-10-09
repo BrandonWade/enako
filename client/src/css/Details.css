@@ -1,16 +1,4 @@
 .Details {
     flex: 1;
     max-width: 25vw;
-    display: inline-block;
-    padding: 1rem;
-    border: 1px solid #adadad;
-    border-radius: 5px;
-    box-sizing: border-box;
-    background-color: white;
-    overflow: hidden;
-}
-
-.Details-heading {
-    text-align: center;
-    margin: 0 0 1rem;
 }

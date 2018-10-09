@@ -1,6 +1,16 @@
 .Calendar {
     width: 50vw;
     height: 70vh;
-    display: inline-block;
     margin-right: 2rem;
+}
+
+
+/* react-calendar style overrides */
+
+.rbc-btn-group button {
+    background-color: white;
+}
+
+.rbc-month-view {
+    background-color: white;
 }

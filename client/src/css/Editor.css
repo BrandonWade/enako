@@ -6,12 +6,7 @@
 }
 
 .Editor-content {
-    height: 90vh;
     width: 35vw;
-    background-color: white;
-    border-radius: 5px;
-    border: 1px solid #afafaf;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
 }
@@ -34,6 +29,7 @@
 
 .Editor-fieldDescription {
     color: rgba(0, 0, 0, 0.4);
+    font-size: 0.9rem;
 }
 
 .Editor-formButtons {

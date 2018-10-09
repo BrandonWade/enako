@@ -2,25 +2,9 @@
 
 html, body, #root {
     height: 100%;
-}
-
-body {
     margin: 0;
     font-family: 'Fira Sans', sans-serif;
     background-color: #ff903e;
-}
-
-.Home {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.Home-content {
-    width: 90vw;
-    display: flex;
-    justify-content: center
 }
 
 .Payments__red {
@@ -41,12 +25,4 @@ body {
 
 .Payments__blue {
     background-color: #bae1ff;
-}
-
-.rbc-btn-group button {
-    background-color: white;
-}
-
-.rbc-month-view {
-    background-color: white;
 }
