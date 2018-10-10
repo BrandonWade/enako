@@ -1,0 +1,26 @@
+.RoundButton {
+    color: white;
+    background-color: orange;
+    font-size: 2rem;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: inline-block;
+    text-align: center;
+    line-height: 48px;
+    box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.3)
+}
+
+.RoundButton:hover {
+    background-color: #ffbf1a;
+}
+
+.RoundButton:active {
+    background-color: #e68c00;
+}
+
+.RoundButton-text {
+    position: relative;
+    top: 1px;
+    left: 1px;
+}

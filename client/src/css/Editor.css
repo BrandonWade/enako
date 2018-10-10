@@ -2,13 +2,13 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 .Editor-content {
     width: 35vw;
     display: flex;
     flex-direction: column;
+    padding-top: 2rem;
 }
 
 .Editor-heading {

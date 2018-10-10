@@ -5,3 +5,12 @@
 .DetailList-sectionHeading {
     margin: 0;
 }
+
+.DetailList-addItemContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.DetailList-totals {
+    margin-top: 3rem;
+}

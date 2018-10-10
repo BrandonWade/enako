@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import DetailListItem from './DetailListItem';
+import RoundButton from './RoundButton';
 import '../css/DetailList.css';
 
 class DetailList extends Component {
@@ -15,6 +16,8 @@ class DetailList extends Component {
     }
 
     renderPaymentsSection = () => {
+        const total = this.getTotal();
+
         return this.props.payments.length > 0 ? (
             <>
                 <h4 className='DetailList-sectionHeading'>Payments</h4>
@@ -33,34 +36,36 @@ class DetailList extends Component {
                     }
                 </ul>
             </>
-        ) : null;
+        ) : (
+            'No expenses to display.'
+        );
     };
 
-    renderTotalsSection = () =>  {
+    renderTotalsSection = () => {
         const total = this.getTotal();
 
         return total > 0 ? (
-            <>
+            <div className='DetailList-totals'>
                 <h4 className='DetailList-sectionHeading'>Totals</h4>
                 <ul className='DetailList'>
                     <DetailListItem
                         name='Total'
-                        amount={total}
+                        amount={this.getTotal()}
                     />
                 </ul>
-            </>
-        ) : (
-            'No expenses to display.'
-        );
+            </div>
+        ) : null;
     };
 
     render() {
         return (
             <div>
                 { this.renderPaymentsSection() }
-                <Link to='/edit'>
-                    <button>+</button>
-                </Link>
+                <div className='DetailList-addItemContainer'>
+                    <Link to='/edit'>
+                        <RoundButton text='+' />
+                    </Link>
+                </div>
                 { this.renderTotalsSection() }
             </div>
         );
