@@ -16,8 +16,6 @@ class DetailList extends Component {
     }
 
     renderPaymentsSection = () => {
-        const total = this.getTotal();
-
         return this.props.payments.length > 0 ? (
             <>
                 <h4 className='DetailList-sectionHeading'>Payments</h4>

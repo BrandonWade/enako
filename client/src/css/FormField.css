@@ -1,0 +1,12 @@
+.FormField {
+    margin-bottom: 2rem;
+}
+
+.FormField-label {
+    display: block;
+}
+
+.FormField-description {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.9rem;
+}

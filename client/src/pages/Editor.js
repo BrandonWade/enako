@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import Card from '../components/Card';
+import InputField from '../components/InputField';
+import SelectField from '../components/SelectField';
 import types from '../data/SampleTypes';
 import categories from '../data/SampleCategories';
-import Card from '../components/Card';
 import '../css/Editor.css';
 
 class Editor extends Component {
@@ -34,70 +36,50 @@ class Editor extends Component {
                 <div className='Editor-content'>
                     <Card heading={this.renderHeadingText()}>
                         <div className='Editor-form'>
-                            <section className='Editor-formSection'>
-                                <label className='Editor-fieldLabel'>
-                                    Type
-                                </label>
-                                <select>
-                                    <option value=''>-- Select a Type -- </option>
-                                    {
-                                        types.map((type) => {
-                                            return (
-                                                <option
-                                                    key={type.id}
-                                                    value={type.value}
-                                                >
-                                                    {type.text}
-                                                </option>
-                                            );
-                                        })
-                                    }
-                                </select>
-                                <div className='Editor-fieldDescription'>
-                                    Choose the most relevant type of expense
-                                </div>
-                            </section>
-                            <section className='Editor-formSection'>
-                                <label className='Editor-fieldLabel'>
-                                    Category
-                                </label>
-                                <select>
-                                    <option value=''>-- Select a Category -- </option>
-                                    {
-                                        categories.map((category) => {
-                                            return (
-                                                <option
-                                                    key={category.id}
-                                                    value={category.value}
-                                                >
-                                                    {category.text}
-                                                </option>
-                                            );
-                                        })
-                                    }
-                                </select>
-                                <div className='Editor-fieldDescription'>
-                                    Choose the most relevant category of expense
-                                </div>
-                            </section>
-                            <section className='Editor-formSection'>
-                                <label className='Editor-fieldLabel'>
-                                    Description
-                                </label>
-                                <input type='text' />
-                                <div className='Editor-fieldDescription'>
-                                    Give a brief description of this expense
-                                </div>
-                            </section>
-                            <section className='Editor-formSection'>
-                                <label className='Editor-fieldLabel'>
-                                    Amount
-                                </label>
-                                <input type='text' />
-                                <div className='Editor-fieldDescription'>
-                                    Enter the cost of this expense
-                                </div>
-                            </section>
+                            <SelectField
+                                label='Type'
+                                description='Choose the most relevant type of expense'
+                            >
+                                <option value=''>-- Select a Type -- </option>
+                                {
+                                    types.map((type) => {
+                                        return (
+                                            <option
+                                                key={type.id}
+                                                value={type.value}
+                                            >
+                                                {type.text}
+                                            </option>
+                                        );
+                                    })
+                                }
+                            </SelectField>
+                            <SelectField
+                                label='Category'
+                                description='Choose the most relevant category of expense'
+                            >
+                                <option value=''>-- Select a Category -- </option>
+                                {
+                                    categories.map((category) => {
+                                        return (
+                                            <option
+                                                key={category.id}
+                                                value={category.value}
+                                            >
+                                                {category.text}
+                                            </option>
+                                        );
+                                    })
+                                }
+                            </SelectField>
+                            <InputField
+                                label='Description'
+                                description='Give a brief description of this expense'
+                            />
+                            <InputField
+                                label='Amount'
+                                description='Enter the cost of this expense'
+                            />
                         </div>
                         <div className='Editor-formButtons'>
                             <Link to='/'>
