@@ -4,6 +4,7 @@ import moment from 'moment';
 import Card from '../components/Card';
 import InputField from '../components/InputField';
 import SelectField from '../components/SelectField';
+import Button from '../components/Button';
 import types from '../data/SampleTypes';
 import categories from '../data/SampleCategories';
 import '../css/Editor.css';
@@ -83,13 +84,12 @@ class Editor extends Component {
                         </div>
                         <div className='Editor-formButtons'>
                             <Link to='/'>
-                                <button>
-                                    Cancel
-                                </button>
+                                <Button text='Cancel' />
                             </Link>
-                            <button>
-                                {this.renderSubmitButtonText()}
-                            </button>
+                            <Button
+                                main={true}
+                                text={this.renderSubmitButtonText()}
+                            />
                         </div>
                     </Card>
                 </div>

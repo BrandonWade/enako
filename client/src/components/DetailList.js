@@ -60,7 +60,7 @@ class DetailList extends Component {
             <div>
                 { this.renderPaymentsSection() }
                 <div className='DetailList-addItemContainer'>
-                    <Link to='/edit'>
+                    <Link to='/create'>
                         <RoundButton text='+' />
                     </Link>
                 </div>

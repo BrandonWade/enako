@@ -1,0 +1,27 @@
+.Button {
+    padding: 0.75rem 2rem;
+    border-radius: 5px;
+    border: none;
+    background-color: #f2f1f0;
+}
+
+.Button:hover {
+    background-color: #fcfcfc;
+}
+
+.Button:active {
+    background-color: #d9d8d7;
+}
+
+.Button__main {
+    background-color: orange;
+    color: #ffffff;
+}
+
+.Button__main:hover {
+    background-color: #ffbf1a;
+}
+
+.Button__main:active {
+    background-color: #e68c00;
+}
