@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import Card from '../components/Card';
-import InputField from '../components/InputField';
-import SelectField from '../components/SelectField';
-import Button from '../components/Button';
-import types from '../data/SampleTypes';
-import categories from '../data/SampleCategories';
-import '../css/Editor.css';
+import Card from '../Card';
+import InputField from '../InputField';
+import SelectField from '../SelectField';
+import Button from '../Button';
+import types from '../../data/SampleTypes';
+import categories from '../../data/SampleCategories';
+import '../../css/Editor.css';
 
 class Editor extends Component {
     constructor(props) {

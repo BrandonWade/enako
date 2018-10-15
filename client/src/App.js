@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import AuthenticatedRoute from './components/AuthenticatedRoute';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Editor from './pages/Editor';
+import AuthenticatedRoute from './components/routing/AuthenticatedRoute';
+import Home from './components/pages/Home';
+import Login from './components/pages/Login';
+import Editor from './components/pages/Editor';
 
 class App extends Component {
     render() {
