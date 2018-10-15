@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AuthenticatedRoute from './components/routing/AuthenticatedRoute';
+import AuthenticatedRedirect from './components/routing/AuthenticatedRedirect';
 import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import Editor from './components/pages/Editor';
@@ -31,6 +32,9 @@ class App extends Component {
                         path='/edit'
                         authenticated={authenticated}
                         component={Editor}
+                    />
+                    <AuthenticatedRedirect
+                        authenticated={authenticated}
                     />
                 </Switch>
             </BrowserRouter>
