@@ -1,18 +1,18 @@
 const types = [
     {
         id: 1,
-        text: 'Expense',
-        value: 'expense',
+        text: 'General',
+        value: 'general',
     },
     {
         id: 2,
-        text: 'Unnecessary Expense',
-        value: 'unnecessary_expense',
+        text: 'Unnecessary',
+        value: 'unnecessary',
     },
     {
         id: 3,
-        text: 'Recurring Expense',
-        value: 'recurring_expense',
+        text: 'Recurring',
+        value: 'recurring',
     },
 ];
 

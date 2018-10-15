@@ -11,18 +11,23 @@ const categories = [
     },
     {
         id: 3,
+        text: 'Transportation',
+        value: 'transportation',
+    },
+    {
+        id: 4,
         text: 'Clothing',
         value: 'clothing',
     },
     {
-        id: 4,
+        id: 5,
         text: 'Technology',
         value: 'technology',
     },
     {
-        id: 5,
-        text: 'Medical',
-        value: 'medical',
+        id: 6,
+        text: 'Health',
+        value: 'health',
     },
 ];
 

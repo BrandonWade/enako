@@ -8,26 +8,26 @@ class DetailList extends Component {
     getTotal() {
         let total = 0.0;
 
-        this.props.payments.forEach((payment) => {
-            total += payment.amount;
+        this.props.expenses.forEach((expense) => {
+            total += expense.amount;
         });
 
         return total;
     }
 
     renderPaymentsSection = () => {
-        return this.props.payments.length > 0 ? (
+        return this.props.expenses.length > 0 ? (
             <>
-                <h4 className='DetailList-sectionHeading'>Payments</h4>
+                <h4 className='DetailList-sectionHeading'>Expenses</h4>
                 <ul className='DetailList'>
                     {
-                        this.props.payments.map(payment => {
+                        this.props.expenses.map(expense => {
                             return (
                                 <DetailListItem
-                                    key={payment.id}
-                                    name={payment.description}
-                                    amount={payment.amount}
-                                    colour={payment.colour}
+                                    key={expense.id}
+                                    name={expense.description}
+                                    amount={expense.amount}
+                                    colour={expense.colour}
                                 />
                             );
                         })

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import DetailList from './DetailList';
 import Card from './Card';
-import payments from '../data/SamplePayments';
+import expenses from '../data/SampleExpenses';
 import '../css/Details.css';
 
 class Details extends Component {
-    filterPayments = (date) => {
-        const day = payments.find(payment => payment.date === date);
+    filterExpenses = (date) => {
+        const day = expenses.find(expense => expense.date === date);
         if (day) {
             return day.expenses;
         }
@@ -19,7 +19,7 @@ class Details extends Component {
             <div className='Details'>
                 <Card heading={this.props.selectedDate}>
                     <DetailList
-                        payments={this.filterPayments(this.props.selectedDate)}
+                        expenses={this.filterExpenses(this.props.selectedDate)}
                     />
                 </Card>
             </div>
