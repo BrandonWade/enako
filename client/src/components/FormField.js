@@ -6,15 +6,21 @@ const withFormField = (BaseComponent) => {
         render() {
             return (
                 <section className='FormField'>
-                    <label className='FormField-label'>
-                        {this.props.label}
-                    </label>
+                    {
+                        this.props.label &&
+                        <label className='FormField-label'>
+                            {this.props.label}
+                        </label>
+                    }
                     <BaseComponent>
                         {this.props.children}
                     </BaseComponent>
-                    <div className='FormField-description'>
-                        {this.props.description}
-                    </div>
+                    {
+                        this.props.description &&
+                        <div className='FormField-description'>
+                            {this.props.description}
+                        </div>
+                    }
                 </section>
             );
         }
