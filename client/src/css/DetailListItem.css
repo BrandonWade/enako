@@ -1,9 +1,0 @@
-.DetailListItem {
-    display: flex;
-    padding: 0.25rem 0;
-}
-
-.DetailListItem-amount {
-    flex: 1;
-    text-align: right;
-}

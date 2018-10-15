@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import DetailListItem from './DetailListItem';
+import DetailRow from './DetailRow';
 import RoundButton from './RoundButton';
 import '../css/DetailList.css';
 
@@ -19,20 +19,20 @@ class DetailList extends Component {
         return this.props.expenses.length > 0 ? (
             <>
                 <h4 className='DetailList-sectionHeading'>Expenses</h4>
-                <ul className='DetailList'>
-                    {
-                        this.props.expenses.map(expense => {
-                            return (
-                                <DetailListItem
-                                    key={expense.id}
-                                    name={expense.description}
-                                    amount={expense.amount}
-                                    colour={expense.colour}
-                                />
-                            );
-                        })
-                    }
-                </ul>
+                <table>
+                    <tbody>
+                        {
+                            this.props.expenses.map(expense => {
+                                return (
+                                    <DetailRow
+                                        key={expense.id}
+                                        expense={expense}
+                                    />
+                                );
+                            })
+                        }
+                    </tbody>
+                </table>
             </>
         ) : (
             'No expenses to display.'
@@ -40,17 +40,12 @@ class DetailList extends Component {
     };
 
     renderTotalsSection = () => {
-        const total = this.getTotal();
+        const total = this.getTotal().toFixed(2);
 
         return total > 0 ? (
-            <div className='DetailList-totals'>
-                <h4 className='DetailList-sectionHeading'>Totals</h4>
-                <ul className='DetailList'>
-                    <DetailListItem
-                        name='Total'
-                        amount={this.getTotal()}
-                    />
-                </ul>
+            <div className='DetailList-totalSection'>
+                <div className='DetailList-totalText'>Total</div>
+                <div className='DetailList-totalAmount'>{total}</div>
             </div>
         ) : null;
     };
@@ -60,7 +55,7 @@ class DetailList extends Component {
             <div>
                 { this.renderPaymentsSection() }
                 <div className='DetailList-addItemContainer'>
-                    <Link to='/create'>
+                    <Link to='/expenses'>
                         <RoundButton text='+' />
                     </Link>
                 </div>

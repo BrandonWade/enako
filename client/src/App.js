@@ -24,12 +24,13 @@ class App extends Component {
                         component={Home}
                     />
                     <AuthenticatedRoute
-                        path='/create'
+                        path='/expenses'
+                        exact={true}
                         authenticated={authenticated}
                         component={Editor}
                     />
                     <AuthenticatedRoute
-                        path='/edit'
+                        path='/expenses/:id'
                         authenticated={authenticated}
                         component={Editor}
                     />

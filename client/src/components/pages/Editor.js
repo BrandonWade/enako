@@ -20,7 +20,7 @@ class Editor extends Component {
     }
 
     renderHeadingText = () => {
-        return this.state.expense.id ? (
+        return this.props.computedMatch.params.id ? (
             `Editing expense on ${this.state.date}`
         ) : (
             `Creating new expense on ${this.state.date}`
@@ -28,7 +28,7 @@ class Editor extends Component {
     };
 
     renderSubmitButtonText = () => {
-        return this.state.expense.id ? 'Save' : 'Create';
+        return this.props.computedMatch.params.id ? 'Save' : 'Create';
     };
 
     render() {
