@@ -4,7 +4,11 @@ import withFormField from './FormField';
 class SelectField extends Component {
     render() {
         return (
-            <select>
+            <select
+                name={this.props.name}
+                value={this.props.value}
+                onChange={this.props.onChange}
+            >
                 {this.props.children}
             </select>
         );

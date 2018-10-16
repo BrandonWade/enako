@@ -26,6 +26,7 @@ class DetailList extends Component {
                                 return (
                                     <DetailRow
                                         key={expense.id}
+                                        selectedDate={this.props.selectedDate}
                                         expense={expense}
                                     />
                                 );
@@ -55,7 +56,18 @@ class DetailList extends Component {
             <div>
                 { this.renderPaymentsSection() }
                 <div className='DetailList-addItemContainer'>
-                    <Link to='/expenses'>
+                    <Link
+                        to={{
+                            pathname: '/expenses',
+                            state: {
+                                selectedDate: this.props.selectedDate,
+                                type: '',
+                                category: '',
+                                description: '',
+                                amount: 0.00,
+                            },
+                        }}
+                    >
                         <RoundButton text='+' />
                     </Link>
                 </div>

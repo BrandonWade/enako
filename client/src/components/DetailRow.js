@@ -7,7 +7,15 @@ class DetailRow extends Component {
         return (
             <tr className='DetailRow'>
                 <td className='DetailRow-edit'>
-                    <Link to={`/expenses/${this.props.expense.id}`}>
+                    <Link
+                        to={{
+                            pathname: `/expenses/${this.props.expense.id}`,
+                            state: {
+                                selectedDate: this.props.selectedDate,
+                                ...this.props.expense,
+                            },
+                        }}
+                    >
                         <button>
                             Edit
                         </button>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 import Card from '../Card';
 import InputField from '../InputField';
 import SelectField from '../SelectField';
@@ -14,16 +13,25 @@ class Editor extends Component {
         super(props);
 
         this.state = {
-            date: moment().format('MMMM Do YYYY'), // TODO: Pass in date as prop
-            expense: {},
+            selectedDate: this.props.location.state.selectedDate,
+            type: this.props.location.state.type,
+            category: this.props.location.state.category,
+            description: this.props.location.state.description,
+            amount: this.props.location.state.amount,
         };
     }
 
+    onFieldChange = (evt) => {
+        this.setState({
+            [evt.target.name]: evt.target.value,
+        });
+    };
+
     renderHeadingText = () => {
         return this.props.computedMatch.params.id ? (
-            `Editing expense on ${this.state.date}`
+            `Editing expense on ${this.state.selectedDate}`
         ) : (
-            `Creating new expense on ${this.state.date}`
+            `Creating new expense on ${this.state.selectedDate}`
         );
     };
 
@@ -38,8 +46,11 @@ class Editor extends Component {
                     <Card heading={this.renderHeadingText()}>
                         <div className='Editor-form'>
                             <SelectField
+                                name='type'
                                 label='Type'
+                                value={this.state.type}
                                 description='Choose the most relevant type of expense'
+                                onChange={this.onFieldChange}
                             >
                                 <option value=''>-- Select a Type -- </option>
                                 {
@@ -56,8 +67,11 @@ class Editor extends Component {
                                 }
                             </SelectField>
                             <SelectField
+                                name='category'
                                 label='Category'
+                                value={this.state.category}
                                 description='Choose the most relevant category of expense'
+                                onChange={this.onFieldChange}
                             >
                                 <option value=''>-- Select a Category -- </option>
                                 {
@@ -74,12 +88,18 @@ class Editor extends Component {
                                 }
                             </SelectField>
                             <InputField
+                                name='description'
                                 label='Description'
+                                value={this.state.description}
                                 description='Give a brief description of this expense'
+                                onChange={this.onFieldChange}
                             />
                             <InputField
+                                name='amount'
                                 label='Amount'
+                                value={this.state.amount}
                                 description='Enter the cost of this expense'
+                                onChange={this.onFieldChange}
                             />
                         </div>
                         <div className='Editor-formButtons'>

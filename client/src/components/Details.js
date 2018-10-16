@@ -19,6 +19,7 @@ class Details extends Component {
             <div className='Details'>
                 <Card heading={this.props.selectedDate}>
                     <DetailList
+                        selectedDate={this.props.selectedDate}
                         expenses={this.filterExpenses(this.props.selectedDate)}
                     />
                 </Card>

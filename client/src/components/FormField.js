@@ -12,7 +12,7 @@ const withFormField = (BaseComponent) => {
                             {this.props.label}
                         </label>
                     }
-                    <BaseComponent>
+                    <BaseComponent {...this.props}>
                         {this.props.children}
                     </BaseComponent>
                     {
