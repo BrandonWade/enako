@@ -46,7 +46,7 @@ class DetailList extends Component {
         return total > 0 ? (
             <div className='DetailList-totalSection'>
                 <div className='DetailList-totalText'>Total</div>
-                <div className='DetailList-totalAmount'>{total}</div>
+                <div className='DetailList-totalAmount'>${total}</div>
             </div>
         ) : null;
     };

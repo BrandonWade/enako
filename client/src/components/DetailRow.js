@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Category from './Category';
 import '../css/DetailRow.css';
 
 class DetailRow extends Component {
@@ -22,13 +23,13 @@ class DetailRow extends Component {
                     </Link>
                 </td>
                 <td className='DetailRow-category'>
-                    [category]
+                    <Category type={this.props.expense.category} />
                 </td>
                 <td className='DetailRow-description'>
                     {this.props.expense.description}
                 </td>
                 <td className='DetailRow-amount'>
-                    {this.props.expense.amount.toFixed(2)}
+                    ${this.props.expense.amount.toFixed(2)}
                 </td>
             </tr>
         );
