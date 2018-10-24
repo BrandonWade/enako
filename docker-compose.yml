@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-    # mysql:
-    #     image: 'mysql:latest'
+    mysql:
+        image: 'mysql:latest'
     api:
         build:
             dockerfile: Dockerfile.dev
             context: ./api
         volumes:
-            - ./api:./api
+            - ./api:/go/src/github.com/BrandonWade/enako
         ports:
             - '8080:8080'
