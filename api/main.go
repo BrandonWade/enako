@@ -3,10 +3,13 @@ package main
 import (
 	"net/http"
 
+	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	expenseController := controllers.NewExpenseController()
+
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api/v1").Subrouter()
 
@@ -20,10 +23,10 @@ func main() {
 	api.HandleFunc("/categories", GetCategories).Methods("GET")
 
 	// Expenses
-	api.HandleFunc("/expenses", GetExpenses).Methods("GET")
-	api.HandleFunc("/expenses", CreateExpense).Methods("POST")
-	api.HandleFunc("/expenses/{id}", UpdateExpense).Methods("PUT")
-	api.HandleFunc("/expenses/{id}", DeleteExpense).Methods("DELETE")
+	api.HandleFunc("/expenses", expenseController.GetExpenses).Methods("GET")
+	api.HandleFunc("/expenses", expenseController.CreateExpense).Methods("POST")
+	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
+	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 
 	http.ListenAndServe(":8080", r)
 }
@@ -34,20 +37,4 @@ func GetTypes(w http.ResponseWriter, r *http.Request) {
 
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("get categories"))
-}
-
-func GetExpenses(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("get expenses"))
-}
-
-func CreateExpense(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("create expense"))
-}
-
-func UpdateExpense(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("update expense"))
-}
-
-func DeleteExpense(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("delete expense"))
 }
