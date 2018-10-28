@@ -22,7 +22,7 @@ type expenseController struct {
 
 func NewExpenseController() ExpenseController {
 	return &expenseController{
-		[]models.Expense{ // TODO: For testing
+		[]models.Expense{ // TODO: Hardcoded for testing
 			models.Expense{
 				1,
 				"unnecessary",
@@ -56,11 +56,45 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 }
 
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("create expense"))
+	var newExpense models.Expense
+	err := json.NewDecoder(r.Body).Decode(&newExpense)
+	if err != nil {
+		// TODO: Handle
+	}
+
+	ID := 1
+	if len(e.expenses) > 0 {
+		ID = e.expenses[len(e.expenses)-1].ID + 1
+	}
+
+	newExpense.ID = ID
+	e.expenses = append(e.expenses, newExpense)
+
+	json.NewEncoder(w).Encode(e.expenses)
 }
 
 func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("update expense"))
+	params := mux.Vars(r)
+
+	ID, err := strconv.Atoi(params["id"])
+	if err != nil {
+		// TODO: Handle
+	}
+
+	var newExpense models.Expense
+	err = json.NewDecoder(r.Body).Decode(&newExpense)
+	if err != nil {
+		// TODO: Handle
+	}
+
+	for i, expense := range e.expenses {
+		if expense.ID == ID {
+			e.expenses[i] = newExpense
+			break
+		}
+	}
+
+	json.NewEncoder(w).Encode(e.expenses)
 }
 
 func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
