@@ -1,8 +1,8 @@
 FROM golang:latest
-WORKDIR /go/src/github.com/BrandonWade/enako
+WORKDIR /go/src/github.com/BrandonWade/enako/api
 
 RUN go get github.com/pilu/fresh
 
-COPY ./ ./
+COPY . .
 
 CMD ["fresh"]

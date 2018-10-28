@@ -13,6 +13,6 @@ services:
             dockerfile: Dockerfile.dev
             context: ./api
         volumes:
-            - ./api:/go/src/github.com/BrandonWade/enako
+            - ./api:/go/src/github.com/BrandonWade/enako/api
         ports:
             - '8080:8080'
