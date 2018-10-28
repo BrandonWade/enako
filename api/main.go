@@ -8,7 +8,9 @@ import (
 )
 
 func main() {
-	expenseController := controllers.NewExpenseController()
+	typesController := controllers.NewTypesController()
+	categoriesController := controllers.NewCategoriesController()
+	expensesController := controllers.NewExpensesController()
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api/v1").Subrouter()
@@ -17,24 +19,16 @@ func main() {
 	// TODO: TBD
 
 	// Types
-	api.HandleFunc("/types", GetTypes).Methods("GET")
+	api.HandleFunc("/types", typesController.GetTypes).Methods("GET")
 
 	// Categories
-	api.HandleFunc("/categories", GetCategories).Methods("GET")
+	api.HandleFunc("/categories", categoriesController.GetCategories).Methods("GET")
 
 	// Expenses
-	api.HandleFunc("/expenses", expenseController.GetExpenses).Methods("GET")
-	api.HandleFunc("/expenses", expenseController.CreateExpense).Methods("POST")
-	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
-	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
+	api.HandleFunc("/expenses", expensesController.GetExpenses).Methods("GET")
+	api.HandleFunc("/expenses", expensesController.CreateExpense).Methods("POST")
+	api.HandleFunc("/expenses/{id}", expensesController.UpdateExpense).Methods("PUT")
+	api.HandleFunc("/expenses/{id}", expensesController.DeleteExpense).Methods("DELETE")
 
 	http.ListenAndServe(":8080", r)
-}
-
-func GetTypes(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("get types"))
-}
-
-func GetCategories(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("get categories"))
 }

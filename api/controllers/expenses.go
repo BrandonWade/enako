@@ -9,53 +9,53 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ExpenseController interface {
+type ExpensesController interface {
 	GetExpenses(w http.ResponseWriter, r *http.Request)
 	CreateExpense(w http.ResponseWriter, r *http.Request)
 	UpdateExpense(w http.ResponseWriter, r *http.Request)
 	DeleteExpense(w http.ResponseWriter, r *http.Request)
 }
 
-type expenseController struct {
+type expensesController struct {
 	expenses []models.Expense
 }
 
-func NewExpenseController() ExpenseController {
-	return &expenseController{
+func NewExpensesController() ExpensesController {
+	return &expensesController{
 		[]models.Expense{ // TODO: Hardcoded for testing
 			models.Expense{
-				1,
-				"unnecessary",
-				"food",
-				"went out for lunch",
-				1680,
-				"October 15th 2018",
+				ID:          1,
+				Type:        "unnecessary",
+				Category:    "food",
+				Description: "went out for lunch",
+				Amount:      1680,
+				Date:        "October 15th 2018",
 			},
 			models.Expense{
-				2,
-				"recurring",
-				"technology",
-				"paid phone bill for next 2 months",
-				12058,
-				"October 16th 2018",
+				ID:          2,
+				Type:        "recurring",
+				Category:    "technology",
+				Description: "paid phone bill for next 2 months",
+				Amount:      12058,
+				Date:        "October 16th 2018",
 			},
 			models.Expense{
-				3,
-				"unnecessary",
-				"entertainment",
-				"went to a movie",
-				1150,
-				"October 17th 2018",
+				ID:          3,
+				Type:        "unnecessary",
+				Category:    "entertainment",
+				Description: "went to a movie",
+				Amount:      1150,
+				Date:        "October 17th 2018",
 			},
 		},
 	}
 }
 
-func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) {
+func (e *expensesController) GetExpenses(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(e.expenses)
 }
 
-func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
+func (e *expensesController) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	var newExpense models.Expense
 	err := json.NewDecoder(r.Body).Decode(&newExpense)
 	if err != nil {
@@ -73,7 +73,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(e.expenses)
 }
 
-func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
+func (e *expensesController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	ID, err := strconv.Atoi(params["id"])
@@ -97,7 +97,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(e.expenses)
 }
 
-func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
+func (e *expensesController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	ID, err := strconv.Atoi(params["id"])
