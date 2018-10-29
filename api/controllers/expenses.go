@@ -50,7 +50,6 @@ func (e *expensesController) CreateExpense(w http.ResponseWriter, r *http.Reques
 		// TODO: Handle
 	}
 
-	// TODO: Get from DB
 	expense.ID = ID
 
 	json.NewEncoder(w).Encode(expense)
@@ -82,7 +81,6 @@ func (e *expensesController) UpdateExpense(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// TODO: Get from DB
 	expense.ID = ID
 
 	json.NewEncoder(w).Encode(expense)

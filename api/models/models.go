@@ -14,9 +14,9 @@ type Expense struct {
 
 type Type struct {
 	ID        int64  `json:"id" db:"id"`
-	Name      string `json:"name" db:"name"`
-	CreatedAt string `json:"created_at" db:"created_at"`
-	UpdatedAt string `json:"updated_at" db:"updated_at"`
+	Name      string `json:"name,omitempty" db:"name"`
+	CreatedAt string `json:"created_at,omitempty" db:"created_at"`
+	UpdatedAt string `json:"updated_at,omitempty" db:"updated_at"`
 }
 
 type Category struct {

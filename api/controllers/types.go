@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/BrandonWade/enako/api/models"
+	"github.com/BrandonWade/enako/api/services"
 )
 
 type TypesController interface {
@@ -12,28 +12,20 @@ type TypesController interface {
 }
 
 type typesController struct {
-	types []models.Type
+	service services.TypesService
 }
 
-func NewTypesController() TypesController {
+func NewTypesController(service services.TypesService) TypesController {
 	return &typesController{
-		[]models.Type{ // TODO: Hardcoded for testing
-			models.Type{
-				ID:   1,
-				Name: "General",
-			},
-			models.Type{
-				ID:   2,
-				Name: "Unnecessary",
-			},
-			models.Type{
-				ID:   3,
-				Name: "Recurring",
-			},
-		},
+		service,
 	}
 }
 
 func (t *typesController) GetTypes(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(t.types)
+	types, err := t.service.GetTypes()
+	if err != nil {
+		// TODO: Handle
+	}
+
+	json.NewEncoder(w).Encode(types)
 }

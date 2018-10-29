@@ -34,11 +34,13 @@ func init() {
 }
 
 func main() {
+	typesRepository := repositories.NewTypesRepository(DB)
 	expensesRepository := repositories.NewExpensesRepository(DB)
 
+	typesService := services.NewTypesService(typesRepository)
 	expensesService := services.NewExpensesService(expensesRepository)
 
-	typesController := controllers.NewTypesController()
+	typesController := controllers.NewTypesController(typesService)
 	categoriesController := controllers.NewCategoriesController()
 	expensesController := controllers.NewExpensesController(expensesService)
 
