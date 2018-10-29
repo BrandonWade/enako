@@ -8,7 +8,8 @@ import (
 type ExpensesService interface {
 	GetExpenses() (expenses []models.Expense, err error)
 	CreateExpense(userID int64, expense *models.Expense) (int64, error)
-	UpdateExpense(ID, userID int64, expense *models.Expense) error
+	UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error)
+	DeleteExpense(ID, userID int64) (int64, error)
 }
 
 type expensesService struct {
@@ -29,6 +30,10 @@ func (e *expensesService) CreateExpense(userID int64, expense *models.Expense) (
 	return e.repo.CreateExpense(userID, expense)
 }
 
-func (e *expensesService) UpdateExpense(ID, userID int64, expense *models.Expense) error {
+func (e *expensesService) UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error) {
 	return e.repo.UpdateExpense(ID, userID, expense)
+}
+
+func (e *expensesService) DeleteExpense(ID, userID int64) (int64, error) {
+	return e.repo.DeleteExpense(ID, userID)
 }

@@ -18,39 +18,12 @@ type ExpensesController interface {
 }
 
 type expensesController struct {
-	expenses []models.Expense
-	service  services.ExpensesService
+	service services.ExpensesService
 }
 
 func NewExpensesController(service services.ExpensesService) ExpensesController {
 	return &expensesController{
-		expenses: []models.Expense{ // TODO: Hardcoded for testing
-			models.Expense{
-				ID:          4,
-				Type:        "unnecessary",
-				Category:    "food",
-				Description: "went out for lunch",
-				Amount:      1680,
-				Date:        "October 15th 2018",
-			},
-			models.Expense{
-				ID:          5,
-				Type:        "recurring",
-				Category:    "technology",
-				Description: "paid phone bill for next 2 months",
-				Amount:      12058,
-				Date:        "October 16th 2018",
-			},
-			models.Expense{
-				ID:          6,
-				Type:        "unnecessary",
-				Category:    "entertainment",
-				Description: "went to a movie",
-				Amount:      1150,
-				Date:        "October 17th 2018",
-			},
-		},
-		service: service,
+		service,
 	}
 }
 
@@ -79,7 +52,6 @@ func (e *expensesController) CreateExpense(w http.ResponseWriter, r *http.Reques
 
 	// TODO: Get from DB
 	expense.ID = ID
-	expense.UserID = userID
 
 	json.NewEncoder(w).Encode(expense)
 }
@@ -100,32 +72,41 @@ func (e *expensesController) UpdateExpense(w http.ResponseWriter, r *http.Reques
 		// TODO: Handle
 	}
 
-	err = e.service.UpdateExpense(ID, userID, &expense)
+	count, err := e.service.UpdateExpense(ID, userID, &expense)
 	if err != nil {
 		// TODO: Handle
 	}
 
+	if count == 0 {
+		json.NewEncoder(w).Encode(&models.Expense{})
+		return
+	}
+
 	// TODO: Get from DB
 	expense.ID = ID
-	expense.UserID = userID
 
 	json.NewEncoder(w).Encode(expense)
 }
 
 func (e *expensesController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
+	userID := int64(1) // TODO: Hardcoded for testing
+
 	params := mux.Vars(r)
 
-	ID, err := strconv.Atoi(params["id"])
+	ID, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		// TODO: Handle
 	}
 
-	for i, expense := range e.expenses {
-		if expense.ID == int64(ID) {
-			e.expenses = append(e.expenses[:i], e.expenses[i+1:]...)
-			break
-		}
+	count, err := e.service.DeleteExpense(ID, userID)
+	if err != nil {
+		// TODO: Handle
 	}
 
-	json.NewEncoder(w).Encode(e.expenses)
+	if count == 0 {
+		json.NewEncoder(w).Encode(&models.Expense{})
+		return
+	}
+
+	json.NewEncoder(w).Encode(ID)
 }

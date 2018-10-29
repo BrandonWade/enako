@@ -10,7 +10,8 @@ import (
 type ExpensesRepository interface {
 	GetExpenses() ([]models.Expense, error)
 	CreateExpense(userID int64, expense *models.Expense) (int64, error)
-	UpdateExpense(ID, userID int64, expense *models.Expense) error
+	UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error)
+	DeleteExpense(ID, userID int64) (int64, error)
 }
 
 type expensesRepository struct {
@@ -75,8 +76,8 @@ func (e *expensesRepository) CreateExpense(userID int64, expense *models.Expense
 	return ID, nil
 }
 
-func (e *expensesRepository) UpdateExpense(ID, userID int64, expense *models.Expense) error {
-	_, err := e.DB.Exec(`UPDATE expenses
+func (e *expensesRepository) UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error) {
+	result, err := e.DB.Exec(`UPDATE expenses
 		SET
 	  		user_id = ?,
 			type = ?,
@@ -95,8 +96,34 @@ func (e *expensesRepository) UpdateExpense(ID, userID int64, expense *models.Exp
 		ID,
 	)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (e *expensesRepository) DeleteExpense(ID, userID int64) (int64, error) {
+	result, err := e.DB.Exec(`DELETE
+		FROM expenses
+		WHERE id = ?
+		AND user_id = ?;
+	`,
+		ID,
+		userID,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
