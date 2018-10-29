@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/BrandonWade/enako/api/models"
+	"github.com/BrandonWade/enako/api/services"
 )
 
 type CategoriesController interface {
@@ -12,40 +12,20 @@ type CategoriesController interface {
 }
 
 type categoriesController struct {
-	categories []models.Category
+	service services.CategoriesService
 }
 
-func NewCategoriesController() CategoriesController {
+func NewCategoriesController(service services.CategoriesService) CategoriesController {
 	return &categoriesController{
-		[]models.Category{ // TODO: Hardcoded for testing
-			models.Category{
-				ID:   1,
-				Name: "Food",
-			},
-			models.Category{
-				ID:   2,
-				Name: "Entertainment",
-			},
-			models.Category{
-				ID:   3,
-				Name: "Transportation",
-			},
-			models.Category{
-				ID:   4,
-				Name: "Clothing",
-			},
-			models.Category{
-				ID:   5,
-				Name: "Technology",
-			},
-			models.Category{
-				ID:   6,
-				Name: "Health",
-			},
-		},
+		service,
 	}
 }
 
 func (c *categoriesController) GetCategories(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(c.categories)
+	categories, err := c.service.GetCategories()
+	if err != nil {
+		// TODO: Handle
+	}
+
+	json.NewEncoder(w).Encode(categories)
 }

@@ -35,13 +35,15 @@ func init() {
 
 func main() {
 	typesRepository := repositories.NewTypesRepository(DB)
+	categoriesRepository := repositories.NewCategoriesRepository(DB)
 	expensesRepository := repositories.NewExpensesRepository(DB)
 
 	typesService := services.NewTypesService(typesRepository)
+	categoriesService := services.NewCategoriesService(categoriesRepository)
 	expensesService := services.NewExpensesService(expensesRepository)
 
 	typesController := controllers.NewTypesController(typesService)
-	categoriesController := controllers.NewCategoriesController()
+	categoriesController := controllers.NewCategoriesController(categoriesService)
 	expensesController := controllers.NewExpensesController(expensesService)
 
 	r := mux.NewRouter()
