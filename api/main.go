@@ -1,16 +1,46 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/repositories"
+	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/mux"
+
+	"github.com/jmoiron/sqlx"
 )
 
+var (
+	DB *sqlx.DB
+)
+
+func init() {
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+	database := os.Getenv("DB_DATABASE")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, database)
+
+	var err error
+	DB, err = sqlx.Connect("mysql", dsn)
+	if err != nil {
+		log.Fatalf("error connecting to db: %s\n", err.Error())
+	}
+}
+
 func main() {
+	expensesRepository := repositories.NewExpensesRepository(DB)
+
+	expensesService := services.NewExpensesService(expensesRepository)
+
 	typesController := controllers.NewTypesController()
 	categoriesController := controllers.NewCategoriesController()
-	expensesController := controllers.NewExpensesController()
+	expensesController := controllers.NewExpensesController(expensesService)
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api/v1").Subrouter()

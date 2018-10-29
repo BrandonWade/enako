@@ -1,18 +1,28 @@
 version: '3'
 
 services:
-    mysql:
+    db:
         image: 'mysql:latest'
+        container_name: enako-db
+        ports:
+            - '3306:3306'
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=enako
-        ports:
-            - '3306:3306'
     api:
         build:
             dockerfile: Dockerfile.dev
             context: ./api
+        container_name: enako-api
+        depends_on:
+            - "db"
         volumes:
             - ./api:/go/src/github.com/BrandonWade/enako/api
         ports:
             - '8080:8080'
+        environment:
+            - DB_HOST=enako-db
+            - DB_PORT=3306
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+            - DB_DATABASE=enako

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/BrandonWade/enako/api/models"
+	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/mux"
 )
 
@@ -18,13 +19,14 @@ type ExpensesController interface {
 
 type expensesController struct {
 	expenses []models.Expense
+	service  services.ExpensesService
 }
 
-func NewExpensesController() ExpensesController {
+func NewExpensesController(service services.ExpensesService) ExpensesController {
 	return &expensesController{
-		[]models.Expense{ // TODO: Hardcoded for testing
+		expenses: []models.Expense{ // TODO: Hardcoded for testing
 			models.Expense{
-				ID:          1,
+				ID:          4,
 				Type:        "unnecessary",
 				Category:    "food",
 				Description: "went out for lunch",
@@ -32,7 +34,7 @@ func NewExpensesController() ExpensesController {
 				Date:        "October 15th 2018",
 			},
 			models.Expense{
-				ID:          2,
+				ID:          5,
 				Type:        "recurring",
 				Category:    "technology",
 				Description: "paid phone bill for next 2 months",
@@ -40,7 +42,7 @@ func NewExpensesController() ExpensesController {
 				Date:        "October 16th 2018",
 			},
 			models.Expense{
-				ID:          3,
+				ID:          6,
 				Type:        "unnecessary",
 				Category:    "entertainment",
 				Description: "went to a movie",
@@ -48,53 +50,66 @@ func NewExpensesController() ExpensesController {
 				Date:        "October 17th 2018",
 			},
 		},
+		service: service,
 	}
 }
 
 func (e *expensesController) GetExpenses(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(e.expenses)
+	expenses, err := e.service.GetExpenses()
+	if err != nil {
+		// TODO: Handle
+	}
+
+	json.NewEncoder(w).Encode(expenses)
 }
 
 func (e *expensesController) CreateExpense(w http.ResponseWriter, r *http.Request) {
-	var newExpense models.Expense
-	err := json.NewDecoder(r.Body).Decode(&newExpense)
+	userID := int64(1) // TODO: Hardcoded for testing
+
+	var expense models.Expense
+	err := json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
 		// TODO: Handle
 	}
 
-	ID := 1
-	if len(e.expenses) > 0 {
-		ID = e.expenses[len(e.expenses)-1].ID + 1
+	ID, err := e.service.CreateExpense(userID, &expense)
+	if err != nil {
+		// TODO: Handle
 	}
 
-	newExpense.ID = ID
-	e.expenses = append(e.expenses, newExpense)
+	// TODO: Get from DB
+	expense.ID = ID
+	expense.UserID = userID
 
-	json.NewEncoder(w).Encode(e.expenses)
+	json.NewEncoder(w).Encode(expense)
 }
 
 func (e *expensesController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
+	userID := int64(1) // TODO: Hardcoded for testing
+
 	params := mux.Vars(r)
 
-	ID, err := strconv.Atoi(params["id"])
+	ID, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		// TODO: Handle
 	}
 
-	var newExpense models.Expense
-	err = json.NewDecoder(r.Body).Decode(&newExpense)
+	expense := models.Expense{}
+	err = json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
 		// TODO: Handle
 	}
 
-	for i, expense := range e.expenses {
-		if expense.ID == ID {
-			e.expenses[i] = newExpense
-			break
-		}
+	err = e.service.UpdateExpense(ID, userID, &expense)
+	if err != nil {
+		// TODO: Handle
 	}
 
-	json.NewEncoder(w).Encode(e.expenses)
+	// TODO: Get from DB
+	expense.ID = ID
+	expense.UserID = userID
+
+	json.NewEncoder(w).Encode(expense)
 }
 
 func (e *expensesController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +121,7 @@ func (e *expensesController) DeleteExpense(w http.ResponseWriter, r *http.Reques
 	}
 
 	for i, expense := range e.expenses {
-		if expense.ID == ID {
+		if expense.ID == int64(ID) {
 			e.expenses = append(e.expenses[:i], e.expenses[i+1:]...)
 			break
 		}
