@@ -7,21 +7,21 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 )
 
-type TypesController interface {
+type TypeController interface {
 	GetTypes(w http.ResponseWriter, r *http.Request)
 }
 
-type typesController struct {
-	service services.TypesService
+type typeController struct {
+	service services.TypeService
 }
 
-func NewTypesController(service services.TypesService) TypesController {
-	return &typesController{
+func NewTypeController(service services.TypeService) TypeController {
+	return &typeController{
 		service,
 	}
 }
 
-func (t *typesController) GetTypes(w http.ResponseWriter, r *http.Request) {
+func (t *typeController) GetTypes(w http.ResponseWriter, r *http.Request) {
 	types, err := t.service.GetTypes()
 	if err != nil {
 		// TODO: Handle

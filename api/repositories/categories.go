@@ -7,21 +7,21 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type CategoriesRepository interface {
+type CategoryRepository interface {
 	GetCategories() ([]models.Category, error)
 }
 
-type categoriesRepository struct {
+type categoryRepository struct {
 	DB *sqlx.DB
 }
 
-func NewCategoriesRepository(DB *sqlx.DB) CategoriesRepository {
-	return &categoriesRepository{
+func NewCategoryRepository(DB *sqlx.DB) CategoryRepository {
+	return &categoryRepository{
 		DB,
 	}
 }
 
-func (c *categoriesRepository) GetCategories() ([]models.Category, error) {
+func (c *categoryRepository) GetCategories() ([]models.Category, error) {
 	categories := []models.Category{}
 
 	err := c.DB.Select(&categories, `SELECT *

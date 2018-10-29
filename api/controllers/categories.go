@@ -7,21 +7,21 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 )
 
-type CategoriesController interface {
+type CategoryController interface {
 	GetCategories(w http.ResponseWriter, r *http.Request)
 }
 
-type categoriesController struct {
-	service services.CategoriesService
+type categoryController struct {
+	service services.CategoryService
 }
 
-func NewCategoriesController(service services.CategoriesService) CategoriesController {
-	return &categoriesController{
+func NewCategoryController(service services.CategoryService) CategoryController {
+	return &categoryController{
 		service,
 	}
 }
 
-func (c *categoriesController) GetCategories(w http.ResponseWriter, r *http.Request) {
+func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := c.service.GetCategories()
 	if err != nil {
 		// TODO: Handle

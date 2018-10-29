@@ -5,20 +5,20 @@ import (
 	"github.com/BrandonWade/enako/api/repositories"
 )
 
-type TypesService interface {
+type TypeService interface {
 	GetTypes() ([]models.Type, error)
 }
 
-type typesService struct {
-	repo repositories.TypesRepository
+type typeService struct {
+	repo repositories.TypeRepository
 }
 
-func NewTypesService(repo repositories.TypesRepository) TypesService {
-	return &typesService{
+func NewTypeService(repo repositories.TypeRepository) TypeService {
+	return &typeService{
 		repo,
 	}
 }
 
-func (t *typesService) GetTypes() ([]models.Type, error) {
+func (t *typeService) GetTypes() ([]models.Type, error) {
 	return t.repo.GetTypes()
 }

@@ -5,20 +5,20 @@ import (
 	"github.com/BrandonWade/enako/api/repositories"
 )
 
-type CategoriesService interface {
+type CategoryService interface {
 	GetCategories() ([]models.Category, error)
 }
 
-type categoriesService struct {
-	repo repositories.CategoriesRepository
+type categoryService struct {
+	repo repositories.CategoryRepository
 }
 
-func NewCategoriesService(repo repositories.CategoriesRepository) CategoriesService {
-	return &categoriesService{
+func NewCategoryService(repo repositories.CategoryRepository) CategoryService {
+	return &categoryService{
 		repo,
 	}
 }
 
-func (c *categoriesService) GetCategories() ([]models.Category, error) {
+func (c *categoryService) GetCategories() ([]models.Category, error) {
 	return c.repo.GetCategories()
 }

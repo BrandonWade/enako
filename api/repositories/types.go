@@ -7,21 +7,21 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type TypesRepository interface {
+type TypeRepository interface {
 	GetTypes() ([]models.Type, error)
 }
 
-type typesRepository struct {
+type typeRepository struct {
 	DB *sqlx.DB
 }
 
-func NewTypesRepository(DB *sqlx.DB) TypesRepository {
-	return &typesRepository{
+func NewTypeRepository(DB *sqlx.DB) TypeRepository {
+	return &typeRepository{
 		DB,
 	}
 }
 
-func (t *typesRepository) GetTypes() ([]models.Type, error) {
+func (t *typeRepository) GetTypes() ([]models.Type, error) {
 	types := []models.Type{}
 
 	err := t.DB.Select(&types, `SELECT *

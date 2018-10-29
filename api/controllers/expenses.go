@@ -10,24 +10,24 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ExpensesController interface {
+type ExpenseController interface {
 	GetExpenses(w http.ResponseWriter, r *http.Request)
 	CreateExpense(w http.ResponseWriter, r *http.Request)
 	UpdateExpense(w http.ResponseWriter, r *http.Request)
 	DeleteExpense(w http.ResponseWriter, r *http.Request)
 }
 
-type expensesController struct {
-	service services.ExpensesService
+type expenseController struct {
+	service services.ExpenseService
 }
 
-func NewExpensesController(service services.ExpensesService) ExpensesController {
-	return &expensesController{
+func NewExpenseController(service services.ExpenseService) ExpenseController {
+	return &expenseController{
 		service,
 	}
 }
 
-func (e *expensesController) GetExpenses(w http.ResponseWriter, r *http.Request) {
+func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) {
 	expenses, err := e.service.GetExpenses()
 	if err != nil {
 		// TODO: Handle
@@ -36,7 +36,7 @@ func (e *expensesController) GetExpenses(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(expenses)
 }
 
-func (e *expensesController) CreateExpense(w http.ResponseWriter, r *http.Request) {
+func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	userID := int64(1) // TODO: Hardcoded for testing
 
 	var expense models.Expense
@@ -55,7 +55,7 @@ func (e *expensesController) CreateExpense(w http.ResponseWriter, r *http.Reques
 	json.NewEncoder(w).Encode(expense)
 }
 
-func (e *expensesController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
+func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	userID := int64(1) // TODO: Hardcoded for testing
 
 	params := mux.Vars(r)
@@ -86,7 +86,7 @@ func (e *expensesController) UpdateExpense(w http.ResponseWriter, r *http.Reques
 	json.NewEncoder(w).Encode(expense)
 }
 
-func (e *expensesController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
+func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	userID := int64(1) // TODO: Hardcoded for testing
 
 	params := mux.Vars(r)

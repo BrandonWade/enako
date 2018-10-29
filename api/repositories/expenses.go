@@ -7,24 +7,24 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type ExpensesRepository interface {
+type ExpenseRepository interface {
 	GetExpenses() ([]models.Expense, error)
 	CreateExpense(userID int64, expense *models.Expense) (int64, error)
 	UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error)
 	DeleteExpense(ID, userID int64) (int64, error)
 }
 
-type expensesRepository struct {
+type expenseRepository struct {
 	DB *sqlx.DB
 }
 
-func NewExpensesRepository(DB *sqlx.DB) ExpensesRepository {
-	return &expensesRepository{
+func NewExpenseRepository(DB *sqlx.DB) ExpenseRepository {
+	return &expenseRepository{
 		DB,
 	}
 }
 
-func (e *expensesRepository) GetExpenses() ([]models.Expense, error) {
+func (e *expenseRepository) GetExpenses() ([]models.Expense, error) {
 	userID := 1 // TODO: Hardcoded for testing
 	expenses := []models.Expense{}
 
@@ -39,7 +39,7 @@ func (e *expensesRepository) GetExpenses() ([]models.Expense, error) {
 	return expenses, nil
 }
 
-func (e *expensesRepository) CreateExpense(userID int64, expense *models.Expense) (int64, error) {
+func (e *expenseRepository) CreateExpense(userID int64, expense *models.Expense) (int64, error) {
 	result, err := e.DB.Exec(`INSERT
 		INTO expenses(
 			user_id,
@@ -76,7 +76,7 @@ func (e *expensesRepository) CreateExpense(userID int64, expense *models.Expense
 	return ID, nil
 }
 
-func (e *expensesRepository) UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error) {
+func (e *expenseRepository) UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error) {
 	result, err := e.DB.Exec(`UPDATE expenses
 		SET
 	  		user_id = ?,
@@ -107,7 +107,7 @@ func (e *expensesRepository) UpdateExpense(ID, userID int64, expense *models.Exp
 	return count, nil
 }
 
-func (e *expensesRepository) DeleteExpense(ID, userID int64) (int64, error) {
+func (e *expenseRepository) DeleteExpense(ID, userID int64) (int64, error) {
 	result, err := e.DB.Exec(`DELETE
 		FROM expenses
 		WHERE id = ?

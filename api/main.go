@@ -34,17 +34,17 @@ func init() {
 }
 
 func main() {
-	typesRepository := repositories.NewTypesRepository(DB)
-	categoriesRepository := repositories.NewCategoriesRepository(DB)
-	expensesRepository := repositories.NewExpensesRepository(DB)
+	typeRepository := repositories.NewTypeRepository(DB)
+	categoryRepository := repositories.NewCategoryRepository(DB)
+	expenseRepository := repositories.NewExpenseRepository(DB)
 
-	typesService := services.NewTypesService(typesRepository)
-	categoriesService := services.NewCategoriesService(categoriesRepository)
-	expensesService := services.NewExpensesService(expensesRepository)
+	typeService := services.NewTypeService(typeRepository)
+	categoryService := services.NewCategoryService(categoryRepository)
+	expenseService := services.NewExpenseService(expenseRepository)
 
-	typesController := controllers.NewTypesController(typesService)
-	categoriesController := controllers.NewCategoriesController(categoriesService)
-	expensesController := controllers.NewExpensesController(expensesService)
+	typeController := controllers.NewTypeController(typeService)
+	categoryController := controllers.NewCategoryController(categoryService)
+	expenseController := controllers.NewExpenseController(expenseService)
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/api/v1").Subrouter()
@@ -53,16 +53,16 @@ func main() {
 	// TODO: TBD
 
 	// Types
-	api.HandleFunc("/types", typesController.GetTypes).Methods("GET")
+	api.HandleFunc("/types", typeController.GetTypes).Methods("GET")
 
 	// Categories
-	api.HandleFunc("/categories", categoriesController.GetCategories).Methods("GET")
+	api.HandleFunc("/categories", categoryController.GetCategories).Methods("GET")
 
 	// Expenses
-	api.HandleFunc("/expenses", expensesController.GetExpenses).Methods("GET")
-	api.HandleFunc("/expenses", expensesController.CreateExpense).Methods("POST")
-	api.HandleFunc("/expenses/{id}", expensesController.UpdateExpense).Methods("PUT")
-	api.HandleFunc("/expenses/{id}", expensesController.DeleteExpense).Methods("DELETE")
+	api.HandleFunc("/expenses", expenseController.GetExpenses).Methods("GET")
+	api.HandleFunc("/expenses", expenseController.CreateExpense).Methods("POST")
+	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
+	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 
 	http.ListenAndServe(":8080", r)
 }
