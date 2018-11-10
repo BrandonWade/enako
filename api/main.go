@@ -64,5 +64,5 @@ func main() {
 	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
 	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", r)
 }

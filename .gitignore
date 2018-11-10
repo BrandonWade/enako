@@ -22,3 +22,5 @@ yarn-error.log*
 
 
 /api/tmp
+/api/cert.pem
+/api/key.pem
