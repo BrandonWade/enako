@@ -37,6 +37,17 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:a242f23ceb22423c0a2111d9488a2ab19a2e817111a4f3e2385f5f89a53e619f"
+  name = "golang.org/x/crypto"
+  packages = [
+    "bcrypt",
+    "blowfish"
+  ]
+  pruneopts = ""
+  revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
+
+[[projects]]
   digest = "1:8c432632a230496c35a15cfdf441436f04c90e724ad99c8463ef0c82bbe93edb"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
@@ -50,7 +61,8 @@
   input-imports = [
     "github.com/go-sql-driver/mysql",
     "github.com/gorilla/mux",
-    "github.com/jmoiron/sqlx"
+    "github.com/jmoiron/sqlx",
+    "golang.org/x/crypto/bcrypt"
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

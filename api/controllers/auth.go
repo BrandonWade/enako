@@ -21,5 +21,15 @@ func NewAuthController(service services.AuthService) AuthController {
 }
 
 func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+	confirmPassword := r.FormValue("confirm_password")
 
+	// TODO: Validate inputs
+
+	if password != confirmPassword {
+		// TODO: Handle
+	}
+
+	a.service.CreateAccount(email, password)
 }

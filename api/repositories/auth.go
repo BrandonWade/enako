@@ -7,7 +7,7 @@ import (
 )
 
 type AuthRepository interface {
-	CreateAccount()
+	CreateAccount(email, password string) error
 }
 
 type authRepository struct {
@@ -20,6 +20,6 @@ func NewAuthRepository(DB *sqlx.DB) AuthRepository {
 	}
 }
 
-func (a *authRepository) CreateAccount() {
-
+func (a *authRepository) CreateAccount(email, password string) error {
+	return nil
 }

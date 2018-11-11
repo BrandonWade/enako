@@ -50,6 +50,7 @@ func main() {
 	expenseController := controllers.NewExpenseController(expenseService)
 
 	r := mux.NewRouter()
+
 	api := r.PathPrefix("/api/v1").Subrouter()
 
 	// Auth
@@ -67,5 +68,5 @@ func main() {
 	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
 	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 
-	http.ListenAndServeTLS(":8080", "cert.pem", "key.pem", r)
+	http.ListenAndServe(":8080", r)
 }
