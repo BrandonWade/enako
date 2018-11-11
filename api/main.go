@@ -34,14 +34,17 @@ func init() {
 }
 
 func main() {
+	authRepository := repositories.NewAuthRepository(DB)
 	typeRepository := repositories.NewTypeRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
+	authService := services.NewAuthService(authRepository)
 	typeService := services.NewTypeService(typeRepository)
 	categoryService := services.NewCategoryService(categoryRepository)
 	expenseService := services.NewExpenseService(expenseRepository)
 
+	authController := controllers.NewAuthController(authService)
 	typeController := controllers.NewTypeController(typeService)
 	categoryController := controllers.NewCategoryController(categoryService)
 	expenseController := controllers.NewExpenseController(expenseService)
@@ -50,7 +53,7 @@ func main() {
 	api := r.PathPrefix("/api/v1").Subrouter()
 
 	// Auth
-	// TODO: TBD
+	api.HandleFunc("/accounts", authController.CreateAccount).Methods("POST")
 
 	// Types
 	api.HandleFunc("/types", typeController.GetTypes).Methods("GET")
