@@ -6,7 +6,7 @@ import (
 )
 
 type AuthService interface {
-	CreateAccount(email, password string) error
+	CreateAccount(email, password string) (int64, error)
 }
 
 type authService struct {
@@ -19,7 +19,7 @@ func NewAuthService(repo repositories.AuthRepository) AuthService {
 	}
 }
 
-func (a *authService) CreateAccount(email, password string) error {
+func (a *authService) CreateAccount(email, password string) (int64, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		// TODO: Handle

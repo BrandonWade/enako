@@ -8,10 +8,10 @@ import (
 )
 
 type ExpenseRepository interface {
-	GetExpenses() ([]models.Expense, error)
-	CreateExpense(userID int64, expense *models.Expense) (int64, error)
-	UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error)
-	DeleteExpense(ID, userID int64) (int64, error)
+	GetExpenses() ([]models.UserExpense, error)
+	CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error)
+	UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error)
+	DeleteExpense(ID, userAccountID int64) (int64, error)
 }
 
 type expenseRepository struct {
@@ -24,31 +24,31 @@ func NewExpenseRepository(DB *sqlx.DB) ExpenseRepository {
 	}
 }
 
-func (e *expenseRepository) GetExpenses() ([]models.Expense, error) {
-	userID := 1 // TODO: Hardcoded for testing
-	expenses := []models.Expense{}
+func (e *expenseRepository) GetExpenses() ([]models.UserExpense, error) {
+	userAccountID := 1 // TODO: Hardcoded for testing
+	expenses := []models.UserExpense{}
 
 	err := e.DB.Select(&expenses, `SELECT *
-        FROM expenses AS e
-        WHERE e.user_id = ?;
-    `, userID)
+        FROM user_expenses AS e
+        WHERE e.user_account_id = ?;
+    `, userAccountID)
 	if err != nil {
-		return []models.Expense{}, err
+		return []models.UserExpense{}, err
 	}
 
 	return expenses, nil
 }
 
-func (e *expenseRepository) CreateExpense(userID int64, expense *models.Expense) (int64, error) {
+func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error) {
 	result, err := e.DB.Exec(`INSERT
-		INTO expenses(
-			user_id,
-			type,
-			category,
-			description,
-			amount,
-			date
-		) VALUE (
+		INTO user_expenses(
+			user_account_id,
+			expense_type,
+			expense_category,
+			expense_description,
+			expense_amount,
+			expense_date
+		) VALUES (
 			?,
 			?,
 			?,
@@ -57,12 +57,12 @@ func (e *expenseRepository) CreateExpense(userID int64, expense *models.Expense)
 			?
 		);
 	`,
-		userID,
-		expense.Type,
-		expense.Category,
-		expense.Description,
-		expense.Amount,
-		expense.Date,
+		userAccountID,
+		expense.ExpenseType,
+		expense.ExpenseCategory,
+		expense.ExpenseDescription,
+		expense.ExpenseAmount,
+		expense.ExpenseDate,
 	)
 	if err != nil {
 		return 0, err
@@ -76,23 +76,23 @@ func (e *expenseRepository) CreateExpense(userID int64, expense *models.Expense)
 	return ID, nil
 }
 
-func (e *expenseRepository) UpdateExpense(ID, userID int64, expense *models.Expense) (int64, error) {
-	result, err := e.DB.Exec(`UPDATE expenses
+func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error) {
+	result, err := e.DB.Exec(`UPDATE user_expenses
 		SET
-	  		user_id = ?,
-			type = ?,
-			category = ?,
-			description = ?,
-			amount = ?,
-			date = ?
+			user_account_id = ?,
+			expense_type = ?,
+			expense_category = ?,
+			expense_description = ?,
+			expense_amount = ?,
+			expense_date = ?
 		WHERE id = ?;
 	`,
-		userID,
-		expense.Type,
-		expense.Category,
-		expense.Description,
-		expense.Amount,
-		expense.Date,
+		userAccountID,
+		expense.ExpenseType,
+		expense.ExpenseCategory,
+		expense.ExpenseDescription,
+		expense.ExpenseAmount,
+		expense.ExpenseDate,
 		ID,
 	)
 	if err != nil {
@@ -107,14 +107,14 @@ func (e *expenseRepository) UpdateExpense(ID, userID int64, expense *models.Expe
 	return count, nil
 }
 
-func (e *expenseRepository) DeleteExpense(ID, userID int64) (int64, error) {
+func (e *expenseRepository) DeleteExpense(ID, userAccountID int64) (int64, error) {
 	result, err := e.DB.Exec(`DELETE
-		FROM expenses
+		FROM user_expenses
 		WHERE id = ?
-		AND user_id = ?;
+		AND user_account_id = ?;
 	`,
 		ID,
-		userID,
+		userAccountID,
 	)
 	if err != nil {
 		return 0, err

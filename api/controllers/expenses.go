@@ -39,7 +39,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	userID := int64(1) // TODO: Hardcoded for testing
 
-	var expense models.Expense
+	var expense models.UserExpense
 	err := json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
 		// TODO: Handle
@@ -65,7 +65,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		// TODO: Handle
 	}
 
-	expense := models.Expense{}
+	expense := models.UserExpense{}
 	err = json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
 		// TODO: Handle
@@ -77,7 +77,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	if count == 0 {
-		json.NewEncoder(w).Encode(&models.Expense{})
+		json.NewEncoder(w).Encode(&models.UserExpense{})
 		return
 	}
 
@@ -102,7 +102,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	if count == 0 {
-		json.NewEncoder(w).Encode(&models.Expense{})
+		json.NewEncoder(w).Encode(&models.UserExpense{})
 		return
 	}
 

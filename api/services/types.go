@@ -6,7 +6,7 @@ import (
 )
 
 type TypeService interface {
-	GetTypes() ([]models.Type, error)
+	GetTypes() ([]models.ExpenseType, error)
 }
 
 type typeService struct {
@@ -19,6 +19,6 @@ func NewTypeService(repo repositories.TypeRepository) TypeService {
 	}
 }
 
-func (t *typeService) GetTypes() ([]models.Type, error) {
+func (t *typeService) GetTypes() ([]models.ExpenseType, error) {
 	return t.repo.GetTypes()
 }

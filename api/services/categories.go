@@ -6,7 +6,7 @@ import (
 )
 
 type CategoryService interface {
-	GetCategories() ([]models.Category, error)
+	GetCategories() ([]models.ExpenseCategory, error)
 }
 
 type categoryService struct {
@@ -19,6 +19,6 @@ func NewCategoryService(repo repositories.CategoryRepository) CategoryService {
 	}
 }
 
-func (c *categoryService) GetCategories() ([]models.Category, error) {
+func (c *categoryService) GetCategories() ([]models.ExpenseCategory, error) {
 	return c.repo.GetCategories()
 }

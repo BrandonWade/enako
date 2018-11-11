@@ -8,7 +8,7 @@ import (
 )
 
 type CategoryRepository interface {
-	GetCategories() ([]models.Category, error)
+	GetCategories() ([]models.ExpenseCategory, error)
 }
 
 type categoryRepository struct {
@@ -21,14 +21,14 @@ func NewCategoryRepository(DB *sqlx.DB) CategoryRepository {
 	}
 }
 
-func (c *categoryRepository) GetCategories() ([]models.Category, error) {
-	categories := []models.Category{}
+func (c *categoryRepository) GetCategories() ([]models.ExpenseCategory, error) {
+	categories := []models.ExpenseCategory{}
 
 	err := c.DB.Select(&categories, `SELECT *
-        FROM categories;
+        FROM expense_categories;
     `)
 	if err != nil {
-		return []models.Category{}, err
+		return []models.ExpenseCategory{}, err
 	}
 
 	return categories, nil

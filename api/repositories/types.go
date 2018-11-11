@@ -8,7 +8,7 @@ import (
 )
 
 type TypeRepository interface {
-	GetTypes() ([]models.Type, error)
+	GetTypes() ([]models.ExpenseType, error)
 }
 
 type typeRepository struct {
@@ -21,14 +21,14 @@ func NewTypeRepository(DB *sqlx.DB) TypeRepository {
 	}
 }
 
-func (t *typeRepository) GetTypes() ([]models.Type, error) {
-	types := []models.Type{}
+func (t *typeRepository) GetTypes() ([]models.ExpenseType, error) {
+	types := []models.ExpenseType{}
 
 	err := t.DB.Select(&types, `SELECT *
-        FROM types;
+        FROM expense_types;
     `)
 	if err != nil {
-		return []models.Type{}, err
+		return []models.ExpenseType{}, err
 	}
 
 	return types, nil
