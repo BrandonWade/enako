@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import style from 'react-big-calendar/lib/css/react-big-calendar.css';
+import CalendarDate from './CalendarDate';
 import '../css/Calendar.css';
 
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -21,6 +22,9 @@ class Calendar extends Component {
                     views={views}
                     style={style}
                     selectable='ignoreEvents'
+                    components={{
+                        dateCellWrapper: CalendarDate,
+                    }}
                     onSelectSlot={this.onDateSelected}
                 />
             </div>

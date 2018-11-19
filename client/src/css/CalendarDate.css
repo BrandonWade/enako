@@ -1,0 +1,16 @@
+.CalendarDate {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.u-negative {
+    color: #ba1f1f;
+}
+
+.u-positive {
+    color: green;
+}

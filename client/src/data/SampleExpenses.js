@@ -1,6 +1,6 @@
 const expenses = [
     {
-        date: 'October 15th 2018',
+        date: 'November 19th 2018',
         expenses: [
             {
                 id: 1,
@@ -33,7 +33,7 @@ const expenses = [
         ],
     },
     {
-        date: 'October 16th 2018',
+        date: 'November 20th 2018',
         expenses: [
             {
                 id: 5,
@@ -45,7 +45,7 @@ const expenses = [
         ],
     },
     {
-        date: 'October 17th 2018',
+        date: 'November 21st 2018',
         expenses: [
             {
                 id: 6,
@@ -64,7 +64,7 @@ const expenses = [
         ],
     },
     {
-        date: 'October 18th 2018',
+        date: 'November 22nd 2018',
         expenses: [
             {
                 id: 8,
@@ -83,7 +83,7 @@ const expenses = [
         ],
     },
     {
-        date: 'October 19th 2018',
+        date: 'November 23rd 2018',
         expenses: [
             {
                 id: 10,
@@ -95,7 +95,7 @@ const expenses = [
         ],
     },
     {
-        date: 'October 20th 2018',
+        date: 'November 24th 2018',
         expenses: [
             {
                 id: 11,

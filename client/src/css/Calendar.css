@@ -14,3 +14,7 @@
 .rbc-month-view {
     background-color: white;
 }
+
+.rbc-row-content {
+    height: 100%;
+}
