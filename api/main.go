@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	// DB connection to the MySQL instance
 	DB *sqlx.DB
 )
 
@@ -51,7 +52,7 @@ func main() {
 
 	r := mux.NewRouter()
 
-	api := r.PathPrefix("/api/v1").Subrouter()
+	api := r.PathPrefix("/v1").Subrouter()
 
 	// Auth
 	api.HandleFunc("/accounts", authController.CreateAccount).Methods("POST")
@@ -68,5 +69,5 @@ func main() {
 	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
 	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8000", r)
 }

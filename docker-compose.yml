@@ -19,10 +19,26 @@ services:
         volumes:
             - ./api:/go/src/github.com/BrandonWade/enako/api
         ports:
-            - '8080:8080'
+            - '8000:8000'
         environment:
             - DB_HOST=enako-db
             - DB_PORT=3306
             - DB_USERNAME=root
             - DB_PASSWORD=root
             - DB_DATABASE=enako
+    nginx:
+        restart: always
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./nginx
+        container_name: enako-nginx
+        ports:
+            - '8100:80'
+    client:
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./client
+        container_name: enako-client
+        volumes:
+            - /app/node_modules
+            - ./client:/app
