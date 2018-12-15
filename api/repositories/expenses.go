@@ -28,7 +28,13 @@ func (e *expenseRepository) GetExpenses() ([]models.UserExpense, error) {
 	userAccountID := 1 // TODO: Hardcoded for testing
 	expenses := []models.UserExpense{}
 
-	err := e.DB.Select(&expenses, `SELECT *
+	err := e.DB.Select(&expenses, `SELECT
+		id,
+		expense_type,
+		expense_category,
+		expense_description,
+		expense_amount,
+		DATE(expense_date) AS expense_date
         FROM user_expenses AS e
         WHERE e.user_account_id = ?;
     `, userAccountID)

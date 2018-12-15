@@ -9,7 +9,7 @@ class DetailList extends Component {
         let total = 0.0;
 
         this.props.expenses.forEach((expense) => {
-            total += expense.amount;
+            total += expense.expense_amount;
         });
 
         return total;

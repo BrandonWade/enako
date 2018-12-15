@@ -25,13 +25,13 @@ class DetailRow extends Component {
                     </Link>
                 </td>
                 <td className='DetailRow-category'>
-                    <Category type={this.props.expense.category} />
+                    <Category type={this.props.expense.expense_category} />
                 </td>
                 <td className='DetailRow-description'>
-                    {this.props.expense.description}
+                    {this.props.expense.expense_description}
                 </td>
                 <td className='DetailRow-amount'>
-                    ${this.props.expense.amount.toFixed(2)}
+                    ${this.props.expense.expense_amount.toFixed(2)}
                 </td>
             </tr>
         );
