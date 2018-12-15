@@ -4,8 +4,6 @@ import Card from '../Card';
 import InputField from '../InputField';
 import SelectField from '../SelectField';
 import Button from '../Button';
-import types from '../../data/SampleTypes';
-import categories from '../../data/SampleCategories';
 import '../../css/Editor.css';
 
 class Editor extends Component {
@@ -40,6 +38,7 @@ class Editor extends Component {
     };
 
     render() {
+        const { types, categories } = this.props.location.state;
         return (
             <div className='Editor'>
                 <div className='Editor-content'>
@@ -58,9 +57,9 @@ class Editor extends Component {
                                         return (
                                             <option
                                                 key={type.id}
-                                                value={type.value}
+                                                value={type.expense_type_name}
                                             >
-                                                {type.text}
+                                                {type.expense_type_name}
                                             </option>
                                         );
                                     })
@@ -79,9 +78,9 @@ class Editor extends Component {
                                         return (
                                             <option
                                                 key={category.id}
-                                                value={category.value}
+                                                value={category.expense_category_name}
                                             >
-                                                {category.text}
+                                                {category.expense_category_name}
                                             </option>
                                         );
                                     })

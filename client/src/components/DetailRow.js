@@ -13,6 +13,8 @@ class DetailRow extends Component {
                             pathname: `/expenses/${this.props.expense.id}`,
                             state: {
                                 selectedDate: this.props.selectedDate,
+                                types: this.props.types,
+                                categories: this.props.categories,
                                 ...this.props.expense,
                             },
                         }}

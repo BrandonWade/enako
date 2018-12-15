@@ -27,6 +27,8 @@ class DetailList extends Component {
                                     <DetailRow
                                         key={expense.id}
                                         selectedDate={this.props.selectedDate}
+                                        types={this.props.types}
+                                        categories={this.props.categories}
                                         expense={expense}
                                     />
                                 );
@@ -61,6 +63,8 @@ class DetailList extends Component {
                             pathname: '/expenses',
                             state: {
                                 selectedDate: this.props.selectedDate,
+                                types: this.props.types,
+                                categories: this.props.categories,
                                 type: '',
                                 category: '',
                                 description: '',
