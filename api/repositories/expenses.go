@@ -33,7 +33,7 @@ func (e *expenseRepository) GetExpenses() ([]models.UserExpense, error) {
 		expense_type,
 		expense_category,
 		expense_description,
-		expense_amount,
+		expense_amount / 100 AS expense_amount,
 		DATE(expense_date) AS expense_date
         FROM user_expenses AS e
         WHERE e.user_account_id = ?;

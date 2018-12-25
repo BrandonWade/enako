@@ -34,7 +34,10 @@ class Home extends Component {
         return (
             <div className='Home'>
                 <div className='Home-content'>
-                    <Calendar setSelectedDate={this.setSelectedDate} />
+                    <Calendar
+                        expenses={this.state.expenses}
+                        setSelectedDate={this.setSelectedDate}
+                    />
                     <Details
                         selectedDate={this.state.selectedDate}
                         types={this.state.types}

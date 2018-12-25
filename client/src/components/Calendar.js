@@ -14,6 +14,8 @@ class Calendar extends Component {
     };
 
     render() {
+        const { expenses } = this.props;
+
         return (
             <div className='Calendar'>
                 <BigCalendar
@@ -23,7 +25,7 @@ class Calendar extends Component {
                     style={style}
                     selectable='ignoreEvents'
                     components={{
-                        dateCellWrapper: CalendarDate,
+                        dateCellWrapper: CalendarDate({ expenses }),
                     }}
                     onSelectSlot={this.onDateSelected}
                 />
