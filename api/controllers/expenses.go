@@ -28,7 +28,9 @@ func NewExpenseController(service services.ExpenseService) ExpenseController {
 }
 
 func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) {
-	expenses, err := e.service.GetExpenses()
+	userAccountID := int64(1) // TODO: Hardcoded for testing
+
+	expenses, err := e.service.GetExpenses(userAccountID)
 	if err != nil {
 		// TODO: Handle
 	}
@@ -37,7 +39,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 }
 
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
-	userID := int64(1) // TODO: Hardcoded for testing
+	userAccountID := int64(1) // TODO: Hardcoded for testing
 
 	var expense models.UserExpense
 	err := json.NewDecoder(r.Body).Decode(&expense)
@@ -45,7 +47,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		// TODO: Handle
 	}
 
-	ID, err := e.service.CreateExpense(userID, &expense)
+	ID, err := e.service.CreateExpense(userAccountID, &expense)
 	if err != nil {
 		// TODO: Handle
 	}
@@ -56,7 +58,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 }
 
 func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
-	userID := int64(1) // TODO: Hardcoded for testing
+	userAccountID := int64(1) // TODO: Hardcoded for testing
 
 	params := mux.Vars(r)
 
@@ -71,7 +73,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		// TODO: Handle
 	}
 
-	count, err := e.service.UpdateExpense(ID, userID, &expense)
+	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
 	if err != nil {
 		// TODO: Handle
 	}
@@ -87,7 +89,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 }
 
 func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
-	userID := int64(1) // TODO: Hardcoded for testing
+	userAccountID := int64(1) // TODO: Hardcoded for testing
 
 	params := mux.Vars(r)
 
@@ -96,7 +98,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 		// TODO: Handle
 	}
 
-	count, err := e.service.DeleteExpense(ID, userID)
+	count, err := e.service.DeleteExpense(ID, userAccountID)
 	if err != nil {
 		// TODO: Handle
 	}

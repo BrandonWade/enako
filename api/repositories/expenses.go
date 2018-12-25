@@ -8,7 +8,7 @@ import (
 )
 
 type ExpenseRepository interface {
-	GetExpenses() ([]models.UserExpense, error)
+	GetExpenses(userAccountID int64) ([]models.UserExpense, error)
 	CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error)
 	UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error)
 	DeleteExpense(ID, userAccountID int64) (int64, error)
@@ -24,18 +24,19 @@ func NewExpenseRepository(DB *sqlx.DB) ExpenseRepository {
 	}
 }
 
-func (e *expenseRepository) GetExpenses() ([]models.UserExpense, error) {
-	userAccountID := 1 // TODO: Hardcoded for testing
+func (e *expenseRepository) GetExpenses(userAccountID int64) ([]models.UserExpense, error) {
 	expenses := []models.UserExpense{}
 
 	err := e.DB.Select(&expenses, `SELECT
-		id,
-		expense_type,
-		expense_category,
-		expense_description,
-		expense_amount / 100 AS expense_amount,
+		e.id,
+		t.type_name AS expense_type,
+		c.category_name AS expense_category,
+		e.expense_description,
+		e.expense_amount / 100 AS expense_amount,
 		DATE(expense_date) AS expense_date
         FROM user_expenses AS e
+		INNER JOIN expense_types AS t ON t.id = e.expense_type_id
+		INNER JOIN expense_categories AS c ON c.id = e.expense_category_id
         WHERE e.user_account_id = ?;
     `, userAccountID)
 	if err != nil {
@@ -49,8 +50,8 @@ func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.U
 	result, err := e.DB.Exec(`INSERT
 		INTO user_expenses(
 			user_account_id,
-			expense_type,
-			expense_category,
+			expense_type_id,
+			expense_category_id,
 			expense_description,
 			expense_amount,
 			expense_date
@@ -64,8 +65,8 @@ func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.U
 		);
 	`,
 		userAccountID,
-		expense.ExpenseType,
-		expense.ExpenseCategory,
+		expense.ExpenseTypeID,
+		expense.ExpenseCategoryID,
 		expense.ExpenseDescription,
 		expense.ExpenseAmount,
 		expense.ExpenseDate,
@@ -86,16 +87,16 @@ func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *mode
 	result, err := e.DB.Exec(`UPDATE user_expenses
 		SET
 			user_account_id = ?,
-			expense_type = ?,
-			expense_category = ?,
+			expense_type_id = ?,
+			expense_category_id = ?,
 			expense_description = ?,
 			expense_amount = ?,
 			expense_date = ?
 		WHERE id = ?;
 	`,
 		userAccountID,
-		expense.ExpenseType,
-		expense.ExpenseCategory,
+		expense.ExpenseTypeID,
+		expense.ExpenseCategoryID,
 		expense.ExpenseDescription,
 		expense.ExpenseAmount,
 		expense.ExpenseDate,

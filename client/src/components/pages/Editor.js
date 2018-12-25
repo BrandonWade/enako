@@ -59,9 +59,9 @@ class Editor extends Component {
                                         return (
                                             <option
                                                 key={type.id}
-                                                value={type.expense_type_name}
+                                                value={type.type_name}
                                             >
-                                                {type.expense_type_name}
+                                                {type.type_name}
                                             </option>
                                         );
                                     })
@@ -80,9 +80,9 @@ class Editor extends Component {
                                         return (
                                             <option
                                                 key={category.id}
-                                                value={category.expense_category_name}
+                                                value={category.category_name}
                                             >
-                                                {category.expense_category_name}
+                                                {category.category_name}
                                             </option>
                                         );
                                     })

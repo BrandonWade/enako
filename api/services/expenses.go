@@ -6,10 +6,10 @@ import (
 )
 
 type ExpenseService interface {
-	GetExpenses() (expenses []models.UserExpense, err error)
-	CreateExpense(userID int64, expense *models.UserExpense) (int64, error)
-	UpdateExpense(ID, userID int64, expense *models.UserExpense) (int64, error)
-	DeleteExpense(ID, userID int64) (int64, error)
+	GetExpenses(userAccountID int64) (expenses []models.UserExpense, err error)
+	CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error)
+	UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error)
+	DeleteExpense(ID, userAccountID int64) (int64, error)
 }
 
 type expenseService struct {
@@ -22,18 +22,18 @@ func NewExpenseService(repo repositories.ExpenseRepository) ExpenseService {
 	}
 }
 
-func (e *expenseService) GetExpenses() ([]models.UserExpense, error) {
-	return e.repo.GetExpenses()
+func (e *expenseService) GetExpenses(userAccountID int64) ([]models.UserExpense, error) {
+	return e.repo.GetExpenses(userAccountID)
 }
 
-func (e *expenseService) CreateExpense(userID int64, expense *models.UserExpense) (int64, error) {
-	return e.repo.CreateExpense(userID, expense)
+func (e *expenseService) CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error) {
+	return e.repo.CreateExpense(userAccountID, expense)
 }
 
-func (e *expenseService) UpdateExpense(ID, userID int64, expense *models.UserExpense) (int64, error) {
-	return e.repo.UpdateExpense(ID, userID, expense)
+func (e *expenseService) UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error) {
+	return e.repo.UpdateExpense(ID, userAccountID, expense)
 }
 
-func (e *expenseService) DeleteExpense(ID, userID int64) (int64, error) {
-	return e.repo.DeleteExpense(ID, userID)
+func (e *expenseService) DeleteExpense(ID, userAccountID int64) (int64, error) {
+	return e.repo.DeleteExpense(ID, userAccountID)
 }
