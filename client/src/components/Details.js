@@ -15,14 +15,10 @@ class Details extends Component {
         return [];
     };
 
-    getFormattedDate = (date) => {
-        return moment(date).format('MMMM Do YYYY');
-    };
-
     render() {
         return (
             <div className='Details'>
-                <Card heading={this.getFormattedDate(this.props.selectedDate)}>
+                <Card heading={moment(this.props.selectedDate).format('MMMM Do YYYY')}>
                     <DetailList
                         selectedDate={this.props.selectedDate}
                         types={this.props.types}

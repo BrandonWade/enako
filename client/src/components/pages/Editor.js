@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import Card from '../Card';
 import InputField from '../InputField';
@@ -26,10 +27,11 @@ class Editor extends Component {
     };
 
     renderHeadingText = () => {
+        const formattedDate = moment(this.props.selectedDate).format('MMMM Do YYYY');
         return this.props.computedMatch.params.id ? (
-            `Editing expense on ${this.state.selectedDate}`
+            `Editing expense on ${formattedDate}`
         ) : (
-            `Creating new expense on ${this.state.selectedDate}`
+            `Creating new expense on ${formattedDate}`
         );
     };
 
