@@ -8,6 +8,7 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 )
 
+//go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
 	CreateAccount(w http.ResponseWriter, r *http.Request)
 }

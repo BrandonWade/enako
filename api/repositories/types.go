@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+//go:generate counterfeiter -o fakes/fake_type_repository.go . TypeRepository
 type TypeRepository interface {
 	GetTypes() ([]models.ExpenseType, error)
 }

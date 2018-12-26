@@ -5,6 +5,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+//go:generate counterfeiter -o fakes/fake_auth_service.go . AuthService
 type AuthService interface {
 	CreateAccount(email, password string) (int64, error)
 }

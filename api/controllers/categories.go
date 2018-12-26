@@ -7,6 +7,7 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 )
 
+//go:generate counterfeiter -o fakes/fake_category_controller.go . CategoryController
 type CategoryController interface {
 	GetCategories(w http.ResponseWriter, r *http.Request)
 }

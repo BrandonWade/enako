@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+//go:generate counterfeiter -o fakes/fake_auth_repository.go . AuthRepository
 type AuthRepository interface {
 	CreateAccount(email, password string) (int64, error)
 }

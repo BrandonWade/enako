@@ -5,6 +5,7 @@ import (
 	"github.com/BrandonWade/enako/api/repositories"
 )
 
+//go:generate counterfeiter -o fakes/fake_type_service.go . TypeService
 type TypeService interface {
 	GetTypes() ([]models.ExpenseType, error)
 }

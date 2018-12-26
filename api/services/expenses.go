@@ -5,6 +5,7 @@ import (
 	"github.com/BrandonWade/enako/api/repositories"
 )
 
+//go:generate counterfeiter -o fakes/fake_expense_service.go . ExpenseService
 type ExpenseService interface {
 	GetExpenses(userAccountID int64) (expenses []models.UserExpense, err error)
 	CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error)

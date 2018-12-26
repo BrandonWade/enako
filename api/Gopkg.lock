@@ -26,6 +26,20 @@
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:b3c5b95e56c06f5aa72cb2500e6ee5f44fcd122872d4fec2023a488e561218bc"
+  name = "github.com/hpcloud/tail"
+  packages = [
+    ".",
+    "ratelimiter",
+    "util",
+    "watch",
+    "winfile"
+  ]
+  pruneopts = ""
+  revision = "a30252cb686a21eb2d0b98132633053ec2f7f1e5"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:4611e727460d3634059cbe6e0a4799aaeb426ef8150e3b26056c83e1106831c4"
   name = "github.com/jmoiron/sqlx"
   packages = [
@@ -35,6 +49,54 @@
   pruneopts = ""
   revision = "d161d7a76b5661016ad0b085869f77fd410f3e6a"
   version = "v1.2.0"
+
+[[projects]]
+  digest = "1:a754db3c70741eeaeba73ec4cd970dc8918d06ced993d24891e9c0386d74f588"
+  name = "github.com/onsi/ginkgo"
+  packages = [
+    ".",
+    "config",
+    "internal/codelocation",
+    "internal/containernode",
+    "internal/failer",
+    "internal/leafnodes",
+    "internal/remote",
+    "internal/spec",
+    "internal/spec_iterator",
+    "internal/specrunner",
+    "internal/suite",
+    "internal/testingtproxy",
+    "internal/writer",
+    "reporters",
+    "reporters/stenographer",
+    "reporters/stenographer/support/go-colorable",
+    "reporters/stenographer/support/go-isatty",
+    "types"
+  ]
+  pruneopts = ""
+  revision = "2e1be8f7d90e9d3e3e58b0ce470f2f14d075406f"
+  version = "v1.7.0"
+
+[[projects]]
+  digest = "1:c8f0c8c28c9c1c51db72d0e7f04797cfe5d0d50528274099b6b2d6c314db7f97"
+  name = "github.com/onsi/gomega"
+  packages = [
+    ".",
+    "format",
+    "internal/assertion",
+    "internal/asyncassertion",
+    "internal/oraclematcher",
+    "internal/testingtsupport",
+    "matchers",
+    "matchers/support/goraph/bipartitegraph",
+    "matchers/support/goraph/edge",
+    "matchers/support/goraph/node",
+    "matchers/support/goraph/util",
+    "types"
+  ]
+  pruneopts = ""
+  revision = "65fb64232476ad9046e57c26cd0bff3d3a8dc6cd"
+  version = "v1.4.3"
 
 [[projects]]
   branch = "master"
@@ -48,12 +110,91 @@
   revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
 
 [[projects]]
+  branch = "master"
+  digest = "1:4ab2fc83e3222b69759dfd717e01d0cf38b133aabfacc29a86057021a2f1abd9"
+  name = "golang.org/x/net"
+  packages = [
+    "html",
+    "html/atom",
+    "html/charset"
+  ]
+  pruneopts = ""
+  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
+
+[[projects]]
+  branch = "master"
+  digest = "1:e6d1805ead5b8f2439808f76187f54042ed35ee26eb9ca63127259a0e612b119"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  pruneopts = ""
+  revision = "b4a75ba826a64a70990f11a225237acd6ef35c9f"
+
+[[projects]]
+  digest = "1:5acd3512b047305d49e8763eef7ba423901e85d5dd2fd1e71778a0ea8de10bd4"
+  name = "golang.org/x/text"
+  packages = [
+    "encoding",
+    "encoding/charmap",
+    "encoding/htmlindex",
+    "encoding/internal",
+    "encoding/internal/identifier",
+    "encoding/japanese",
+    "encoding/korean",
+    "encoding/simplifiedchinese",
+    "encoding/traditionalchinese",
+    "encoding/unicode",
+    "internal/gen",
+    "internal/tag",
+    "internal/utf8internal",
+    "language",
+    "runes",
+    "transform",
+    "unicode/cldr"
+  ]
+  pruneopts = ""
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
+
+[[projects]]
   digest = "1:8c432632a230496c35a15cfdf441436f04c90e724ad99c8463ef0c82bbe93edb"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = ""
   revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
   version = "v1.2.0"
+
+[[projects]]
+  digest = "1:eb53021a8aa3f599d29c7102e65026242bdedce998a54837dc67f14b6a97c5fd"
+  name = "gopkg.in/fsnotify.v1"
+  packages = ["."]
+  pruneopts = ""
+  revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
+  source = "gopkg.in/fsnotify/fsnotify.v1"
+  version = "v1.4.7"
+
+[[projects]]
+  digest = "1:4e0d046d9b562f06e20917f4554b15e1d377dbe2d78bba0d6c76bfc8df1212e6"
+  name = "gopkg.in/testfixtures.v2"
+  packages = ["."]
+  pruneopts = ""
+  revision = "1e85b764c9e0953c7b9ac81115554d6d2ec04aac"
+  version = "v2.5.3"
+
+[[projects]]
+  branch = "v1"
+  digest = "1:a96d16bd088460f2e0685d46c39bcf1208ba46e0a977be2df49864ec7da447dd"
+  name = "gopkg.in/tomb.v1"
+  packages = ["."]
+  pruneopts = ""
+  revision = "dd632973f1e7218eb1089048e0798ec9ae7dceb8"
+
+[[projects]]
+  digest = "1:cedccf16b71e86db87a24f8d4c70b0a855872eb967cb906a66b95de56aefbd0d"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = ""
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -62,7 +203,10 @@
     "github.com/go-sql-driver/mysql",
     "github.com/gorilla/mux",
     "github.com/jmoiron/sqlx",
-    "golang.org/x/crypto/bcrypt"
+    "github.com/onsi/ginkgo",
+    "github.com/onsi/gomega",
+    "golang.org/x/crypto/bcrypt",
+    "gopkg.in/testfixtures.v2"
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

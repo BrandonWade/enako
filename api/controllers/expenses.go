@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+//go:generate counterfeiter -o fakes/fake_expense_controller.go . ExpenseController
 type ExpenseController interface {
 	GetExpenses(w http.ResponseWriter, r *http.Request)
 	CreateExpense(w http.ResponseWriter, r *http.Request)

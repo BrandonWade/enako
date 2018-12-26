@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+//go:generate counterfeiter -o fakes/fake_category_repository.go . CategoryRepository
 type CategoryRepository interface {
 	GetCategories() ([]models.ExpenseCategory, error)
 }

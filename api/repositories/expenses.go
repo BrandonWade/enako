@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+//go:generate counterfeiter -o fakes/fake_expense_repository.go . ExpenseRepository
 type ExpenseRepository interface {
 	GetExpenses(userAccountID int64) ([]models.UserExpense, error)
 	CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error)

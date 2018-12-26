@@ -7,6 +7,7 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 )
 
+//go:generate counterfeiter -o fakes/fake_type_controller.go . TypeController
 type TypeController interface {
 	GetTypes(w http.ResponseWriter, r *http.Request)
 }

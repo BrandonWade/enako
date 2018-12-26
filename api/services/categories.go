@@ -5,6 +5,7 @@ import (
 	"github.com/BrandonWade/enako/api/repositories"
 )
 
+//go:generate counterfeiter -o fakes/fake_category_service.go . CategoryService
 type CategoryService interface {
 	GetCategories() ([]models.ExpenseCategory, error)
 }
