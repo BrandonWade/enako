@@ -51,6 +51,14 @@
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:6a874e3ddfb9db2b42bd8c85b6875407c702fa868eed20634ff489bc896ccfd3"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = ""
+  revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
+  version = "v1.0.1"
+
+[[projects]]
   digest = "1:a754db3c70741eeaeba73ec4cd970dc8918d06ced993d24891e9c0386d74f588"
   name = "github.com/onsi/ginkgo"
   packages = [
@@ -99,12 +107,21 @@
   version = "v1.4.3"
 
 [[projects]]
+  digest = "1:9d57e200ef5ccc4217fe0a34287308bac652435e7c6513f6263e0493d2245c56"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = ""
+  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
+  version = "v1.2.0"
+
+[[projects]]
   branch = "master"
   digest = "1:a242f23ceb22423c0a2111d9488a2ab19a2e817111a4f3e2385f5f89a53e619f"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
-    "blowfish"
+    "blowfish",
+    "ssh/terminal"
   ]
   pruneopts = ""
   revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
@@ -125,7 +142,10 @@
   branch = "master"
   digest = "1:e6d1805ead5b8f2439808f76187f54042ed35ee26eb9ca63127259a0e612b119"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   pruneopts = ""
   revision = "b4a75ba826a64a70990f11a225237acd6ef35c9f"
 
@@ -173,14 +193,6 @@
   version = "v1.4.7"
 
 [[projects]]
-  digest = "1:4e0d046d9b562f06e20917f4554b15e1d377dbe2d78bba0d6c76bfc8df1212e6"
-  name = "gopkg.in/testfixtures.v2"
-  packages = ["."]
-  pruneopts = ""
-  revision = "1e85b764c9e0953c7b9ac81115554d6d2ec04aac"
-  version = "v2.5.3"
-
-[[projects]]
   branch = "v1"
   digest = "1:a96d16bd088460f2e0685d46c39bcf1208ba46e0a977be2df49864ec7da447dd"
   name = "gopkg.in/tomb.v1"
@@ -205,8 +217,8 @@
     "github.com/jmoiron/sqlx",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
-    "golang.org/x/crypto/bcrypt",
-    "gopkg.in/testfixtures.v2"
+    "github.com/sirupsen/logrus",
+    "golang.org/x/crypto/bcrypt"
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
