@@ -17,8 +17,8 @@ type ExpenseCategory struct {
 type UserAccount struct {
 	ID                  int64  `json:"id" db:"id"`
 	UserAccountEmail    string `json:"user_account_email" db:"user_account_email"`
-	UserAccountPassword string `json:"user_account_password" db:"user_account_password"`
-	ConfirmPassword     string `json:"confirm_password"`
+	UserAccountPassword string `json:"user_account_password,omitempty" db:"user_account_password"`
+	ConfirmPassword     string `json:"confirm_password,omitempty"`
 }
 
 type UserExpense struct {

@@ -3,11 +3,21 @@ package models
 type APIError interface{}
 
 type apiError struct {
-	Errors []error `json:"errors"`
+	Errors []string `json:"errors"`
 }
 
 func NewAPIError(errors ...error) APIError {
 	return &apiError{
-		errors,
+		errToString(errors),
 	}
+}
+
+func errToString(errors []error) []string {
+	strs := []string{}
+
+	for _, err := range errors {
+		strs = append(strs, err.Error())
+	}
+
+	return strs
 }

@@ -73,7 +73,11 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userAccount.ID = ID
+	userAccount.UserAccountPassword = ""
+	userAccount.ConfirmPassword = ""
+
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(ID)
+	json.NewEncoder(w).Encode(userAccount)
 	return
 }
