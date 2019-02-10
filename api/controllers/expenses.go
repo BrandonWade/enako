@@ -82,6 +82,8 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// TODO: Validate inputs
+
 	ID, err := e.service.CreateExpense(userAccountID, &expense)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -136,6 +138,8 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// TODO: Validate inputs
+
 	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -158,7 +162,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 			"err":        err.Error(),
 		}).Warn(errNoExpensesUpdated)
 
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(models.NewAPIError(errNoExpensesUpdated))
 		return
 	}
