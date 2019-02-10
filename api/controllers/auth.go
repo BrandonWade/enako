@@ -53,7 +53,6 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
 		}).Error(errPasswordsDoNotMatch)
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
