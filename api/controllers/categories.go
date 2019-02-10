@@ -2,10 +2,16 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
+	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
+
+	log "github.com/sirupsen/logrus"
 )
+
+var errFetchingCategories = errors.New("error fetching categories")
 
 //go:generate counterfeiter -o fakes/fake_category_controller.go . CategoryController
 type CategoryController interface {
@@ -25,8 +31,17 @@ func NewCategoryController(service services.CategoryService) CategoryController 
 func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := c.service.GetCategories()
 	if err != nil {
-		// TODO: Handle
+		log.WithFields(log.Fields{
+			"method": "CategoryController.GetCategories",
+			"err":    err.Error(),
+		}).Error(errFetchingCategories)
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(errFetchingCategories))
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(categories)
+	return
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -10,6 +11,17 @@ import (
 	"github.com/gorilla/mux"
 
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	errFetchingExpenses      = errors.New("error fetching expense list")
+	errInvalidExpensePayload = errors.New("invalid expense payload")
+	errCreatingExpense       = errors.New("error creating expense")
+	errInvalidExpenseID      = errors.New("invalid expense id")
+	errUpdatingExpense       = errors.New("error updating expense")
+	errNoExpensesUpdated     = errors.New("no expenses were updated")
+	errDeletingExpense       = errors.New("error deleting expense")
+	errNoExpensesDeleted     = errors.New("no expenses were deleted")
 )
 
 // ExpenseController the interface for expense related APIs
@@ -41,12 +53,16 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 			"method":     "ExpenseController.GetExpenses",
 			"account ID": userAccountID,
 			"err":        err.Error(),
-		}).Error("error fetching expense list")
+		}).Error(errFetchingExpenses)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(errFetchingExpenses))
+		return
 	}
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(expenses)
+	return
 }
 
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
@@ -59,9 +75,11 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 			"method":     "ExpenseController.CreateExpense",
 			"account ID": userAccountID,
 			"err":        err.Error(),
-		}).Error("error decoding expense payload")
+		}).Error(errInvalidExpensePayload)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.NewAPIError(errInvalidExpensePayload))
+		return
 	}
 
 	ID, err := e.service.CreateExpense(userAccountID, &expense)
@@ -70,14 +88,18 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 			"method":     "ExpenseController.CreateExpense",
 			"account ID": userAccountID,
 			"err":        err.Error(),
-		}).Error("error creating expense")
+		}).Error(errCreatingExpense)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(errCreatingExpense))
+		return
 	}
 
 	expense.ID = ID
 
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(expense)
+	return
 }
 
 func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
@@ -92,9 +114,11 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         params["id"],
 			"err":        err.Error(),
-		}).Error("error parsing expense id")
+		}).Error(errInvalidExpenseID)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.NewAPIError(errInvalidExpenseID))
+		return
 	}
 
 	expense := models.UserExpense{}
@@ -105,9 +129,11 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         ID,
 			"err":        err.Error(),
-		}).Error("error decoding expense payload")
+		}).Error(errInvalidExpensePayload)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.NewAPIError(errInvalidExpensePayload))
+		return
 	}
 
 	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
@@ -117,9 +143,11 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         ID,
 			"err":        err.Error(),
-		}).Error("error updating expense")
+		}).Error(errUpdatingExpense)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(errUpdatingExpense))
+		return
 	}
 
 	if count == 0 {
@@ -128,17 +156,18 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         ID,
 			"err":        err.Error(),
-		}).Warn("update expense modified 0 rows")
+		}).Warn(errNoExpensesUpdated)
 
-		// TODO: Return an error response
-		json.NewEncoder(w).Encode(&models.UserExpense{})
-
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(models.NewAPIError(errNoExpensesUpdated))
 		return
 	}
 
 	expense.ID = ID
 
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(expense)
+	return
 }
 
 func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
@@ -153,9 +182,11 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         ID,
 			"err":        err.Error(),
-		}).Error("error parsing expense id")
+		}).Error(errInvalidExpenseID)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.NewAPIError(errInvalidExpenseID))
+		return
 	}
 
 	count, err := e.service.DeleteExpense(ID, userAccountID)
@@ -165,9 +196,11 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         ID,
 			"err":        err.Error(),
-		}).Error("error deleting expense")
+		}).Error(errDeletingExpense)
 
-		// TODO: Return an error response
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(errDeletingExpense))
+		return
 	}
 
 	if count == 0 {
@@ -176,13 +209,13 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 			"account ID": userAccountID,
 			"id":         ID,
 			"err":        err.Error(),
-		}).Warn("delete expense removed 0 rows")
+		}).Warn(errNoExpensesDeleted)
 
-		// TODO: Return an error response
-		json.NewEncoder(w).Encode(&models.UserExpense{})
-
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(models.NewAPIError(errNoExpensesDeleted))
 		return
 	}
 
-	json.NewEncoder(w).Encode(ID)
+	w.WriteHeader(http.StatusNoContent)
+	return
 }
