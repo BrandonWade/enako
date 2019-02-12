@@ -2,16 +2,24 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
+	"regexp"
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/repositories"
 	"github.com/BrandonWade/enako/api/services"
-	"github.com/gorilla/mux"
 
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
+
+	valid "github.com/asaskevich/govalidator"
+	log "github.com/sirupsen/logrus"
+)
+
+const (
+	minPasswordLength = 15
+	maxPasswordLength = 50
 )
 
 var (
@@ -32,6 +40,30 @@ func init() {
 	if err != nil {
 		log.Fatalf("error connecting to db: %s\n", err.Error())
 	}
+
+	// Configure input validator
+	valid.SetFieldsRequiredByDefault(true)
+
+	// Add a password matching rule (alphanumeric plus symbols)
+	valid.TagMap["pword"] = valid.Validator(func(str string) bool {
+		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\&\\*]+$", str)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"method":   "govalidator.password",
+				"password": str,
+				"err":      err.Error(),
+			}).Error("error validating password")
+
+			return false
+		}
+
+		return match
+	})
+
+	// Add a password length matching rule that is compatible with bcrypt requirements
+	valid.TagMap["pwordlen"] = valid.Validator(func(str string) bool {
+		return (len(str) >= 15 && len(str) <= 50)
+	})
 }
 
 func main() {

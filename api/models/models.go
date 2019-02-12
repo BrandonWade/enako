@@ -15,10 +15,10 @@ type ExpenseCategory struct {
 }
 
 type UserAccount struct {
-	ID                  int64  `json:"id" db:"id"`
-	UserAccountEmail    string `json:"user_account_email" db:"user_account_email"`
-	UserAccountPassword string `json:"user_account_password,omitempty" db:"user_account_password"`
-	ConfirmPassword     string `json:"confirm_password,omitempty"`
+	ID                  int64  `json:"id" db:"id" valid:"numeric,optional"`
+	UserAccountEmail    string `json:"user_account_email" db:"user_account_email" valid:"email"`
+	UserAccountPassword string `json:"user_account_password,omitempty" db:"user_account_password" valid:"pword,pwordlen"`
+	ConfirmPassword     string `json:"confirm_password,omitempty" valid:"pword,pwordlen,optional"`
 }
 
 type UserExpense struct {
