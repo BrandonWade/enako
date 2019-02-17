@@ -149,7 +149,17 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// TODO: Validate inputs
+	if err = validator.Validate(expense); err != nil {
+		log.WithFields(log.Fields{
+			"method": "ExpenseController.UpdateExpense",
+			"ip":     r.RemoteAddr,
+			"err":    err.Error(),
+		}).Error(err)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(models.NewAPIError(err))
+		return
+	}
 
 	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
 	if err != nil {
