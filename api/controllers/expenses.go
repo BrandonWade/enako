@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 
 	log "github.com/sirupsen/logrus"
+	validator "gopkg.in/validator.v2"
 )
 
 var (
@@ -82,7 +83,17 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// TODO: Validate inputs
+	if err = validator.Validate(expense); err != nil {
+		log.WithFields(log.Fields{
+			"method": "ExpenseController.CreateExpense",
+			"ip":     r.RemoteAddr,
+			"err":    err.Error(),
+		}).Error(err)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(models.APIError(err))
+		return
+	}
 
 	ID, err := e.service.CreateExpense(userAccountID, &expense)
 	if err != nil {

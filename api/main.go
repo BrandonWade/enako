@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"regexp"
 
 	"github.com/BrandonWade/enako/api/controllers"
@@ -13,8 +15,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
-	valid "github.com/asaskevich/govalidator"
 	log "github.com/sirupsen/logrus"
+	validator "gopkg.in/validator.v2"
 )
 
 const (
@@ -25,6 +27,10 @@ const (
 var (
 	// DB connection to the MySQL instance
 	DB *sqlx.DB
+
+	errMustBeString    = errors.New("must be string")
+	errInvalidEmail    = errors.New("invalid email")
+	errInvalidPassword = errors.New("invalid password")
 )
 
 func init() {
@@ -41,28 +47,41 @@ func init() {
 		log.Fatalf("error connecting to db: %s\n", err.Error())
 	}
 
-	// Configure input validator
-	valid.SetFieldsRequiredByDefault(true)
-
-	// Add a password matching rule (alphanumeric plus symbols)
-	valid.TagMap["pword"] = valid.Validator(func(str string) bool {
-		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\&\\*]+$", str)
-		if err != nil {
-			log.WithFields(log.Fields{
-				"method":   "govalidator.password",
-				"password": str,
-				"err":      err.Error(),
-			}).Error("error validating password")
-
-			return false
+	// Add a simple email validation rule
+	validator.SetValidationFunc("email", func(v interface{}, param string) error {
+		t := reflect.ValueOf(v)
+		if t.Kind() != reflect.String {
+			return errMustBeString
 		}
 
-		return match
+		match, err := regexp.MatchString("^[^@]+@[^\\.@]+\\..+$", t.String())
+		if err != nil || match != true {
+			return errInvalidEmail
+		}
+
+		return nil
 	})
 
-	// Add a password length matching rule that is compatible with bcrypt requirements
-	valid.TagMap["pwordlen"] = valid.Validator(func(str string) bool {
-		return (len(str) >= 15 && len(str) <= 50)
+	// Add a password matching rule (alphanumeric plus symbols)
+	validator.SetValidationFunc("pword", func(v interface{}, param string) error {
+		t := reflect.ValueOf(v)
+		if t.Kind() != reflect.String {
+			return errMustBeString
+		}
+
+		pword := t.String()
+
+		// Ensure length is compatible with bcrypt requirements
+		if len(pword) < 15 || len(pword) > 50 {
+			return errInvalidPassword
+		}
+
+		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\&\\*]+$", pword)
+		if err != nil || match != true {
+			return errInvalidPassword
+		}
+
+		return nil
 	})
 }
 

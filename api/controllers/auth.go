@@ -9,6 +9,7 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 
 	log "github.com/sirupsen/logrus"
+	validator "gopkg.in/validator.v2"
 )
 
 var (
@@ -47,7 +48,17 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Validate inputs
+	if err = validator.Validate(userAccount); err != nil {
+		log.WithFields(log.Fields{
+			"method": "AuthController.CreateAccount",
+			"ip":     r.RemoteAddr,
+			"err":    err.Error(),
+		}).Error(err)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(models.NewAPIError(err))
+		return
+	}
 
 	if userAccount.UserAccountPassword != userAccount.ConfirmPassword {
 		log.WithFields(log.Fields{

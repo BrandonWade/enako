@@ -2,14 +2,6 @@
 
 
 [[projects]]
-  digest = "1:d8a2bb36a048d1571bcc1aee208b61f39dc16c6c53823feffd37449dde162507"
-  name = "github.com/asaskevich/govalidator"
-  packages = ["."]
-  pruneopts = ""
-  revision = "ccb8e960c48f04d6935e72476ae4a51028f9e22f"
-  version = "v9"
-
-[[projects]]
   digest = "1:c07de423ca37dc2765396d6971599ab652a339538084b9b58c9f7fc533b28525"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
@@ -209,6 +201,14 @@
   revision = "dd632973f1e7218eb1089048e0798ec9ae7dceb8"
 
 [[projects]]
+  branch = "v2"
+  digest = "1:bf922c860f64bb6372daa82bb9c1e8ed144e97ac7587efa80d08b4e98737e9ea"
+  name = "gopkg.in/validator.v2"
+  packages = ["."]
+  pruneopts = ""
+  revision = "135c24b11c19e52befcae2ec3fca5d9b78c4e98e"
+
+[[projects]]
   digest = "1:cedccf16b71e86db87a24f8d4c70b0a855872eb967cb906a66b95de56aefbd0d"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -220,14 +220,14 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/asaskevich/govalidator",
     "github.com/go-sql-driver/mysql",
     "github.com/gorilla/mux",
     "github.com/jmoiron/sqlx",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
     "github.com/sirupsen/logrus",
-    "golang.org/x/crypto/bcrypt"
+    "golang.org/x/crypto/bcrypt",
+    "gopkg.in/validator.v2"
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
