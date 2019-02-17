@@ -47,7 +47,7 @@ var _ = Describe("CategoryService", func() {
 
 		Context("when requesting the list of categories", func() {
 
-			It("returns an error if an error is encountered while fetching the list", func() {
+			It("returns an error if an error is encountered", func() {
 				categoryRepo.GetCategoriesReturns([]models.ExpenseCategory{}, errors.New("repo error"))
 
 				categories, err := categoryService.GetCategories()

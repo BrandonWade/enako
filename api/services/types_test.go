@@ -47,7 +47,7 @@ var _ = Describe("TypeService", func() {
 
 		Context("when requesting the list of types", func() {
 
-			It("returns an error if an error is encountered while fetching the list", func() {
+			It("returns an error if an error is encountered", func() {
 				typeRepo.GetTypesReturns([]models.ExpenseType{}, errors.New("repo error"))
 
 				types, err := typeService.GetTypes()

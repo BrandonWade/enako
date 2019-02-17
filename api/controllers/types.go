@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var errFetchingTypes = errors.New("error fetching types")
+var ErrFetchingTypes = errors.New("error fetching types")
 
 //go:generate counterfeiter -o fakes/fake_type_controller.go . TypeController
 type TypeController interface {
@@ -34,10 +34,10 @@ func (t *typeController) GetTypes(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{
 			"method": "TypeController.GetTypes",
 			"err":    err.Error(),
-		}).Error(errFetchingTypes)
+		}).Error(ErrFetchingTypes)
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(errFetchingTypes))
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrFetchingTypes))
 		return
 	}
 

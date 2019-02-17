@@ -31,7 +31,7 @@ var _ = Describe("AuthService", func() {
 				password  = "testpassword123"
 			)
 
-			It("returns an error when an error is encountered while creating the account", func() {
+			It("returns an error when an error is encountered", func() {
 				authRepo.CreateAccountReturns(0, errors.New("repo error"))
 
 				id, err := authService.CreateAccount(email, password)

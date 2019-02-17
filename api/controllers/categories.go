@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var errFetchingCategories = errors.New("error fetching categories")
+var ErrFetchingCategories = errors.New("error fetching categories")
 
 //go:generate counterfeiter -o fakes/fake_category_controller.go . CategoryController
 type CategoryController interface {
@@ -34,10 +34,10 @@ func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Reques
 		log.WithFields(log.Fields{
 			"method": "CategoryController.GetCategories",
 			"err":    err.Error(),
-		}).Error(errFetchingCategories)
+		}).Error(ErrFetchingCategories)
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(errFetchingCategories))
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrFetchingCategories))
 		return
 	}
 

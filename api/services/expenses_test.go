@@ -69,7 +69,7 @@ var _ = Describe("ExpenseService", func() {
 
 		Context("when requesting the list of expenses", func() {
 
-			It("returns an error if an error is encountered while fetching the list", func() {
+			It("returns an error if an error is encountered", func() {
 				expenseRepo.GetExpensesReturns([]models.UserExpense{}, errors.New("repo error"))
 
 				expenses, err := expenseService.GetExpenses(accountID)
@@ -101,7 +101,7 @@ var _ = Describe("ExpenseService", func() {
 				}
 			)
 
-			It("returns an error if an error is encountered while creating the expense", func() {
+			It("returns an error if an error is encountered", func() {
 				expenseRepo.CreateExpenseReturns(0, errors.New("repo error"))
 
 				ID, err := expenseService.CreateExpense(accountID, expense)
@@ -133,7 +133,7 @@ var _ = Describe("ExpenseService", func() {
 				}
 			)
 
-			It("returns an error if an error is encountered while updating the expense", func() {
+			It("returns an error if an error is encountered", func() {
 				expenseRepo.UpdateExpenseReturns(0, errors.New("repo error"))
 
 				count, err := expenseService.UpdateExpense(expenseID, accountID, expense)
@@ -161,7 +161,7 @@ var _ = Describe("ExpenseService", func() {
 				expenseID = int64(637485)
 			)
 
-			It("returns an error if an error is encountered while deleting the expense", func() {
+			It("returns an error if an error is encountered", func() {
 				expenseRepo.DeleteExpenseReturns(0, errors.New("repo error"))
 
 				count, err := expenseService.DeleteExpense(expenseID, accountID)
