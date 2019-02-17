@@ -13,9 +13,9 @@ import (
 )
 
 var (
-	errInvalidAccountPayload = errors.New("invalid account payload")
-	errPasswordsDoNotMatch   = errors.New("passwords do not match")
-	errCreatingAccount       = errors.New("error creating account")
+	ErrInvalidAccountPayload = errors.New("invalid account payload")
+	ErrPasswordsDoNotMatch   = errors.New("passwords do not match")
+	ErrCreatingAccount       = errors.New("error creating account")
 )
 
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
@@ -41,10 +41,10 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
-		}).Error(errInvalidAccountPayload)
+		}).Error(ErrInvalidAccountPayload)
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(errInvalidAccountPayload))
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidAccountPayload))
 		return
 	}
 
@@ -64,10 +64,10 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
-		}).Error(errPasswordsDoNotMatch)
+		}).Error(ErrPasswordsDoNotMatch)
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(models.NewAPIError(errPasswordsDoNotMatch))
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrPasswordsDoNotMatch))
 		return
 	}
 
@@ -77,10 +77,10 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
-		}).Error(errCreatingAccount)
+		}).Error(ErrCreatingAccount)
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(errCreatingAccount))
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrCreatingAccount))
 		return
 	}
 
