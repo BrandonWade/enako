@@ -91,7 +91,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		}).Error(err)
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(models.APIError(err))
+		json.NewEncoder(w).Encode(models.NewAPIError(err))
 		return
 	}
 

@@ -30,7 +30,7 @@ type UserExpense struct {
 	ExpenseCategoryID  int64  `json:"expense_category_id,omitempty" db:"expense_category_id" validate:"min=1"`
 	ExpenseDescription string `json:"expense_description,omitempty" db:"expense_description"`
 	ExpenseAmount      int64  `json:"expense_amount,omitempty" db:"expense_amount" validate:"min=1"`
-	ExpenseDate        string `json:"expense_date,omitempty" db:"expense_date"`
+	ExpenseDate        string `json:"expense_date,omitempty" db:"expense_date" validate:"date"`
 	CreatedAt          string `json:"created_at,omitempty" db:"created_at"`
 	UpdatedAt          string `json:"updated_at,omitempty" db:"updated_at"`
 }

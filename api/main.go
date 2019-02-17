@@ -1,36 +1,24 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
-	"reflect"
-	"regexp"
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/repositories"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/BrandonWade/enako/api/validation"
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
 	log "github.com/sirupsen/logrus"
-	validator "gopkg.in/validator.v2"
-)
-
-const (
-	minPasswordLength = 15
-	maxPasswordLength = 50
 )
 
 var (
 	// DB connection to the MySQL instance
 	DB *sqlx.DB
-
-	errMustBeString    = errors.New("must be string")
-	errInvalidEmail    = errors.New("invalid email")
-	errInvalidPassword = errors.New("invalid password")
 )
 
 func init() {
@@ -47,42 +35,7 @@ func init() {
 		log.Fatalf("error connecting to db: %s\n", err.Error())
 	}
 
-	// Add a simple email validation rule
-	validator.SetValidationFunc("email", func(v interface{}, param string) error {
-		t := reflect.ValueOf(v)
-		if t.Kind() != reflect.String {
-			return errMustBeString
-		}
-
-		match, err := regexp.MatchString("^[^@]+@[^\\.@]+\\..+$", t.String())
-		if err != nil || match != true {
-			return errInvalidEmail
-		}
-
-		return nil
-	})
-
-	// Add a password matching rule (alphanumeric plus symbols)
-	validator.SetValidationFunc("pword", func(v interface{}, param string) error {
-		t := reflect.ValueOf(v)
-		if t.Kind() != reflect.String {
-			return errMustBeString
-		}
-
-		pword := t.String()
-
-		// Ensure length is compatible with bcrypt requirements
-		if len(pword) < 15 || len(pword) > 50 {
-			return errInvalidPassword
-		}
-
-		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\&\\*]+$", pword)
-		if err != nil || match != true {
-			return errInvalidPassword
-		}
-
-		return nil
-	})
+	validation.InitValidator()
 }
 
 func main() {
