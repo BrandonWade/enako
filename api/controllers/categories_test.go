@@ -36,7 +36,7 @@ var _ = Describe("CategoryController", func() {
 		}
 
 		w = httptest.NewRecorder()
-		r = httptest.NewRequest("GET", "http://test.com/api/v1/categories", nil)
+		r = httptest.NewRequest("GET", "/v1/categories", nil)
 	})
 
 	Describe("GetCategories", func() {
@@ -45,7 +45,7 @@ var _ = Describe("CategoryController", func() {
 
 			It("returns an error if an error is encountered", func() {
 				categoryService.GetCategoriesReturns([]models.ExpenseCategory{}, errors.New("service error"))
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingCategories.Error())
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingCategories)
 
 				categoryController.GetCategories(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))

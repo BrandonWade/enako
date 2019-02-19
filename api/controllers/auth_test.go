@@ -12,7 +12,6 @@ import (
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
-	"github.com/BrandonWade/enako/api/validation"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -26,10 +25,6 @@ var _ = Describe("AuthController", func() {
 		r              *http.Request
 	)
 
-	BeforeSuite(func() {
-		validation.InitValidator()
-	})
-
 	BeforeEach(func() {
 		authService = &fakes.FakeAuthService{}
 		authController = controllers.NewAuthController(authService)
@@ -42,7 +37,7 @@ var _ = Describe("AuthController", func() {
 		Context("when creating a new account", func() {
 
 			It("returns an error if a malformed payload is submitted", func() {
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", strings.NewReader(`{foo}`))
+				r = httptest.NewRequest("POST", "/v1/accounts", strings.NewReader(`{foo}`))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrInvalidAccountPayload)
 
 				authController.CreateAccount(w, r)
@@ -54,7 +49,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: "invalid@@invalid.com", UserAccountPassword: "testpassword123", ConfirmPassword: "testpassword123"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				resBody := `{"errors":["UserAccountEmail: invalid email"]}`
 
 				authController.CreateAccount(w, r)
@@ -66,7 +61,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: "test@email.com", UserAccountPassword: "password", ConfirmPassword: "password"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				invalidPword := `{"errors":["UserAccountPassword: invalid password"]}`
 				invalidConfirmPword := `{"errors":["ConfirmPassword: invalid password"]}`
 
@@ -79,7 +74,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: "test@email.com", UserAccountPassword: "thisisareallylongpasswordthatistoolongandwillfailvalidation", ConfirmPassword: "thisisareallylongpasswordthatistoolongandwillfailvalidation"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				invalidPword := `{"errors":["UserAccountPassword: invalid password"]}`
 				invalidConfirmPword := `{"errors":["ConfirmPassword: invalid password"]}`
 
@@ -92,7 +87,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: "test@email.com", UserAccountPassword: "_-123testpassword456-_", ConfirmPassword: "_-123testpassword456-_"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				invalidPword := `{"errors":["UserAccountPassword: invalid password"]}`
 				invalidConfirmPword := `{"errors":["ConfirmPassword: invalid password"]}`
 
@@ -105,7 +100,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: "email@test.com", UserAccountPassword: "testpassword123", ConfirmPassword: "testpassword1234"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrPasswordsDoNotMatch)
 
 				authController.CreateAccount(w, r)
@@ -118,7 +113,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: "email@test.com", UserAccountPassword: "testpassword123", ConfirmPassword: "testpassword123"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrCreatingAccount)
 
 				authController.CreateAccount(w, r)
@@ -134,7 +129,7 @@ var _ = Describe("AuthController", func() {
 				payload := models.UserAccount{UserAccountEmail: accountEmail, UserAccountPassword: "testpassword123", ConfirmPassword: "testpassword123"}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "http://test.com/api/v1/accounts", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 
 				response := models.UserAccount{ID: accountID, UserAccountEmail: accountEmail}
 				responseJSON, _ := json.Marshal(response)

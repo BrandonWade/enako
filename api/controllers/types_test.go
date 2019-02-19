@@ -36,7 +36,7 @@ var _ = Describe("TypeController", func() {
 		}
 
 		w = httptest.NewRecorder()
-		r = httptest.NewRequest("GET", "http://test.com/api/v1/types", nil)
+		r = httptest.NewRequest("GET", "/v1/types", nil)
 	})
 
 	Describe("GetTypes", func() {
@@ -45,7 +45,7 @@ var _ = Describe("TypeController", func() {
 
 			It("returns an error if an error is encountered", func() {
 				typeService.GetTypesReturns([]models.ExpenseType{}, errors.New("service error"))
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingTypes.Error())
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingTypes)
 
 				typeController.GetTypes(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
