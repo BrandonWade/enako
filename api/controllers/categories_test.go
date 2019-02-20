@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -18,6 +20,7 @@ import (
 var _ = Describe("CategoryController", func() {
 
 	var (
+		logger             *logrus.Logger
 		categoryService    *fakes.FakeCategoryService
 		categoryController controllers.CategoryController
 		categories         []models.ExpenseCategory
@@ -26,8 +29,11 @@ var _ = Describe("CategoryController", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		categoryService = &fakes.FakeCategoryService{}
-		categoryController = controllers.NewCategoryController(categoryService)
+		categoryController = controllers.NewCategoryController(logger, categoryService)
 
 		categories = []models.ExpenseCategory{
 			models.ExpenseCategory{ID: 1, CategoryName: "category 1", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},

@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -18,6 +20,7 @@ import (
 var _ = Describe("TypeController", func() {
 
 	var (
+		logger         *logrus.Logger
 		typeService    *fakes.FakeTypeService
 		typeController controllers.TypeController
 		types          []models.ExpenseType
@@ -26,8 +29,11 @@ var _ = Describe("TypeController", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		typeService = &fakes.FakeTypeService{}
-		typeController = controllers.NewTypeController(typeService)
+		typeController = controllers.NewTypeController(logger, typeService)
 
 		types = []models.ExpenseType{
 			models.ExpenseType{ID: 1, TypeName: "type 1", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},

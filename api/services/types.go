@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories"
+	"github.com/sirupsen/logrus"
 )
 
 //go:generate counterfeiter -o fakes/fake_type_service.go . TypeService
@@ -11,11 +12,13 @@ type TypeService interface {
 }
 
 type typeService struct {
-	repo repositories.TypeRepository
+	logger *logrus.Logger
+	repo   repositories.TypeRepository
 }
 
-func NewTypeService(repo repositories.TypeRepository) TypeService {
+func NewTypeService(logger *logrus.Logger, repo repositories.TypeRepository) TypeService {
 	return &typeService{
+		logger,
 		repo,
 	}
 }

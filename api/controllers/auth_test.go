@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -19,6 +21,7 @@ import (
 
 var _ = Describe("AuthController", func() {
 	var (
+		logger         *logrus.Logger
 		authService    *fakes.FakeAuthService
 		authController controllers.AuthController
 		w              *httptest.ResponseRecorder
@@ -26,8 +29,11 @@ var _ = Describe("AuthController", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		authService = &fakes.FakeAuthService{}
-		authController = controllers.NewAuthController(authService)
+		authController = controllers.NewAuthController(logger, authService)
 
 		w = httptest.NewRecorder()
 	})

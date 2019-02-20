@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories"
+	"github.com/sirupsen/logrus"
 )
 
 //go:generate counterfeiter -o fakes/fake_category_service.go . CategoryService
@@ -11,11 +12,13 @@ type CategoryService interface {
 }
 
 type categoryService struct {
-	repo repositories.CategoryRepository
+	logger *logrus.Logger
+	repo   repositories.CategoryRepository
 }
 
-func NewCategoryService(repo repositories.CategoryRepository) CategoryService {
+func NewCategoryService(logger *logrus.Logger, repo repositories.CategoryRepository) CategoryService {
 	return &categoryService{
+		logger,
 		repo,
 	}
 }

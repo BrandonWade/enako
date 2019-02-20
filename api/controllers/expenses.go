@@ -9,8 +9,8 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 
-	log "github.com/sirupsen/logrus"
 	validator "gopkg.in/validator.v2"
 )
 
@@ -35,12 +35,14 @@ type ExpenseController interface {
 }
 
 type expenseController struct {
+	logger  *logrus.Logger
 	service services.ExpenseService
 }
 
 // NewExpenseController the constructor for a new ExpenseController
-func NewExpenseController(service services.ExpenseService) ExpenseController {
+func NewExpenseController(logger *logrus.Logger, service services.ExpenseService) ExpenseController {
 	return &expenseController{
+		logger,
 		service,
 	}
 }
@@ -50,7 +52,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 
 	expenses, err := e.service.GetExpenses(userAccountID)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.GetExpenses",
 			"account ID": userAccountID,
 			"err":        err.Error(),
@@ -72,7 +74,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 	var expense models.UserExpense
 	err := json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.CreateExpense",
 			"account ID": userAccountID,
 			"err":        err.Error(),
@@ -84,7 +86,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	if err = validator.Validate(expense); err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method": "ExpenseController.CreateExpense",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
@@ -97,7 +99,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 
 	ID, err := e.service.CreateExpense(userAccountID, &expense)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.CreateExpense",
 			"account ID": userAccountID,
 			"err":        err.Error(),
@@ -122,7 +124,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 
 	ID, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
 			"account ID": userAccountID,
 			"id":         params["id"],
@@ -137,7 +139,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	expense := models.UserExpense{}
 	err = json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
 			"account ID": userAccountID,
 			"id":         ID,
@@ -150,7 +152,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	if err = validator.Validate(expense); err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method": "ExpenseController.UpdateExpense",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
@@ -163,7 +165,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 
 	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
 			"account ID": userAccountID,
 			"id":         ID,
@@ -176,7 +178,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	if count == 0 {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
 			"account ID": userAccountID,
 			"id":         ID,
@@ -201,7 +203,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 
 	ID, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.DeleteExpense",
 			"account ID": userAccountID,
 			"id":         ID,
@@ -215,7 +217,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 
 	count, err := e.service.DeleteExpense(ID, userAccountID)
 	if err != nil {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.DeleteExpense",
 			"account ID": userAccountID,
 			"id":         ID,
@@ -228,7 +230,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	if count == 0 {
-		log.WithFields(log.Fields{
+		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.DeleteExpense",
 			"account ID": userAccountID,
 			"id":         ID,

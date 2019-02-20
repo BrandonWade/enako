@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -13,12 +14,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var (
 	// DB connection to the MySQL instance
 	DB *sqlx.DB
+
+	logger *logrus.Logger
 )
 
 func init() {
@@ -35,6 +38,8 @@ func init() {
 		log.Fatalf("error connecting to db: %s\n", err.Error())
 	}
 
+	logger = logrus.New()
+
 	validation.InitValidator()
 }
 
@@ -44,15 +49,15 @@ func main() {
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
-	authService := services.NewAuthService(authRepository)
-	typeService := services.NewTypeService(typeRepository)
-	categoryService := services.NewCategoryService(categoryRepository)
-	expenseService := services.NewExpenseService(expenseRepository)
+	authService := services.NewAuthService(logger, authRepository)
+	typeService := services.NewTypeService(logger, typeRepository)
+	categoryService := services.NewCategoryService(logger, categoryRepository)
+	expenseService := services.NewExpenseService(logger, expenseRepository)
 
-	authController := controllers.NewAuthController(authService)
-	typeController := controllers.NewTypeController(typeService)
-	categoryController := controllers.NewCategoryController(categoryService)
-	expenseController := controllers.NewExpenseController(expenseService)
+	authController := controllers.NewAuthController(logger, authService)
+	typeController := controllers.NewTypeController(logger, typeService)
+	categoryController := controllers.NewCategoryController(logger, categoryService)
+	expenseController := controllers.NewExpenseController(logger, expenseService)
 
 	r := mux.NewRouter()
 

@@ -2,10 +2,13 @@ package services_test
 
 import (
 	"errors"
+	"io/ioutil"
 
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories/fakes"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/sirupsen/logrus"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -13,6 +16,7 @@ import (
 var _ = Describe("TypeService", func() {
 
 	var (
+		logger      *logrus.Logger
 		typeRepo    *fakes.FakeTypeRepository
 		typeService services.TypeService
 
@@ -39,8 +43,11 @@ var _ = Describe("TypeService", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		typeRepo = &fakes.FakeTypeRepository{}
-		typeService = services.NewTypeService(typeRepo)
+		typeService = services.NewTypeService(logger, typeRepo)
 	})
 
 	Describe("GetTypes", func() {

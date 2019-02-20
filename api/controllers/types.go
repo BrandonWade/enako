@@ -7,8 +7,7 @@ import (
 
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
-
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var ErrFetchingTypes = errors.New("error fetching types")
@@ -19,11 +18,13 @@ type TypeController interface {
 }
 
 type typeController struct {
+	logger  *logrus.Logger
 	service services.TypeService
 }
 
-func NewTypeController(service services.TypeService) TypeController {
+func NewTypeController(logger *logrus.Logger, service services.TypeService) TypeController {
 	return &typeController{
+		logger,
 		service,
 	}
 }
@@ -31,7 +32,7 @@ func NewTypeController(service services.TypeService) TypeController {
 func (t *typeController) GetTypes(w http.ResponseWriter, r *http.Request) {
 	types, err := t.service.GetTypes()
 	if err != nil {
-		log.WithFields(log.Fields{
+		t.logger.WithFields(logrus.Fields{
 			"method": "TypeController.GetTypes",
 			"err":    err.Error(),
 		}).Error(ErrFetchingTypes)

@@ -7,8 +7,8 @@ import (
 
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/sirupsen/logrus"
 
-	log "github.com/sirupsen/logrus"
 	validator "gopkg.in/validator.v2"
 )
 
@@ -24,11 +24,13 @@ type AuthController interface {
 }
 
 type authController struct {
+	logger  *logrus.Logger
 	service services.AuthService
 }
 
-func NewAuthController(service services.AuthService) AuthController {
+func NewAuthController(logger *logrus.Logger, service services.AuthService) AuthController {
 	return &authController{
+		logger,
 		service,
 	}
 }
@@ -37,7 +39,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	var userAccount models.UserAccount
 	err := json.NewDecoder(r.Body).Decode(&userAccount)
 	if err != nil {
-		log.WithFields(log.Fields{
+		a.logger.WithFields(logrus.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
@@ -49,7 +51,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = validator.Validate(userAccount); err != nil {
-		log.WithFields(log.Fields{
+		a.logger.WithFields(logrus.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
@@ -61,7 +63,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if userAccount.UserAccountPassword != userAccount.ConfirmPassword {
-		log.WithFields(log.Fields{
+		a.logger.WithFields(logrus.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
 		}).Error(ErrPasswordsDoNotMatch)
@@ -73,7 +75,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 
 	ID, err := a.service.CreateAccount(userAccount.UserAccountEmail, userAccount.UserAccountPassword)
 	if err != nil {
-		log.WithFields(log.Fields{
+		a.logger.WithFields(logrus.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),

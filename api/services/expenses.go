@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories"
+	"github.com/sirupsen/logrus"
 )
 
 //go:generate counterfeiter -o fakes/fake_expense_service.go . ExpenseService
@@ -14,11 +15,13 @@ type ExpenseService interface {
 }
 
 type expenseService struct {
-	repo repositories.ExpenseRepository
+	logger *logrus.Logger
+	repo   repositories.ExpenseRepository
 }
 
-func NewExpenseService(repo repositories.ExpenseRepository) ExpenseService {
+func NewExpenseService(logger *logrus.Logger, repo repositories.ExpenseRepository) ExpenseService {
 	return &expenseService{
+		logger,
 		repo,
 	}
 }

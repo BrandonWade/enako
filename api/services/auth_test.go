@@ -2,9 +2,12 @@ package services_test
 
 import (
 	"errors"
+	"io/ioutil"
 
 	"github.com/BrandonWade/enako/api/repositories/fakes"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/sirupsen/logrus"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -12,13 +15,17 @@ import (
 var _ = Describe("AuthService", func() {
 
 	var (
+		logger      *logrus.Logger
 		authRepo    *fakes.FakeAuthRepository
 		authService services.AuthService
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		authRepo = &fakes.FakeAuthRepository{}
-		authService = services.NewAuthService(authRepo)
+		authService = services.NewAuthService(logger, authRepo)
 	})
 
 	Describe("CreateAccount", func() {

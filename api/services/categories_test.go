@@ -2,10 +2,13 @@ package services_test
 
 import (
 	"errors"
+	"io/ioutil"
 
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories/fakes"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/sirupsen/logrus"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -13,6 +16,7 @@ import (
 var _ = Describe("CategoryService", func() {
 
 	var (
+		logger          *logrus.Logger
 		categoryRepo    *fakes.FakeCategoryRepository
 		categoryService services.CategoryService
 
@@ -39,8 +43,11 @@ var _ = Describe("CategoryService", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		categoryRepo = &fakes.FakeCategoryRepository{}
-		categoryService = services.NewCategoryService(categoryRepo)
+		categoryService = services.NewCategoryService(logger, categoryRepo)
 	})
 
 	Describe("GetCategories", func() {

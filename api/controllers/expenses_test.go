@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -21,6 +23,7 @@ import (
 
 var _ = Describe("ExpenseController", func() {
 	var (
+		logger            *logrus.Logger
 		expenseService    *fakes.FakeExpenseService
 		expenseController controllers.ExpenseController
 		expenses          []models.UserExpense
@@ -29,8 +32,11 @@ var _ = Describe("ExpenseController", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		expenseService = &fakes.FakeExpenseService{}
-		expenseController = controllers.NewExpenseController(expenseService)
+		expenseController = controllers.NewExpenseController(logger, expenseService)
 
 		expenses = []models.UserExpense{
 			models.UserExpense{ID: 1, UserAccountID: 100, ExpenseType: "type 1", ExpenseTypeID: 333, ExpenseCategory: "category 1", ExpenseCategoryID: 4444, ExpenseDescription: "test description", ExpenseAmount: 100, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},

@@ -7,8 +7,7 @@ import (
 
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
-
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var ErrFetchingCategories = errors.New("error fetching categories")
@@ -19,11 +18,13 @@ type CategoryController interface {
 }
 
 type categoryController struct {
+	logger  *logrus.Logger
 	service services.CategoryService
 }
 
-func NewCategoryController(service services.CategoryService) CategoryController {
+func NewCategoryController(logger *logrus.Logger, service services.CategoryService) CategoryController {
 	return &categoryController{
+		logger,
 		service,
 	}
 }
@@ -31,7 +32,7 @@ func NewCategoryController(service services.CategoryService) CategoryController 
 func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := c.service.GetCategories()
 	if err != nil {
-		log.WithFields(log.Fields{
+		c.logger.WithFields(logrus.Fields{
 			"method": "CategoryController.GetCategories",
 			"err":    err.Error(),
 		}).Error(ErrFetchingCategories)

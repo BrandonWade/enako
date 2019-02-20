@@ -6,7 +6,7 @@ import (
 	"github.com/BrandonWade/enako/api/repositories"
 	"golang.org/x/crypto/bcrypt"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var errCreatingAccount = errors.New("error creating account")
@@ -17,11 +17,13 @@ type AuthService interface {
 }
 
 type authService struct {
-	repo repositories.AuthRepository
+	logger *logrus.Logger
+	repo   repositories.AuthRepository
 }
 
-func NewAuthService(repo repositories.AuthRepository) AuthService {
+func NewAuthService(logger *logrus.Logger, repo repositories.AuthRepository) AuthService {
 	return &authService{
+		logger,
 		repo,
 	}
 }
@@ -29,7 +31,7 @@ func NewAuthService(repo repositories.AuthRepository) AuthService {
 func (a *authService) CreateAccount(email, password string) (int64, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.WithFields(log.Fields{
+		a.logger.WithFields(logrus.Fields{
 			"method":   "AuthService.CreateAccount",
 			"email":    email,
 			"password": password,

@@ -2,10 +2,13 @@ package services_test
 
 import (
 	"errors"
+	"io/ioutil"
 
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories/fakes"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/sirupsen/logrus"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -13,6 +16,7 @@ import (
 var _ = Describe("ExpenseService", func() {
 
 	var (
+		logger         *logrus.Logger
 		expenseRepo    *fakes.FakeExpenseRepository
 		expenseService services.ExpenseService
 
@@ -61,8 +65,11 @@ var _ = Describe("ExpenseService", func() {
 	)
 
 	BeforeEach(func() {
+		logger = logrus.New()
+		logger.Out = ioutil.Discard
+
 		expenseRepo = &fakes.FakeExpenseRepository{}
-		expenseService = services.NewExpenseService(expenseRepo)
+		expenseService = services.NewExpenseService(logger, expenseRepo)
 	})
 
 	Describe("GetExpenses", func() {
