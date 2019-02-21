@@ -26,6 +26,22 @@
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:51a1d17ba9fe6648d9fdd5b822baa616d6ec7f28c8669c2091126d206796b5ae"
+  name = "github.com/gorilla/securecookie"
+  packages = ["."]
+  pruneopts = ""
+  revision = "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:4e1c7e6877107c08296ca6ee3d3c4c07d1ff5e46565a186aa8e9342e435301be"
+  name = "github.com/gorilla/sessions"
+  packages = ["."]
+  pruneopts = ""
+  revision = "f57b7e2d29c6211d16ffa52a0998272f75799030"
+  version = "v1.1.3"
+
+[[projects]]
   digest = "1:b3c5b95e56c06f5aa72cb2500e6ee5f44fcd122872d4fec2023a488e561218bc"
   name = "github.com/hpcloud/tail"
   packages = [
@@ -222,6 +238,7 @@
   input-imports = [
     "github.com/go-sql-driver/mysql",
     "github.com/gorilla/mux",
+    "github.com/gorilla/sessions",
     "github.com/jmoiron/sqlx",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
