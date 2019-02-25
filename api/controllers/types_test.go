@@ -13,6 +13,8 @@ import (
 	"github.com/BrandonWade/enako/api/services/fakes"
 	"github.com/sirupsen/logrus"
 
+	helperfakes "github.com/BrandonWade/enako/api/helpers/fakes"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -21,6 +23,7 @@ var _ = Describe("TypeController", func() {
 
 	var (
 		logger         *logrus.Logger
+		store          *helperfakes.FakeCookieStorer
 		typeService    *fakes.FakeTypeService
 		typeController controllers.TypeController
 		types          []models.ExpenseType
@@ -32,8 +35,10 @@ var _ = Describe("TypeController", func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
+		store = &helperfakes.FakeCookieStorer{}
+
 		typeService = &fakes.FakeTypeService{}
-		typeController = controllers.NewTypeController(logger, typeService)
+		typeController = controllers.NewTypeController(logger, store, typeService)
 
 		types = []models.ExpenseType{
 			models.ExpenseType{ID: 1, TypeName: "type 1", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},

@@ -15,6 +15,8 @@ import (
 	"github.com/BrandonWade/enako/api/services/fakes"
 	"github.com/sirupsen/logrus"
 
+	helperfakes "github.com/BrandonWade/enako/api/helpers/fakes"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -22,6 +24,7 @@ import (
 var _ = Describe("AuthController", func() {
 	var (
 		logger         *logrus.Logger
+		store          *helperfakes.FakeCookieStorer
 		authService    *fakes.FakeAuthService
 		authController controllers.AuthController
 		w              *httptest.ResponseRecorder
@@ -32,8 +35,10 @@ var _ = Describe("AuthController", func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
+		store = &helperfakes.FakeCookieStorer{}
+
 		authService = &fakes.FakeAuthService{}
-		authController = controllers.NewAuthController(logger, authService)
+		authController = controllers.NewAuthController(logger, store, authService)
 
 		w = httptest.NewRecorder()
 	})

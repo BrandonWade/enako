@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/mux"
@@ -36,13 +37,15 @@ type ExpenseController interface {
 
 type expenseController struct {
 	logger  *logrus.Logger
+	store   helpers.CookieStorer
 	service services.ExpenseService
 }
 
 // NewExpenseController the constructor for a new ExpenseController
-func NewExpenseController(logger *logrus.Logger, service services.ExpenseService) ExpenseController {
+func NewExpenseController(logger *logrus.Logger, store helpers.CookieStorer, service services.ExpenseService) ExpenseController {
 	return &expenseController{
 		logger,
+		store,
 		service,
 	}
 }

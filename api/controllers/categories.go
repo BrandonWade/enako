@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
@@ -19,12 +20,14 @@ type CategoryController interface {
 
 type categoryController struct {
 	logger  *logrus.Logger
+	store   helpers.CookieStorer
 	service services.CategoryService
 }
 
-func NewCategoryController(logger *logrus.Logger, service services.CategoryService) CategoryController {
+func NewCategoryController(logger *logrus.Logger, store helpers.CookieStorer, service services.CategoryService) CategoryController {
 	return &categoryController{
 		logger,
+		store,
 		service,
 	}
 }

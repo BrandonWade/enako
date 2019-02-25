@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
@@ -19,12 +20,14 @@ type TypeController interface {
 
 type typeController struct {
 	logger  *logrus.Logger
+	store   helpers.CookieStorer
 	service services.TypeService
 }
 
-func NewTypeController(logger *logrus.Logger, service services.TypeService) TypeController {
+func NewTypeController(logger *logrus.Logger, store helpers.CookieStorer, service services.TypeService) TypeController {
 	return &typeController{
 		logger,
+		store,
 		service,
 	}
 }

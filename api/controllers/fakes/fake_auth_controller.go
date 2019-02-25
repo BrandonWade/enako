@@ -15,6 +15,18 @@ type FakeAuthController struct {
 		arg1 http.ResponseWriter
 		arg2 *http.Request
 	}
+	LoginStub        func(http.ResponseWriter, *http.Request)
+	loginMutex       sync.RWMutex
+	loginArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
+	LogoutStub        func(http.ResponseWriter, *http.Request)
+	logoutMutex       sync.RWMutex
+	logoutArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -51,11 +63,79 @@ func (fake *FakeAuthController) CreateAccountArgsForCall(i int) (http.ResponseWr
 	return argsForCall.arg1, argsForCall.arg2
 }
 
+func (fake *FakeAuthController) Login(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.loginMutex.Lock()
+	fake.loginArgsForCall = append(fake.loginArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("Login", []interface{}{arg1, arg2})
+	fake.loginMutex.Unlock()
+	if fake.LoginStub != nil {
+		fake.LoginStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAuthController) LoginCallCount() int {
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	return len(fake.loginArgsForCall)
+}
+
+func (fake *FakeAuthController) LoginCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.loginMutex.Lock()
+	defer fake.loginMutex.Unlock()
+	fake.LoginStub = stub
+}
+
+func (fake *FakeAuthController) LoginArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	argsForCall := fake.loginArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeAuthController) Logout(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.logoutMutex.Lock()
+	fake.logoutArgsForCall = append(fake.logoutArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("Logout", []interface{}{arg1, arg2})
+	fake.logoutMutex.Unlock()
+	if fake.LogoutStub != nil {
+		fake.LogoutStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAuthController) LogoutCallCount() int {
+	fake.logoutMutex.RLock()
+	defer fake.logoutMutex.RUnlock()
+	return len(fake.logoutArgsForCall)
+}
+
+func (fake *FakeAuthController) LogoutCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.logoutMutex.Lock()
+	defer fake.logoutMutex.Unlock()
+	fake.LogoutStub = stub
+}
+
+func (fake *FakeAuthController) LogoutArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.logoutMutex.RLock()
+	defer fake.logoutMutex.RUnlock()
+	argsForCall := fake.logoutArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
 func (fake *FakeAuthController) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
+	fake.loginMutex.RLock()
+	defer fake.loginMutex.RUnlock()
+	fake.logoutMutex.RLock()
+	defer fake.logoutMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

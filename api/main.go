@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/repositories"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/BrandonWade/enako/api/validation"
@@ -22,6 +23,8 @@ var (
 	DB *sqlx.DB
 
 	logger *logrus.Logger
+
+	cookieSecret string
 )
 
 func init() {
@@ -37,6 +40,8 @@ func init() {
 	if err != nil {
 		log.Fatalf("error connecting to db: %s\n", err.Error())
 	}
+
+	cookieSecret = os.Getenv("COOKIE_SECRET")
 
 	logger = logrus.New()
 
@@ -54,10 +59,12 @@ func main() {
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 
-	authController := controllers.NewAuthController(logger, authService)
-	typeController := controllers.NewTypeController(logger, typeService)
-	categoryController := controllers.NewCategoryController(logger, categoryService)
-	expenseController := controllers.NewExpenseController(logger, expenseService)
+	store := helpers.NewCookieStore([]byte(cookieSecret))
+
+	authController := controllers.NewAuthController(logger, store, authService)
+	typeController := controllers.NewTypeController(logger, store, typeService)
+	categoryController := controllers.NewCategoryController(logger, store, categoryService)
+	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	r := mux.NewRouter()
 
@@ -65,6 +72,8 @@ func main() {
 
 	// Auth
 	api.HandleFunc("/accounts", authController.CreateAccount).Methods("POST")
+	api.HandleFunc("/login", authController.Login).Methods("POST")
+	api.HandleFunc("/logout", authController.Logout).Methods("POST")
 
 	// Types
 	api.HandleFunc("/types", typeController.GetTypes).Methods("GET")

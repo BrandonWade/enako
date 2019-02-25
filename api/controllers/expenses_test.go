@@ -17,6 +17,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 
+	helperfakes "github.com/BrandonWade/enako/api/helpers/fakes"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -24,6 +26,7 @@ import (
 var _ = Describe("ExpenseController", func() {
 	var (
 		logger            *logrus.Logger
+		store             *helperfakes.FakeCookieStorer
 		expenseService    *fakes.FakeExpenseService
 		expenseController controllers.ExpenseController
 		expenses          []models.UserExpense
@@ -35,8 +38,10 @@ var _ = Describe("ExpenseController", func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
+		store = &helperfakes.FakeCookieStorer{}
+
 		expenseService = &fakes.FakeExpenseService{}
-		expenseController = controllers.NewExpenseController(logger, expenseService)
+		expenseController = controllers.NewExpenseController(logger, store, expenseService)
 
 		expenses = []models.UserExpense{
 			models.UserExpense{ID: 1, UserAccountID: 100, ExpenseType: "type 1", ExpenseTypeID: 333, ExpenseCategory: "category 1", ExpenseCategoryID: 4444, ExpenseDescription: "test description", ExpenseAmount: 100, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
