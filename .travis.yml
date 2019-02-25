@@ -4,7 +4,6 @@ services:
 language: go
 go:
     - 1.10.4
-    - tip
 
 install:
     - go get -v github.com/onsi/ginkgo/ginkgo
