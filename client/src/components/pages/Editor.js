@@ -107,10 +107,12 @@ class Editor extends Component {
                             <Link to='/'>
                                 <Button text='Cancel' />
                             </Link>
-                            <Button
-                                main={true}
-                                text={this.renderSubmitButtonText()}
-                            />
+                            <div>
+                                <Button
+                                    main={true}
+                                    text={this.renderSubmitButtonText()}
+                                />
+                            </div>
                         </div>
                     </Card>
                 </div>

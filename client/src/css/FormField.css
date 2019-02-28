@@ -4,9 +4,11 @@
 
 .FormField-label {
     display: block;
+    padding-bottom: 0.25rem;
 }
 
 .FormField-description {
     color: rgba(0, 0, 0, 0.4);
     font-size: 0.9rem;
+    padding-top: 0.25rem;
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import withFormField from './FormField';
+import '../css/InputField.css';
 
 class InputField extends Component {
     render() {
