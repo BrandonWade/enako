@@ -4,6 +4,8 @@ services:
     db:
         image: 'mysql:latest'
         container_name: enako-db
+        volumes:
+            - ./api/database:/database
         ports:
             - '3306:3306'
         environment:
