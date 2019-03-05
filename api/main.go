@@ -84,7 +84,7 @@ func main() {
 
 	// Expenses
 	api.HandleFunc("/expenses", expenseController.GetExpenses).Methods("GET")
-	api.HandleFunc("/expenses", middleware.DecodeExpense(expenseController.CreateExpense)).Methods("POST")
+	api.HandleFunc("/expenses", middleware.DecodeExpense(logger, expenseController.CreateExpense)).Methods("POST")
 	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
 	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 

@@ -6,14 +6,15 @@ import (
 	sync "sync"
 
 	controllers "github.com/BrandonWade/enako/api/controllers"
+	models "github.com/BrandonWade/enako/api/models"
 )
 
 type FakeExpenseController struct {
-	CreateExpenseStub        func(http.ResponseWriter, *http.Request)
+	CreateExpenseStub        func(http.ResponseWriter, *models.UserExpense)
 	createExpenseMutex       sync.RWMutex
 	createExpenseArgsForCall []struct {
 		arg1 http.ResponseWriter
-		arg2 *http.Request
+		arg2 *models.UserExpense
 	}
 	DeleteExpenseStub        func(http.ResponseWriter, *http.Request)
 	deleteExpenseMutex       sync.RWMutex
@@ -37,11 +38,11 @@ type FakeExpenseController struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeExpenseController) CreateExpense(arg1 http.ResponseWriter, arg2 *http.Request) {
+func (fake *FakeExpenseController) CreateExpense(arg1 http.ResponseWriter, arg2 *models.UserExpense) {
 	fake.createExpenseMutex.Lock()
 	fake.createExpenseArgsForCall = append(fake.createExpenseArgsForCall, struct {
 		arg1 http.ResponseWriter
-		arg2 *http.Request
+		arg2 *models.UserExpense
 	}{arg1, arg2})
 	fake.recordInvocation("CreateExpense", []interface{}{arg1, arg2})
 	fake.createExpenseMutex.Unlock()
@@ -56,13 +57,13 @@ func (fake *FakeExpenseController) CreateExpenseCallCount() int {
 	return len(fake.createExpenseArgsForCall)
 }
 
-func (fake *FakeExpenseController) CreateExpenseCalls(stub func(http.ResponseWriter, *http.Request)) {
+func (fake *FakeExpenseController) CreateExpenseCalls(stub func(http.ResponseWriter, *models.UserExpense)) {
 	fake.createExpenseMutex.Lock()
 	defer fake.createExpenseMutex.Unlock()
 	fake.CreateExpenseStub = stub
 }
 
-func (fake *FakeExpenseController) CreateExpenseArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+func (fake *FakeExpenseController) CreateExpenseArgsForCall(i int) (http.ResponseWriter, *models.UserExpense) {
 	fake.createExpenseMutex.RLock()
 	defer fake.createExpenseMutex.RUnlock()
 	argsForCall := fake.createExpenseArgsForCall[i]

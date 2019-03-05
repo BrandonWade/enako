@@ -10,9 +10,8 @@ import (
 )
 
 // DecodeExpense ...
-func DecodeExpense(next func(w http.ResponseWriter, e *models.UserExpense)) http.HandlerFunc {
-	logger := logrus.New()
-	logrus.WithFields(logrus.Fields{"function": "middleware.DecodeExpense"})
+func DecodeExpense(logger *logrus.Logger, next func(w http.ResponseWriter, e *models.UserExpense)) http.HandlerFunc {
+	logger.WithFields(logrus.Fields{"function": "middleware.DecodeExpense"})
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var expense models.UserExpense
