@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/controllers/middleware"
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/repositories"
 	"github.com/BrandonWade/enako/api/services"
@@ -83,7 +84,7 @@ func main() {
 
 	// Expenses
 	api.HandleFunc("/expenses", expenseController.GetExpenses).Methods("GET")
-	api.HandleFunc("/expenses", expenseController.CreateExpense).Methods("POST")
+	api.HandleFunc("/expenses", middleware.DecodeExpense(expenseController.CreateExpense)).Methods("POST")
 	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
 	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
 
