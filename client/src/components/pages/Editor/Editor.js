@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import Card from '../../Card';
-import InputField from '../../InputField';
-import SelectField from '../../SelectField';
-import Button from '../../Button';
+import Card from '../../atoms/Card';
+import Button from '../../atoms/Button';
+import InputField from '../../molecules/InputField';
+import SelectField from '../../molecules/SelectField';
 import './Editor.css';
 
 const Editor = props => {

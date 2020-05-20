@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import DetailList from '../DetailList';
-import Card from '../Card';
+import Card from '../../atoms/Card';
 import './Details.css';
 
-const Details = (props) => {
-    const filterExpenses = (date) => {
+const Details = props => {
+    const filterExpenses = date => {
         const compareDate = moment(date).format('YYYY-MM-DD');
-        const expenses = props.expenses.filter((expense) => expense.expense_date === compareDate);
+        const expenses = props.expenses.filter(expense => expense.expense_date === compareDate);
         if (expenses.length) {
             return expenses;
         }

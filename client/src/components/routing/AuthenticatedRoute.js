@@ -1,28 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-class AuthenticatedRoute extends Component {
-    renderPropHandler = () => {
-        const Page = this.props.component;
+const AuthenticatedRoute = props => {
+    const renderPropHandler = () => {
+        const Page = props.component;
 
-        return (
-            this.props.authenticated
-                ? <Page {...this.props} />
-                : <Redirect to='/login' />
-        );
+        return props.authenticated ? <Page {...props} /> : <Redirect to='/login' />;
     };
 
-    render() {
-        // Create props object containing all props except component
-        const { component, ...props } = this.props;
+    // Create props object containing all props except component
+    const { component, ...rest } = props;
 
-        return (
-            <Route
-                {...props}
-                render={this.renderPropHandler}
-            />
-        );
-    }
-}
+    return <Route {...rest} render={renderPropHandler} />;
+};
 
 export default AuthenticatedRoute;

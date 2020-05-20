@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DetailRow from '../DetailRow';
-import RoundButton from '../RoundButton';
+import RoundButton from '../../atoms/RoundButton';
 import './DetailList.css';
 
-const DetailList = (props) => {
+const DetailList = props => {
     const getTotal = () => {
         let total = 0.0;
 
-        props.expenses.forEach((expense) => {
+        props.expenses.forEach(expense => {
             total += expense.expense_amount;
         });
 
@@ -21,7 +21,7 @@ const DetailList = (props) => {
                 <h4 className='DetailList-sectionHeading'>Expenses</h4>
                 <table>
                     <tbody>
-                        {props.expenses.map((expense) => {
+                        {props.expenses.map(expense => {
                             return (
                                 <DetailRow
                                     key={expense.id}

@@ -1,18 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-class AuthenticatedRedirect extends Component {
-    render() {
-        return (
-            <>
-                {
-                    this.props.authenticated
-                        ? <Redirect to='/' />
-                        : <Redirect to='/login' />
-                }
-            </>
-        );
-    }
-}
+const AuthenticatedRedirect = ({ authenticated }) => {
+    return <>{authenticated ? <Redirect to='/' /> : <Redirect to='/login' />}</>;
+};
 
 export default AuthenticatedRedirect;

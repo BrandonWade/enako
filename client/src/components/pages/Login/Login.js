@@ -1,7 +1,7 @@
 import React from 'react';
-import Card from '../../Card';
-import InputField from '../../InputField';
-import Button from '../../Button';
+import Card from '../../atoms/Card';
+import InputField from '../../molecules/InputField';
+import Button from '../../atoms/Button';
 import './Login.css';
 
 const Login = () => {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Category from '../Category';
+import Category from '../../atoms/Category';
 import './DetailRow.css';
 
-const DetailRow = (props) => {
+const DetailRow = props => {
     return (
         <tr className='DetailRow'>
             <td className='DetailRow-edit'>

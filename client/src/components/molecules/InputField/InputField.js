@@ -1,8 +1,8 @@
 import React from 'react';
-import withFormField from '../withFormField';
+import withFormField from '../../hocs/withFormField';
 import './InputField.css';
 
-const InputField = (props) => {
+const InputField = props => {
     return <input type='text' name={props.name} value={props.value} onChange={props.onChange} />;
 };
 

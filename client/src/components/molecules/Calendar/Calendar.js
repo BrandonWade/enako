@@ -9,7 +9,7 @@ const localizer = momentLocalizer(moment);
 const views = ['month'];
 
 const Calendar = ({ expenses, setSelectedDate }) => {
-    const onDateSelected = (evt) => {
+    const onDateSelected = evt => {
         setSelectedDate(evt.start);
     };
 

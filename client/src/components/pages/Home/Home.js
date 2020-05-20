@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Calendar from '../../Calendar';
-import Details from '../../Details';
+import Calendar from '../../molecules/Calendar';
+import Details from '../../organisms/Details';
 import fetchBootInfo from '../../../effects/fetchBootInfo';
 import './Home.css';
 
