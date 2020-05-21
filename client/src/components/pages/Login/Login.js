@@ -6,16 +6,12 @@ import './Login.css';
 
 const Login = () => {
     return (
-        <div className='Login'>
-            <div className='Login-content'>
-                <Card heading='Enako'>
-                    <InputField label='Username' />
-                    <InputField label='Password' />
-                    <div className='Login-formButtons'>
-                        <Button main={true} text='Submit' />
-                    </div>
-                </Card>
-            </div>
+        <div className='login'>
+            <Card heading='Enako' className='login__content'>
+                <InputField label='Username' />
+                <InputField label='Password' />
+                <Button primary text='Submit' className='login__button' />
+            </Card>
         </div>
     );
 };

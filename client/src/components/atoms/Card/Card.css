@@ -1,14 +1,12 @@
-.Card {
+.card {
     padding: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.5);
-    border-radius: 2px;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    overflow: hidden;
+    border: var(--line);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    background-color: #fff;
 }
 
-.Card-heading {
+.card__heading {
     text-align: center;
-    margin-top: 0;
+    margin-bottom: 1rem;
 }

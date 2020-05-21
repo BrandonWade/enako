@@ -1,7 +1,12 @@
-.DetailRow-description {
+.detail-row__description {
     width: 100%;
 }
 
-.DetailRow-amount {
+.detail-row__amount {
     text-align: right;
+}
+
+.detail-row__description,
+.detail-row__amount {
+    font-size: 1.2rem;
 }

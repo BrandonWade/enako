@@ -1,29 +1,29 @@
-.Button {
-    width: 100%;
-    padding: 0.75rem 2rem;
+.button {
+    padding: 1rem 2.5rem;
     border-radius: 2px;
     border: none;
+    font-size: 1.3rem;
     background-color: #f2f1f0;
-    font-size: 1rem;
+    transition: all 0.2s;
 }
 
-.Button:hover {
+.button:hover {
     background-color: #f7f7f7;
 }
 
-.Button:active {
+.button:active {
     background-color: #d9d8d7;
 }
 
-.Button__main {
+.button--primary {
     background-color: orange;
     color: #ffffff;
 }
 
-.Button__main:hover {
+.button--primary:hover {
     background-color: #ffbf1a;
 }
 
-.Button__main:active {
+.button--primary:active {
     background-color: #e68c00;
 }

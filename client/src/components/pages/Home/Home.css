@@ -1,12 +1,14 @@
-.Home {
+.home {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.Home-content {
-    width: 90vw;
-    display: flex;
-    justify-content: center
+.home__content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 3rem;
+    justify-content: center;
+    align-items: start;
 }

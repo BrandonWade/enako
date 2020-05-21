@@ -4,11 +4,11 @@ import './withFormField.css';
 const withFormField = BaseComponent => {
     const FormField = props => {
         return (
-            <section className='FormField'>
-                {props.label && <label className='FormField-label'>{props.label}</label>}
+            <div className='form-field'>
+                {props.label && <label className='form-field__label'>{props.label}</label>}
                 <BaseComponent {...props}>{props.children}</BaseComponent>
-                {props.description && <div className='FormField-description'>{props.description}</div>}
-            </section>
+                {props.description && <div className='form-field__description'>{props.description}</div>}
+            </div>
         );
     };
 

@@ -1,11 +1,14 @@
-.Login {
-    width: 100%;
+.login {
     height: 100%;
-    display: flex;
+    display: grid;
     justify-content: center;
     align-items: center;
 }
 
-.Login-content {
+.login__content {
     width: 20vw;
+}
+
+.login__button {
+    width: 100%;
 }

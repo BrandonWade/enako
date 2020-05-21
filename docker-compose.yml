@@ -17,7 +17,7 @@ services:
             context: ./api
         container_name: enako-api
         depends_on:
-            - "db"
+            - 'db'
         volumes:
             - ./api:/go/src/github.com/BrandonWade/enako/api
         ports:
@@ -45,3 +45,5 @@ services:
         volumes:
             - /app/node_modules
             - ./client:/app
+        environment:
+            - CI=true

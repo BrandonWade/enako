@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DetailRow from '../DetailRow';
-import RoundButton from '../../atoms/RoundButton';
+import Button from '../../atoms/Button';
 import './DetailList.css';
 
 const DetailList = props => {
@@ -18,7 +18,7 @@ const DetailList = props => {
     const renderPaymentsSection = () => {
         return props.expenses.length > 0 ? (
             <>
-                <h4 className='DetailList-sectionHeading'>Expenses</h4>
+                <h4 className='detail-list__section-heading'>Expenses</h4>
                 <table>
                     <tbody>
                         {props.expenses.map(expense => {
@@ -44,9 +44,9 @@ const DetailList = props => {
         const total = getTotal().toFixed(2);
 
         return total > 0 ? (
-            <div className='DetailList-totalSection'>
-                <div className='DetailList-totalText'>Total</div>
-                <div className='DetailList-totalAmount'>${total}</div>
+            <div className='detail-list__total-section'>
+                <div>Total</div>
+                <div>${total}</div>
             </div>
         ) : null;
     };
@@ -54,7 +54,8 @@ const DetailList = props => {
     return (
         <div>
             {renderPaymentsSection()}
-            <div className='DetailList-addItemContainer'>
+            {renderTotalsSection()}
+            <div className='detail-list__add-container'>
                 <Link
                     to={{
                         pathname: '/expenses',
@@ -69,10 +70,9 @@ const DetailList = props => {
                         },
                     }}
                 >
-                    <RoundButton text='+' />
+                    <Button primary text='Add' />
                 </Link>
             </div>
-            {renderTotalsSection()}
         </div>
     );
 };

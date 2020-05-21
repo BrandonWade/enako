@@ -14,7 +14,7 @@ const Calendar = ({ expenses, setSelectedDate }) => {
     };
 
     return (
-        <div className='Calendar'>
+        <div className='calendar'>
             <BigCalendar
                 localizer={localizer}
                 events={[]}

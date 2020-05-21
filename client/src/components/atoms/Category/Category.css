@@ -1,32 +1,32 @@
-.Category {
+.category {
     display: inline-block;
     padding: 0.25rem 0.5rem;
-    border-radius: 5px;
-    font-size: 0.9rem;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
     color: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: var(--line);
 }
 
-.Category--food {
+.category--food {
     background-color: #fea3aa;
 }
 
-.Category--entertainment {
+.category--entertainment {
     background-color: #f8b88b;
 }
 
-.Category--transportation {
+.category--transportation {
     background-color: #faf884;
 }
 
-.Category--clothing {
+.category--clothing {
     background-color: #baed91;
 }
 
-.Category--technology {
+.category--technology {
     background-color: #b2cefe;
 }
 
-.Category--health {
+.category--health {
     background-color: #f2a2e8;
 }

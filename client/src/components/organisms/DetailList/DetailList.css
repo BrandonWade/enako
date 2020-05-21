@@ -1,15 +1,19 @@
-.DetailList-sectionHeading {
+.detail-list__section-heading {
     margin: 0;
 }
 
-.DetailList-addItemContainer {
+.detail-list__add-container {
     display: flex;
     justify-content: flex-end;
 }
 
-.DetailList-totalSection {
-    margin-top: 3rem;
+.detail-list__total-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    margin-bottom: 2.5rem;
+    border-top: var(--line);
     display: flex;
     justify-content: space-between;
+    font-size: 1.3rem;
     font-weight: 700;
 }

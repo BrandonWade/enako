@@ -1,39 +1,14 @@
-.Editor {
-    height: 100%;
+.editor {
     display: flex;
     justify-content: center;
 }
 
-.Editor-content {
-    width: 35vw;
+.editor__content {
+    width: 40vw;
+    margin-top: 5rem;
+}
+
+.editor__buttons {
     display: flex;
-    flex-direction: column;
-    padding-top: 5rem;
-}
-
-.Editor-heading {
-    text-align: center;
-}
-
-.Editor-form {
-    flex: 1;
-}
-
-.Editor-formSection {
-    margin-bottom: 2rem;
-}
-
-.Editor-fieldLabel {
-    display: block;
-}
-
-.Editor-fieldDescription {
-    color: rgba(0, 0, 0, 0.4);
-    font-size: 0.9rem;
-}
-
-.Editor-formButtons {
-    display: flex;
-    flex-direction: row;
     justify-content: space-between;
 }

@@ -24,63 +24,61 @@ const Editor = props => {
 
     const { types, categories } = props.location.state;
     return (
-        <div className='Editor'>
-            <div className='Editor-content'>
+        <div className='editor'>
+            <div className='editor__content'>
                 <Card heading={renderHeadingText()}>
-                    <div className='Editor-form'>
-                        <SelectField
-                            name='type'
-                            label='Type'
-                            value={type}
-                            description='Choose the most relevant type of expense'
-                            onChange={e => setType(e.target.value)}
-                        >
-                            <option value=''>-- Select a Type -- </option>
-                            {types.map(type => {
-                                return (
-                                    <option key={type.id} value={type.type_name}>
-                                        {type.type_name}
-                                    </option>
-                                );
-                            })}
-                        </SelectField>
-                        <SelectField
-                            name='category'
-                            label='Category'
-                            value={category}
-                            description='Choose the most relevant category of expense'
-                            onChange={e => setCategory(e.target.value)}
-                        >
-                            <option value=''>-- Select a Category -- </option>
-                            {categories.map(category => {
-                                return (
-                                    <option key={category.id} value={category.category_name}>
-                                        {category.category_name}
-                                    </option>
-                                );
-                            })}
-                        </SelectField>
-                        <InputField
-                            name='description'
-                            label='Description'
-                            value={description}
-                            description='Give a brief description of this expense'
-                            onChange={e => setDescription(e.target.value)}
-                        />
-                        <InputField
-                            name='amount'
-                            label='Amount'
-                            value={amount}
-                            description='Enter the cost of this expense'
-                            onChange={e => setAmount(e.target.value)}
-                        />
-                    </div>
-                    <div className='Editor-formButtons'>
+                    <SelectField
+                        name='type'
+                        label='Type'
+                        value={type}
+                        description='Choose the most relevant type of expense'
+                        onChange={e => setType(e.target.value)}
+                    >
+                        <option value=''>-- Select a Type -- </option>
+                        {types.map(type => {
+                            return (
+                                <option key={type.id} value={type.type_name}>
+                                    {type.type_name}
+                                </option>
+                            );
+                        })}
+                    </SelectField>
+                    <SelectField
+                        name='category'
+                        label='Category'
+                        value={category}
+                        description='Choose the most relevant category of expense'
+                        onChange={e => setCategory(e.target.value)}
+                    >
+                        <option value=''>-- Select a Category -- </option>
+                        {categories.map(category => {
+                            return (
+                                <option key={category.id} value={category.category_name}>
+                                    {category.category_name}
+                                </option>
+                            );
+                        })}
+                    </SelectField>
+                    <InputField
+                        name='description'
+                        label='Description'
+                        value={description}
+                        description='Give a brief description of this expense'
+                        onChange={e => setDescription(e.target.value)}
+                    />
+                    <InputField
+                        name='amount'
+                        label='Amount'
+                        value={amount}
+                        description='Enter the cost of this expense'
+                        onChange={e => setAmount(e.target.value)}
+                    />
+                    <div className='editor__buttons'>
                         <Link to='/'>
                             <Button text='Cancel' />
                         </Link>
                         <div>
-                            <Button main={true} text={renderSubmitButtonText()} />
+                            <Button primary text={renderSubmitButtonText()} />
                         </div>
                     </div>
                 </Card>

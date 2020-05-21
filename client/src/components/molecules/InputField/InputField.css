@@ -1,7 +1,7 @@
-input[type=text] {
+input[type='text'] {
     width: 100%;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
+    border: var(--line);
+    border-radius: var(--border-radius);
     font-size: 1.25rem;
-    padding: 0.5rem 0.35rem;
+    padding: 0.8rem 0.5rem;
 }

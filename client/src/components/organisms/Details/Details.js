@@ -16,16 +16,14 @@ const Details = props => {
     };
 
     return (
-        <div className='Details'>
-            <Card heading={moment(props.selectedDate).format('MMMM Do YYYY')}>
-                <DetailList
-                    selectedDate={props.selectedDate}
-                    types={props.types}
-                    categories={props.categories}
-                    expenses={filterExpenses(props.selectedDate)}
-                />
-            </Card>
-        </div>
+        <Card heading={moment(props.selectedDate).format('MMMM Do YYYY')}>
+            <DetailList
+                selectedDate={props.selectedDate}
+                types={props.types}
+                categories={props.categories}
+                expenses={filterExpenses(props.selectedDate)}
+            />
+        </Card>
     );
 };
 

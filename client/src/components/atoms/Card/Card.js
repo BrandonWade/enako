@@ -1,10 +1,10 @@
 import React from 'react';
 import './Card.css';
 
-const Card = (props) => {
+const Card = props => {
     return (
-        <div className='Card'>
-            {props.heading && <h2 className='Card-heading'>{props.heading}</h2>}
+        <div className={`card ${props.className || ''}`}>
+            {props.heading && <h2 className='card__heading'>{props.heading}</h2>}
             {props.children}
         </div>
     );

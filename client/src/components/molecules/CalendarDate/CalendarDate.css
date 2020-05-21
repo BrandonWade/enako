@@ -1,10 +1,10 @@
-.CalendarDate {
+.calendar-date {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.75rem;
 }
 
 .u-negative {

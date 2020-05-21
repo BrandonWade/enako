@@ -15,9 +15,9 @@ const calculateTotal = (date, expenses) => {
     return (total || 0).toFixed(2);
 };
 
-const CalendarDate = ({ expenses }) => (props) => {
+const CalendarDate = ({ expenses }) => props => {
     const total = calculateTotal(props.value, expenses);
-    const className = `${props.children.props.className} CalendarDate ${total > 0 ? 'u-negative' : 'u-positive'}`;
+    const className = `${props.children.props.className} calendar-date ${total > 0 ? 'u-negative' : 'u-positive'}`;
 
     return <div className={className}>{`$${total}`}</div>;
 };
