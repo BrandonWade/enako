@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import CategoryContext from '../../../contexts/CategoryContext';
+import TypeContext from '../../../contexts/TypeContext';
 import Card from '../../atoms/Card';
 import Button from '../../atoms/Button';
 import InputField from '../../molecules/InputField';
@@ -12,6 +14,8 @@ const Editor = props => {
     const [category, setCategory] = useState(props.location.state.category);
     const [description, setDescription] = useState(props.location.state.description);
     const [amount, setAmount] = useState(props.location.state.amount);
+    const types = useContext(TypeContext);
+    const categories = useContext(CategoryContext);
 
     const renderHeadingText = () => {
         const formattedDate = moment(props.selectedDate).format('MMMM Do YYYY');
@@ -22,7 +26,6 @@ const Editor = props => {
         return props.computedMatch.params.id ? 'Save' : 'Create';
     };
 
-    const { types, categories } = props.location.state;
     return (
         <div className='editor'>
             <div className='editor__content'>
@@ -35,10 +38,10 @@ const Editor = props => {
                         onChange={e => setType(e.target.value)}
                     >
                         <option value=''>-- Select a Type -- </option>
-                        {types.map(type => {
+                        {types.map(t => {
                             return (
-                                <option key={type.id} value={type.type_name}>
-                                    {type.type_name}
+                                <option key={t.id} value={t.type_name}>
+                                    {t.type_name}
                                 </option>
                             );
                         })}
@@ -51,10 +54,10 @@ const Editor = props => {
                         onChange={e => setCategory(e.target.value)}
                     >
                         <option value=''>-- Select a Category -- </option>
-                        {categories.map(category => {
+                        {categories.map(c => {
                             return (
-                                <option key={category.id} value={category.category_name}>
-                                    {category.category_name}
+                                <option key={c.id} value={c.category_name}>
+                                    {c.category_name}
                                 </option>
                             );
                         })}

@@ -22,15 +22,7 @@ const DetailList = props => {
                 <table>
                     <tbody>
                         {props.expenses.map(expense => {
-                            return (
-                                <DetailRow
-                                    key={expense.id}
-                                    selectedDate={props.selectedDate}
-                                    types={props.types}
-                                    categories={props.categories}
-                                    expense={expense}
-                                />
-                            );
+                            return <DetailRow key={expense.id} selectedDate={props.selectedDate} expense={expense} />;
                         })}
                     </tbody>
                 </table>

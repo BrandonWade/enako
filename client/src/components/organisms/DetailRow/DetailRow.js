@@ -12,8 +12,6 @@ const DetailRow = props => {
                         pathname: `/expenses/${props.expense.id}`,
                         state: {
                             selectedDate: props.selectedDate,
-                            types: props.types,
-                            categories: props.categories,
                             ...props.expense,
                         },
                     }}

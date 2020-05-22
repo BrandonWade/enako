@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import moment from 'moment';
+import ExpenseContext from '../../../contexts/ExpenseContext';
 import DetailList from '../DetailList';
 import Card from '../../atoms/Card';
 import './Details.css';
 
 const Details = props => {
-    const filterExpenses = date => {
+    const expenses = useContext(ExpenseContext);
+
+    const filterExpenses = (expenses, date) => {
         const compareDate = moment(date).format('YYYY-MM-DD');
-        const expenses = props.expenses.filter(expense => expense.expense_date === compareDate);
-        if (expenses.length) {
-            return expenses;
+        const dailyExpenses = expenses.filter(expense => expense.expense_date === compareDate);
+        if (dailyExpenses.length) {
+            return dailyExpenses;
         }
 
         return [];
@@ -17,12 +20,7 @@ const Details = props => {
 
     return (
         <Card heading={moment(props.selectedDate).format('MMMM Do YYYY')}>
-            <DetailList
-                selectedDate={props.selectedDate}
-                types={props.types}
-                categories={props.categories}
-                expenses={filterExpenses(props.selectedDate)}
-            />
+            <DetailList selectedDate={props.selectedDate} expenses={filterExpenses(expenses, props.selectedDate)} />
         </Card>
     );
 };
