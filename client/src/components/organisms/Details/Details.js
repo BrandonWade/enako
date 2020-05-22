@@ -20,7 +20,7 @@ const Details = props => {
 
     return (
         <Card heading={moment(props.selectedDate).format('MMMM Do YYYY')}>
-            <DetailList selectedDate={props.selectedDate} expenses={filterExpenses(expenses, props.selectedDate)} />
+            <DetailList expenses={filterExpenses(expenses, props.selectedDate)} />
         </Card>
     );
 };

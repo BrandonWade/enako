@@ -3,18 +3,11 @@ import { Link } from 'react-router-dom';
 import Category from '../../atoms/Category';
 import './DetailRow.css';
 
-const DetailRow = ({ expense, selectedDate }) => {
+const DetailRow = ({ expense }) => {
     return (
         <tr>
             <td>
-                <Link
-                    to={{
-                        pathname: `/expenses/${expense.id}`,
-                        state: {
-                            selectedDate: selectedDate,
-                        },
-                    }}
-                >
+                <Link to={`/expenses/${expense.id}`}>
                     <button>Edit</button>
                 </Link>
             </td>

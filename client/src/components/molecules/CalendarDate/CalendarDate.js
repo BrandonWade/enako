@@ -4,15 +4,9 @@ import './CalendarDate.css';
 
 const calculateTotal = (date, expenses) => {
     const compareDate = moment(date).format('YYYY-MM-DD');
-    const total = expenses.reduce((total, expense) => {
-        if (expense.expense_date === compareDate) {
-            return total + expense.expense_amount;
-        }
+    const total = expenses.reduce((total, expense) => (expense.expense_date === compareDate ? total + expense.expense_amount : total), 0);
 
-        return total;
-    }, 0);
-
-    return (total || 0).toFixed(2);
+    return total.toFixed(2);
 };
 
 const CalendarDate = ({ expenses }) => props => {

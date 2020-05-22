@@ -4,7 +4,7 @@ import DetailRow from '../DetailRow';
 import Button from '../../atoms/Button';
 import './DetailList.css';
 
-const DetailList = ({ expenses, selectedDate }) => {
+const DetailList = ({ expenses }) => {
     const total = expenses.reduce((total, expense) => (total += expense.expense_amount), 0);
 
     const renderPaymentsSection = () => {
@@ -14,7 +14,7 @@ const DetailList = ({ expenses, selectedDate }) => {
                 <table>
                     <tbody>
                         {expenses.map(expense => {
-                            return <DetailRow key={expense.id} selectedDate={selectedDate} expense={expense} />;
+                            return <DetailRow key={expense.id} expense={expense} />;
                         })}
                     </tbody>
                 </table>
@@ -38,14 +38,7 @@ const DetailList = ({ expenses, selectedDate }) => {
             {renderPaymentsSection()}
             {renderTotalsSection()}
             <div className='detail-list__add-container'>
-                <Link
-                    to={{
-                        pathname: '/expenses',
-                        state: {
-                            selectedDate: selectedDate,
-                        },
-                    }}
-                >
+                <Link to='/expenses'>
                     <Button primary text='Add' />
                 </Link>
             </div>

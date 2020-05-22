@@ -12,10 +12,6 @@ const views = ['month'];
 const Calendar = ({ setSelectedDate }) => {
     const expenses = useContext(ExpenseContext);
 
-    const onDateSelected = evt => {
-        setSelectedDate(evt.start);
-    };
-
     return (
         <div className='calendar'>
             <BigCalendar
@@ -27,7 +23,7 @@ const Calendar = ({ setSelectedDate }) => {
                 components={{
                     dateCellWrapper: CalendarDate({ expenses }),
                 }}
-                onSelectSlot={onDateSelected}
+                onSelectSlot={e => setSelectedDate(e.start)}
             />
         </div>
     );

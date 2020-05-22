@@ -25,4 +25,12 @@ export default createContext([
         expense_amount: 75.0,
         expense_date: '2020-05-22',
     },
+    {
+        id: 4,
+        expense_type: 'unnecessary',
+        expense_category: 'entertainment',
+        expense_description: 'fizz',
+        expense_amount: 50.0,
+        expense_date: '2020-05-20',
+    },
 ]);

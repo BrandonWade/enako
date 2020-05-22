@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import TypeContext from '../../../contexts/TypeContext';
 import CategoryContext from '../../../contexts/CategoryContext';
 import ExpenseContext from '../../../contexts/ExpenseContext';
@@ -11,6 +12,7 @@ import SelectField from '../../molecules/SelectField';
 import './Editor.css';
 
 const Editor = props => {
+    const selectedDate = useContext(SelectedDateContext);
     const types = useContext(TypeContext);
     const categories = useContext(CategoryContext);
     const expenses = useContext(ExpenseContext);
@@ -21,8 +23,12 @@ const Editor = props => {
     const [description, setDescription] = useState(expense.expense_description || '');
     const [amount, setAmount] = useState(expense.expense_amount || 0);
 
+    const notFoundRedirect = () => {
+        return props.computedMatch.params.id && !expense.id ? <Redirect to='/' /> : null;
+    };
+
     const renderHeadingText = () => {
-        const formattedDate = moment(props.selectedDate).format('MMMM Do, YYYY');
+        const formattedDate = moment(selectedDate).format('MMMM Do, YYYY');
         return props.computedMatch.params.id ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
     };
 
@@ -31,66 +37,69 @@ const Editor = props => {
     };
 
     return (
-        <div className='editor'>
-            <div className='editor__content'>
-                <Card heading={renderHeadingText()}>
-                    <SelectField
-                        name='type'
-                        label='Type'
-                        value={type}
-                        description='Choose the most relevant type of expense'
-                        onChange={e => setType(e.target.value)}
-                    >
-                        <option value=''>-- Select a Type -- </option>
-                        {types.map(t => {
-                            return (
-                                <option key={t.id} value={t.type_name}>
-                                    {t.type_name}
-                                </option>
-                            );
-                        })}
-                    </SelectField>
-                    <SelectField
-                        name='category'
-                        label='Category'
-                        value={category}
-                        description='Choose the most relevant category of expense'
-                        onChange={e => setCategory(e.target.value)}
-                    >
-                        <option value=''>-- Select a Category -- </option>
-                        {categories.map(c => {
-                            return (
-                                <option key={c.id} value={c.category_name}>
-                                    {c.category_name}
-                                </option>
-                            );
-                        })}
-                    </SelectField>
-                    <InputField
-                        name='description'
-                        label='Description'
-                        value={description}
-                        description='Give a brief description of this expense'
-                        onChange={e => setDescription(e.target.value)}
-                    />
-                    <InputField
-                        name='amount'
-                        label='Amount'
-                        value={amount}
-                        description='Enter the cost of this expense'
-                        onChange={e => setAmount(e.target.value)}
-                    />
-                    <div className='editor__buttons'>
-                        <Link to='/'>
-                            <Button text='Cancel' />
-                        </Link>
-                        <div>
-                            <Button primary text={renderSubmitButtonText()} />
+        <>
+            {notFoundRedirect()}
+            <div className='editor'>
+                <div className='editor__content'>
+                    <Card heading={renderHeadingText()}>
+                        <SelectField
+                            name='type'
+                            label='Type'
+                            value={type}
+                            description='Choose the most relevant type of expense'
+                            onChange={e => setType(e.target.value)}
+                        >
+                            <option value=''>-- Select a Type -- </option>
+                            {types.map(t => {
+                                return (
+                                    <option key={t.id} value={t.type_name}>
+                                        {t.type_name}
+                                    </option>
+                                );
+                            })}
+                        </SelectField>
+                        <SelectField
+                            name='category'
+                            label='Category'
+                            value={category}
+                            description='Choose the most relevant category of expense'
+                            onChange={e => setCategory(e.target.value)}
+                        >
+                            <option value=''>-- Select a Category -- </option>
+                            {categories.map(c => {
+                                return (
+                                    <option key={c.id} value={c.category_name}>
+                                        {c.category_name}
+                                    </option>
+                                );
+                            })}
+                        </SelectField>
+                        <InputField
+                            name='description'
+                            label='Description'
+                            value={description}
+                            description='Give a brief description of this expense'
+                            onChange={e => setDescription(e.target.value)}
+                        />
+                        <InputField
+                            name='amount'
+                            label='Amount'
+                            value={amount}
+                            description='Enter the cost of this expense'
+                            onChange={e => setAmount(e.target.value)}
+                        />
+                        <div className='editor__buttons'>
+                            <Link to='/'>
+                                <Button text='Cancel' />
+                            </Link>
+                            <div>
+                                <Button primary text={renderSubmitButtonText()} />
+                            </div>
                         </div>
-                    </div>
-                </Card>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
