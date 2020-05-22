@@ -2,6 +2,11 @@
     margin: 0;
 }
 
+.detail-list__message {
+    margin: 2rem 0;
+    font-size: 1.4rem;
+}
+
 .detail-list__add-container {
     display: flex;
     justify-content: flex-end;

@@ -4,41 +4,31 @@ import DetailRow from '../DetailRow';
 import Button from '../../atoms/Button';
 import './DetailList.css';
 
-const DetailList = props => {
-    const getTotal = () => {
-        let total = 0.0;
-
-        props.expenses.forEach(expense => {
-            total += expense.expense_amount;
-        });
-
-        return total;
-    };
+const DetailList = ({ expenses, selectedDate }) => {
+    const total = expenses.reduce((total, expense) => (total += expense.expense_amount), 0);
 
     const renderPaymentsSection = () => {
-        return props.expenses.length > 0 ? (
+        return expenses.length > 0 ? (
             <>
                 <h4 className='detail-list__section-heading'>Expenses</h4>
                 <table>
                     <tbody>
-                        {props.expenses.map(expense => {
-                            return <DetailRow key={expense.id} selectedDate={props.selectedDate} expense={expense} />;
+                        {expenses.map(expense => {
+                            return <DetailRow key={expense.id} selectedDate={selectedDate} expense={expense} />;
                         })}
                     </tbody>
                 </table>
             </>
         ) : (
-            'No expenses to display.'
+            <p className='detail-list__message'>No expenses to display.</p>
         );
     };
 
     const renderTotalsSection = () => {
-        const total = getTotal().toFixed(2);
-
         return total > 0 ? (
             <div className='detail-list__total-section'>
                 <div>Total</div>
-                <div>${total}</div>
+                <div>${total.toFixed(2)}</div>
             </div>
         ) : null;
     };
@@ -52,13 +42,7 @@ const DetailList = props => {
                     to={{
                         pathname: '/expenses',
                         state: {
-                            selectedDate: props.selectedDate,
-                            types: props.types,
-                            categories: props.categories,
-                            type: '',
-                            category: '',
-                            description: '',
-                            amount: 0.0,
+                            selectedDate: selectedDate,
                         },
                     }}
                 >

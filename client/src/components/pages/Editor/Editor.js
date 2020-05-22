@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import CategoryContext from '../../../contexts/CategoryContext';
 import TypeContext from '../../../contexts/TypeContext';
+import CategoryContext from '../../../contexts/CategoryContext';
+import ExpenseContext from '../../../contexts/ExpenseContext';
 import Card from '../../atoms/Card';
 import Button from '../../atoms/Button';
 import InputField from '../../molecules/InputField';
@@ -10,16 +11,19 @@ import SelectField from '../../molecules/SelectField';
 import './Editor.css';
 
 const Editor = props => {
-    const [type, setType] = useState(props.location.state.type);
-    const [category, setCategory] = useState(props.location.state.category);
-    const [description, setDescription] = useState(props.location.state.description);
-    const [amount, setAmount] = useState(props.location.state.amount);
     const types = useContext(TypeContext);
     const categories = useContext(CategoryContext);
+    const expenses = useContext(ExpenseContext);
+    const expense = expenses.find(e => e.id === parseInt(props.computedMatch.params.id)) || {};
+
+    const [type, setType] = useState(expense.expense_type || '');
+    const [category, setCategory] = useState(expense.expense_category || '');
+    const [description, setDescription] = useState(expense.expense_description || '');
+    const [amount, setAmount] = useState(expense.expense_amount || 0);
 
     const renderHeadingText = () => {
-        const formattedDate = moment(props.selectedDate).format('MMMM Do YYYY');
-        return props.computedMatch.params.id ? `Editing expense on ${formattedDate}` : `Creating new expense on ${formattedDate}`;
+        const formattedDate = moment(props.selectedDate).format('MMMM Do, YYYY');
+        return props.computedMatch.params.id ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
     };
 
     const renderSubmitButtonText = () => {
