@@ -6,7 +6,11 @@ const Button = props => {
         return props.primary ? ' button--primary' : '';
     };
 
-    return <button className={`button ${getButtonType()} ${props.className || ''}`}>{props.text}</button>;
+    return (
+        <button className={`button ${getButtonType()} ${props.className || ''}`} onClick={props.onClick}>
+            {props.text}
+        </button>
+    );
 };
 
 export default Button;

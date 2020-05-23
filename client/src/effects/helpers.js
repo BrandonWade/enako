@@ -1,6 +1,39 @@
-export const fetchFromServer = async (url) => {
+export const fetchFromServer = async url => {
     const response = await fetch(url);
-    const data = await response.json();
+    return await response.json();
+};
 
-    return data;
+export const postToServer = async (url, data) => {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    return await response.json();
+};
+
+export const putToServer = async (url, data) => {
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    return await response.json();
+};
+
+export const deleteFromServer = async url => {
+    const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    return await response.json();
 };

@@ -26,4 +26,17 @@
             background-color: #e68c00;
         }
     }
+
+    &--red {
+        background-color: crimson;
+        color: #ffffff;
+
+        &:hover {
+            background-color: #e84061;
+        }
+
+        &:active {
+            background-color: #ad1433;
+        }
+    }
 }

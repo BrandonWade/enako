@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import createExpense from '../../../effects/createExpense';
+import updateExpense from '../../../effects/updateExpense';
+import deleteExpense from '../../../effects/deleteExpense';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import TypeContext from '../../../contexts/TypeContext';
 import CategoryContext from '../../../contexts/CategoryContext';
@@ -33,8 +36,33 @@ const Editor = props => {
         return props.computedMatch.params.id ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
     };
 
+    const renderDeleteButton = () => {
+        return props.computedMatch.params.id ? <Button text='Delete' className='editor__delete button--red' onClick={onExpenseDelete} /> : null;
+    };
+
     const renderSubmitButtonText = () => {
         return props.computedMatch.params.id ? 'Save' : 'Create';
+    };
+
+    const onExpenseDelete = () => {
+        const id = props.computedMatch.params.id;
+        deleteExpense(id);
+    };
+
+    const onExpenseSubmit = () => {
+        const id = props.computedMatch.params.id || 0;
+        const data = {
+            type,
+            category,
+            description,
+            amount,
+        };
+
+        if (id) {
+            updateExpense(id, data);
+        } else {
+            createExpense(data);
+        }
     };
 
     return (
@@ -94,7 +122,8 @@ const Editor = props => {
                                 <Button text='Cancel' />
                             </Link>
                             <div>
-                                <Button primary text={renderSubmitButtonText()} />
+                                {renderDeleteButton()}
+                                <Button primary text={renderSubmitButtonText()} onClick={() => onExpenseSubmit()} />
                             </div>
                         </div>
                     </Card>
