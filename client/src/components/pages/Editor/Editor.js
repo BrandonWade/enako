@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { format } from 'date-fns';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import TypeContext from '../../../contexts/TypeContext';
 import CategoryContext from '../../../contexts/CategoryContext';
 import ExpenseContext from '../../../contexts/ExpenseContext';
+import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
 import Card from '../../atoms/Card';
 import Button from '../../atoms/Button';
 import InputField from '../../molecules/InputField';
@@ -24,7 +25,7 @@ const Editor = props => {
     const [amount, setAmount] = useState(expense.expense_amount || 0);
 
     const notFoundRedirect = () => {
-        return props.computedMatch.params.id && !expense.id ? <Redirect to='/' /> : null;
+        return props.computedMatch.params.id && !expense.id ? <AuthenticatedRedirect /> : null;
     };
 
     const renderHeadingText = () => {
