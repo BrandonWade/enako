@@ -9,7 +9,7 @@ import Card from '../../atoms/Card';
 import Button from '../../atoms/Button';
 import InputField from '../../molecules/InputField';
 import SelectField from '../../molecules/SelectField';
-import './Editor.css';
+import './Editor.scss';
 
 const Editor = props => {
     const selectedDate = useContext(SelectedDateContext);

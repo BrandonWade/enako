@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import './CalendarDate.css';
+import './CalendarDate.scss';
 
 const calculateTotal = (date, expenses) => {
     const compareDate = format(date, 'yyy-MM-dd');

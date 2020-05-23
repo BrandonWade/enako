@@ -1,7 +1,7 @@
 import React from 'react';
 import Calendar from '../../molecules/Calendar';
 import Details from '../../organisms/Details';
-import './Home.css';
+import './Home.scss';
 
 const Home = props => {
     return (

@@ -1,0 +1,29 @@
+.button {
+    padding: 1rem 2.5rem;
+    border-radius: 2px;
+    border: none;
+    font-size: 1.3rem;
+    background-color: #f2f1f0;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: #f7f7f7;
+    }
+
+    &:active {
+        background-color: #d9d8d7;
+    }
+
+    &--primary {
+        background-color: orange;
+        color: #ffffff;
+
+        &:hover {
+            background-color: #ffbf1a;
+        }
+
+        &:active {
+            background-color: #e68c00;
+        }
+    }
+}

@@ -1,0 +1,14 @@
+.detail-row {
+    &__description {
+        width: 100%;
+    }
+
+    &__amount {
+        text-align: right;
+    }
+
+    &__description,
+    &__amount {
+        font-size: 1.2rem;
+    }
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import DetailRow from '../DetailRow';
 import Button from '../../atoms/Button';
-import './DetailList.css';
+import './DetailList.scss';
 
 const DetailList = ({ expenses }) => {
     const total = expenses.reduce((total, expense) => (total += expense.expense_amount), 0);

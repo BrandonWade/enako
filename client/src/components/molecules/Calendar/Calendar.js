@@ -8,7 +8,7 @@ import style from 'react-big-calendar/lib/css/react-big-calendar.css';
 import enUS from 'date-fns/locale/en-US';
 import ExpenseContext from '../../../contexts/ExpenseContext';
 import CalendarDate from '../CalendarDate';
-import './Calendar.css';
+import './Calendar.scss';
 
 const localizer = dateFnsLocalizer({
     format,

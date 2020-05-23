@@ -1,0 +1,14 @@
+.editor {
+    display: flex;
+    justify-content: center;
+
+    &__content {
+        width: 40vw;
+        margin-top: 5rem;
+    }
+
+    &__buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+}

@@ -4,9 +4,9 @@
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
     background-color: #fff;
-}
 
-.card__heading {
-    text-align: center;
-    margin-bottom: 1rem;
+    &__heading {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
 }

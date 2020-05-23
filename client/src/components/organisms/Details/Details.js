@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import ExpenseContext from '../../../contexts/ExpenseContext';
 import DetailList from '../DetailList';
 import Card from '../../atoms/Card';
-import './Details.css';
+import './Details.scss';
 
 const Details = props => {
     const expenses = useContext(ExpenseContext);

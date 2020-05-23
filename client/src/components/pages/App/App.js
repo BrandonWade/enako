@@ -7,7 +7,7 @@ import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
 import Home from '../Home';
 import Login from '../Login';
 import Editor from '../Editor';
-import './App.css';
+import './App.scss';
 
 const App = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());

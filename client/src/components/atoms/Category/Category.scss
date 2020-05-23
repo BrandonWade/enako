@@ -1,0 +1,32 @@
+.category {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    color: rgba(0, 0, 0, 0.8);
+    border: var(--line);
+
+    &--food {
+        background-color: #fea3aa;
+    }
+
+    &--entertainment {
+        background-color: #f8b88b;
+    }
+
+    &--transportation {
+        background-color: #faf884;
+    }
+
+    &--clothing {
+        background-color: #baed91;
+    }
+
+    &--technology {
+        background-color: #b2cefe;
+    }
+
+    &--health {
+        background-color: #f2a2e8;
+    }
+}

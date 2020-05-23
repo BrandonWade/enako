@@ -1,6 +1,6 @@
 import React from 'react';
 import withFormField from '../../hocs/withFormField';
-import './SelectField.css';
+import './SelectField.scss';
 
 const SelectField = props => {
     return (

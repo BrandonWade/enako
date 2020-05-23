@@ -1,0 +1,26 @@
+.detail-list {
+    &__section-heading {
+        margin: 0;
+    }
+
+    &__message {
+        margin: 2rem 0;
+        font-size: 1.4rem;
+    }
+
+    &__add-container {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &__total-section {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        margin-bottom: 2.5rem;
+        border-top: var(--line);
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+}

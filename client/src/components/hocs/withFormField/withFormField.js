@@ -1,5 +1,5 @@
 import React from 'react';
-import './withFormField.css';
+import './withFormField.scss';
 
 const withFormField = BaseComponent => {
     const FormField = props => {

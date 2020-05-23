@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Category from '../../atoms/Category';
-import './DetailRow.css';
+import './DetailRow.scss';
 
 const DetailRow = ({ expense }) => {
     return (
