@@ -1,13 +1,24 @@
 import React, { useContext } from 'react';
-import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
+import { Calendar as BigCalendar, dateFnsLocalizer } from 'react-big-calendar';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+import startOfWeek from 'date-fns/startOfWeek';
+import getDay from 'date-fns/getDay';
 import style from 'react-big-calendar/lib/css/react-big-calendar.css';
+import enUS from 'date-fns/locale/en-US';
 import ExpenseContext from '../../../contexts/ExpenseContext';
 import CalendarDate from '../CalendarDate';
 import './Calendar.css';
 
-const localizer = momentLocalizer(moment);
-const views = ['month'];
+const localizer = dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales: {
+        'en-US': enUS,
+    },
+});
 
 const Calendar = ({ setSelectedDate }) => {
     const expenses = useContext(ExpenseContext);
@@ -17,7 +28,7 @@ const Calendar = ({ setSelectedDate }) => {
             <BigCalendar
                 localizer={localizer}
                 events={[]}
-                views={views}
+                views={['month']}
                 style={style}
                 selectable='ignoreEvents'
                 components={{

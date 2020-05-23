@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { Link, Redirect } from 'react-router-dom';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import TypeContext from '../../../contexts/TypeContext';
@@ -28,7 +28,7 @@ const Editor = props => {
     };
 
     const renderHeadingText = () => {
-        const formattedDate = moment(selectedDate).format('MMMM Do, YYYY');
+        const formattedDate = format(selectedDate, 'MMMM do yyyy');
         return props.computedMatch.params.id ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
     };
 

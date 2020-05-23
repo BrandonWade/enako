@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import moment from 'moment';
+import { format } from 'date-fns';
 import ExpenseContext from '../../../contexts/ExpenseContext';
 import DetailList from '../DetailList';
 import Card from '../../atoms/Card';
@@ -9,7 +9,7 @@ const Details = props => {
     const expenses = useContext(ExpenseContext);
 
     const filterExpenses = (expenses, date) => {
-        const compareDate = moment(date).format('YYYY-MM-DD');
+        const compareDate = format(date, 'yyyy-MM-dd');
         const dailyExpenses = expenses.filter(expense => expense.expense_date === compareDate);
         if (dailyExpenses.length) {
             return dailyExpenses;
@@ -19,7 +19,7 @@ const Details = props => {
     };
 
     return (
-        <Card heading={moment(props.selectedDate).format('MMMM Do YYYY')}>
+        <Card heading={format(props.selectedDate, 'MMMM do yyyy')}>
             <DetailList expenses={filterExpenses(expenses, props.selectedDate)} />
         </Card>
     );
