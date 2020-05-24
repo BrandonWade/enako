@@ -9,7 +9,7 @@ import (
 
 //go:generate counterfeiter -o fakes/fake_category_repository.go . CategoryRepository
 type CategoryRepository interface {
-	GetCategories() ([]models.ExpenseCategory, error)
+	GetCategories() ([]models.Category, error)
 }
 
 type categoryRepository struct {
@@ -22,14 +22,14 @@ func NewCategoryRepository(DB *sqlx.DB) CategoryRepository {
 	}
 }
 
-func (c *categoryRepository) GetCategories() ([]models.ExpenseCategory, error) {
-	categories := []models.ExpenseCategory{}
+func (c *categoryRepository) GetCategories() ([]models.Category, error) {
+	categories := []models.Category{}
 
 	err := c.DB.Select(&categories, `SELECT *
-        FROM expense_categories;
+        FROM categories;
     `)
 	if err != nil {
-		return []models.ExpenseCategory{}, err
+		return []models.Category{}, err
 	}
 
 	return categories, nil

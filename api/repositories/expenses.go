@@ -9,9 +9,9 @@ import (
 
 //go:generate counterfeiter -o fakes/fake_expense_repository.go . ExpenseRepository
 type ExpenseRepository interface {
-	GetExpenses(userAccountID int64) ([]models.UserExpense, error)
-	CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error)
-	UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error)
+	GetExpenses(userAccountID int64) ([]models.Expense, error)
+	CreateExpense(userAccountID int64, expense *models.Expense) (int64, error)
+	UpdateExpense(ID, userAccountID int64, expense *models.Expense) (int64, error)
 	DeleteExpense(ID, userAccountID int64) (int64, error)
 }
 
@@ -25,36 +25,33 @@ func NewExpenseRepository(DB *sqlx.DB) ExpenseRepository {
 	}
 }
 
-func (e *expenseRepository) GetExpenses(userAccountID int64) ([]models.UserExpense, error) {
-	expenses := []models.UserExpense{}
+func (e *expenseRepository) GetExpenses(userAccountID int64) ([]models.Expense, error) {
+	expenses := []models.Expense{}
 
 	err := e.DB.Select(&expenses, `SELECT
 		e.id,
-		t.type_name AS expense_type,
-		c.category_name AS expense_category,
-		e.expense_description,
-		e.expense_amount / 100 AS expense_amount,
-		DATE(expense_date) AS expense_date
-        FROM user_expenses AS e
-		INNER JOIN expense_types AS t ON t.id = e.expense_type_id
-		INNER JOIN expense_categories AS c ON c.id = e.expense_category_id
+		c.name category,
+		e.description,
+		e.amount / 100 amount,
+		DATE(expense_date) expense_date
+        FROM expenses e
+		INNER JOIN categories c ON c.id = e.category_id
         WHERE e.user_account_id = ?;
     `, userAccountID)
 	if err != nil {
-		return []models.UserExpense{}, err
+		return []models.Expense{}, err
 	}
 
 	return expenses, nil
 }
 
-func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.UserExpense) (int64, error) {
+func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.Expense) (int64, error) {
 	result, err := e.DB.Exec(`INSERT
-		INTO user_expenses(
+		INTO expenses(
 			user_account_id,
-			expense_type_id,
-			expense_category_id,
-			expense_description,
-			expense_amount,
+			category_id,
+			description,
+			amount,
 			expense_date
 		) VALUES (
 			?,
@@ -66,10 +63,9 @@ func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.U
 		);
 	`,
 		userAccountID,
-		expense.ExpenseTypeID,
-		expense.ExpenseCategoryID,
-		expense.ExpenseDescription,
-		expense.ExpenseAmount,
+		expense.CategoryID,
+		expense.Description,
+		expense.Amount,
 		expense.ExpenseDate,
 	)
 	if err != nil {
@@ -84,22 +80,20 @@ func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.U
 	return ID, nil
 }
 
-func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *models.UserExpense) (int64, error) {
-	result, err := e.DB.Exec(`UPDATE user_expenses
+func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *models.Expense) (int64, error) {
+	result, err := e.DB.Exec(`UPDATE expenses
 		SET
 			user_account_id = ?,
-			expense_type_id = ?,
-			expense_category_id = ?,
-			expense_description = ?,
-			expense_amount = ?,
-			expense_date = ?
+			category_id = ?,
+			description = ?,
+			amount = ?,
+			date = ?
 		WHERE id = ?;
 	`,
 		userAccountID,
-		expense.ExpenseTypeID,
-		expense.ExpenseCategoryID,
-		expense.ExpenseDescription,
-		expense.ExpenseAmount,
+		expense.CategoryID,
+		expense.Description,
+		expense.Amount,
 		expense.ExpenseDate,
 		ID,
 	)
@@ -117,7 +111,7 @@ func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *mode
 
 func (e *expenseRepository) DeleteExpense(ID, userAccountID int64) (int64, error) {
 	result, err := e.DB.Exec(`DELETE
-		FROM user_expenses
+		FROM expenses
 		WHERE id = ?
 		AND user_account_id = ?;
 	`,

@@ -5,7 +5,6 @@ import createExpense from '../../../effects/createExpense';
 import updateExpense from '../../../effects/updateExpense';
 import deleteExpense from '../../../effects/deleteExpense';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
-import TypeContext from '../../../contexts/TypeContext';
 import CategoryContext from '../../../contexts/CategoryContext';
 import ExpenseContext from '../../../contexts/ExpenseContext';
 import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
@@ -17,13 +16,11 @@ import './Editor.scss';
 
 const Editor = props => {
     const selectedDate = useContext(SelectedDateContext);
-    const types = useContext(TypeContext);
     const categories = useContext(CategoryContext);
     const expenses = useContext(ExpenseContext);
     const expenseID = parseInt(props.computedMatch.params.id);
     const expense = expenses.find(e => e.id === expenseID) || {};
 
-    const [type, setType] = useState(expense.expense_type || '');
     const [category, setCategory] = useState(expense.expense_category || '');
     const [description, setDescription] = useState(expense.expense_description || '');
     const [amount, setAmount] = useState(expense.expense_amount || 0);
@@ -52,7 +49,6 @@ const Editor = props => {
     const onExpenseSubmit = () => {
         const id = expenseID || 0;
         const data = {
-            type,
             category,
             description,
             amount,
@@ -71,22 +67,6 @@ const Editor = props => {
             <div className='editor'>
                 <div className='editor__content'>
                     <Card heading={renderHeadingText()}>
-                        <SelectField
-                            name='type'
-                            label='Type'
-                            value={type}
-                            description='Choose the most relevant type of expense'
-                            onChange={e => setType(e.target.value)}
-                        >
-                            <option value=''>-- Select a Type -- </option>
-                            {types.map(t => {
-                                return (
-                                    <option key={t.id} value={t.type_name}>
-                                        {t.type_name}
-                                    </option>
-                                );
-                            })}
-                        </SelectField>
                         <SelectField
                             name='category'
                             label='Category'

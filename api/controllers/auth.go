@@ -68,7 +68,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userAccount.UserAccountPassword != userAccount.ConfirmPassword {
+	if userAccount.Password != userAccount.ConfirmPassword {
 		a.logger.WithFields(logrus.Fields{
 			"method": "AuthController.CreateAccount",
 			"ip":     r.RemoteAddr,
@@ -79,7 +79,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ID, err := a.service.CreateAccount(userAccount.UserAccountEmail, userAccount.UserAccountPassword)
+	ID, err := a.service.CreateAccount(userAccount.Email, userAccount.Password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method": "AuthController.CreateAccount",
@@ -93,7 +93,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userAccount.ID = ID
-	userAccount.UserAccountPassword = ""
+	userAccount.Password = ""
 	userAccount.ConfirmPassword = ""
 
 	w.WriteHeader(http.StatusCreated)

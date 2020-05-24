@@ -18,7 +18,7 @@ import (
 var _ = Describe("ExpenseMiddleware", func() {
 	var (
 		logger    *logrus.Logger
-		decorator func(http.ResponseWriter, *models.UserExpense)
+		decorator func(http.ResponseWriter, *models.Expense)
 		w         *httptest.ResponseRecorder
 		r         *http.Request
 	)
@@ -27,7 +27,7 @@ var _ = Describe("ExpenseMiddleware", func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
-		decorator = func(w http.ResponseWriter, expense *models.UserExpense) {}
+		decorator = func(w http.ResponseWriter, expense *models.Expense) {}
 
 		w = httptest.NewRecorder()
 	})

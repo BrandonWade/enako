@@ -24,8 +24,8 @@ func NewAuthRepository(DB *sqlx.DB) AuthRepository {
 func (a *authRepository) CreateAccount(email, password string) (int64, error) {
 	result, err := a.DB.Exec(`INSERT
 		INTO user_accounts(
-			user_account_email,
-			user_account_password
+			email,
+			password
 		) VALUES (
 			?,
 			?

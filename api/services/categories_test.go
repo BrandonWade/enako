@@ -20,22 +20,22 @@ var _ = Describe("CategoryService", func() {
 		categoryRepo    *fakes.FakeCategoryRepository
 		categoryService services.CategoryService
 
-		categoryList = []models.ExpenseCategory{
-			models.ExpenseCategory{
+		categoryList = []models.Category{
+			models.Category{
 				ID:           111,
-				CategoryName: "test category",
+				Name:         "test category",
 				CreatedAt:    "2018-01-01 00:00:00",
 				UpdatedAt:    "2018-01-01 00:00:00",
 			},
-			models.ExpenseCategory{
+			models.Category{
 				ID:           222,
-				CategoryName: "another test category",
+				Name:         "another test category",
 				CreatedAt:    "2018-01-01 00:00:00",
 				UpdatedAt:    "2018-01-01 00:00:00",
 			},
-			models.ExpenseCategory{
+			models.Category{
 				ID:           333,
-				CategoryName: "yet another test category",
+				Name:         "yet another test category",
 				CreatedAt:    "2018-01-01 00:00:00",
 				UpdatedAt:    "2018-01-01 00:00:00",
 			},
@@ -55,7 +55,7 @@ var _ = Describe("CategoryService", func() {
 		Context("when requesting the list of categories", func() {
 
 			It("returns an error if an error is encountered", func() {
-				categoryRepo.GetCategoriesReturns([]models.ExpenseCategory{}, errors.New("repo error"))
+				categoryRepo.GetCategoriesReturns([]models.Category{}, errors.New("repo error"))
 
 				categories, err := categoryService.GetCategories()
 				Expect(categoryRepo.GetCategoriesCallCount()).To(Equal(1))

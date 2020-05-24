@@ -8,7 +8,7 @@ import (
 
 //go:generate counterfeiter -o fakes/fake_category_service.go . CategoryService
 type CategoryService interface {
-	GetCategories() ([]models.ExpenseCategory, error)
+	GetCategories() ([]models.Category, error)
 }
 
 type categoryService struct {
@@ -23,6 +23,6 @@ func NewCategoryService(logger *logrus.Logger, repo repositories.CategoryReposit
 	}
 }
 
-func (c *categoryService) GetCategories() ([]models.ExpenseCategory, error) {
+func (c *categoryService) GetCategories() ([]models.Category, error) {
 	return c.repo.GetCategories()
 }

@@ -4,7 +4,7 @@ import './CalendarDate.scss';
 
 const calculateTotal = (date, expenses) => {
     const compareDate = format(date, 'yyy-MM-dd');
-    const total = expenses.reduce((total, expense) => (expense.expense_date === compareDate ? total + expense.expense_amount : total), 0);
+    const total = expenses.reduce((total, expense) => (expense.expense_date === compareDate ? total + expense.amount : total), 0);
 
     return total.toFixed(2);
 };

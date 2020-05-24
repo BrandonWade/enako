@@ -30,7 +30,7 @@ var (
 //go:generate counterfeiter -o fakes/fake_expense_controller.go . ExpenseController
 type ExpenseController interface {
 	GetExpenses(w http.ResponseWriter, r *http.Request)
-	CreateExpense(w http.ResponseWriter, e *models.UserExpense)
+	CreateExpense(w http.ResponseWriter, e *models.Expense)
 	UpdateExpense(w http.ResponseWriter, r *http.Request)
 	DeleteExpense(w http.ResponseWriter, r *http.Request)
 }
@@ -71,7 +71,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 	return
 }
 
-func (e *expenseController) CreateExpense(w http.ResponseWriter, expense *models.UserExpense) {
+func (e *expenseController) CreateExpense(w http.ResponseWriter, expense *models.Expense) {
 	userAccountID := int64(1) // TODO: Hardcoded for testing
 
 	if err := validator.Validate(expense); err != nil {
@@ -124,7 +124,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	expense := models.UserExpense{}
+	expense := models.Expense{}
 	err = json.NewDecoder(r.Body).Decode(&expense)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{

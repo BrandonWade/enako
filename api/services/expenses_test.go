@@ -21,42 +21,36 @@ var _ = Describe("ExpenseService", func() {
 		expenseService services.ExpenseService
 
 		accountID   = int64(123456)
-		expenseList = []models.UserExpense{
-			models.UserExpense{
+		expenseList = []models.Expense{
+			models.Expense{
 				ID:                 1,
 				UserAccountID:      12345,
-				ExpenseType:        "test type",
-				ExpenseTypeID:      789,
-				ExpenseCategory:    "test category",
-				ExpenseCategoryID:  123,
-				ExpenseDescription: "test description",
-				ExpenseAmount:      111,
+				Category:           "test category",
+				CategoryID:         123,
+				Description:        "test description",
+				Amount:             111,
 				ExpenseDate:        "2018-01-01 00:00:00",
 				CreatedAt:          "2018-01-01 00:00:00",
 				UpdatedAt:          "2018-01-01 00:00:00",
 			},
-			models.UserExpense{
+			models.Expense{
 				ID:                 2,
 				UserAccountID:      1328904,
-				ExpenseType:        "another test type",
-				ExpenseTypeID:      128973,
-				ExpenseCategory:    "another test category",
-				ExpenseCategoryID:  2340985,
-				ExpenseDescription: "another test description",
-				ExpenseAmount:      222,
+				Category:           "another test category",
+				CategoryID:         2340985,
+				Description:        "another test description",
+				Amount:             222,
 				ExpenseDate:        "2018-01-01 00:00:00",
 				CreatedAt:          "2018-01-01 00:00:00",
 				UpdatedAt:          "2018-01-01 00:00:00",
 			},
-			models.UserExpense{
+			models.Expense{
 				ID:                 3,
 				UserAccountID:      17486329,
-				ExpenseType:        "yet another test type",
-				ExpenseTypeID:      342876,
-				ExpenseCategory:    "yet another test category",
-				ExpenseCategoryID:  123678,
-				ExpenseDescription: "yet another test description",
-				ExpenseAmount:      333,
+				Category:           "yet another test category",
+				CategoryID:         123678,
+				Description:        "yet another test description",
+				Amount:             333,
 				ExpenseDate:        "2018-01-01 00:00:00",
 				CreatedAt:          "2018-01-01 00:00:00",
 				UpdatedAt:          "2018-01-01 00:00:00",
@@ -77,7 +71,7 @@ var _ = Describe("ExpenseService", func() {
 		Context("when requesting the list of expenses", func() {
 
 			It("returns an error if an error is encountered", func() {
-				expenseRepo.GetExpensesReturns([]models.UserExpense{}, errors.New("repo error"))
+				expenseRepo.GetExpensesReturns([]models.Expense{}, errors.New("repo error"))
 
 				expenses, err := expenseService.GetExpenses(accountID)
 				Expect(expenseRepo.GetExpensesCallCount()).To(Equal(1))
@@ -102,9 +96,9 @@ var _ = Describe("ExpenseService", func() {
 
 			var (
 				expenseID = int64(1928736)
-				expense   = &models.UserExpense{
+				expense   = &models.Expense{
 					ID:                 123312,
-					ExpenseDescription: "test expense",
+					Description:        "test expense",
 				}
 			)
 
@@ -134,9 +128,9 @@ var _ = Describe("ExpenseService", func() {
 
 			var (
 				expenseID = int64(235476)
-				expense   = &models.UserExpense{
+				expense   = &models.Expense{
 					ID:                 123312,
-					ExpenseDescription: "test expense",
+					Description:        "test expense",
 				}
 			)
 

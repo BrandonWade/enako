@@ -51,19 +51,16 @@ func init() {
 
 func main() {
 	authRepository := repositories.NewAuthRepository(DB)
-	typeRepository := repositories.NewTypeRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
 	authService := services.NewAuthService(logger, authRepository)
-	typeService := services.NewTypeService(logger, typeRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
 	authController := controllers.NewAuthController(logger, store, authService)
-	typeController := controllers.NewTypeController(logger, store, typeService)
 	categoryController := controllers.NewCategoryController(logger, store, categoryService)
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
@@ -75,9 +72,6 @@ func main() {
 	api.HandleFunc("/accounts", authController.CreateAccount).Methods("POST")
 	api.HandleFunc("/login", authController.Login).Methods("POST")
 	api.HandleFunc("/logout", authController.Logout).Methods("POST")
-
-	// Types
-	api.HandleFunc("/types", typeController.GetTypes).Methods("GET")
 
 	// Categories
 	api.HandleFunc("/categories", categoryController.GetCategories).Methods("GET")
