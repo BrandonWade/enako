@@ -20,7 +20,8 @@ const Editor = props => {
     const types = useContext(TypeContext);
     const categories = useContext(CategoryContext);
     const expenses = useContext(ExpenseContext);
-    const expense = expenses.find(e => e.id === parseInt(props.computedMatch.params.id)) || {};
+    const expenseID = parseInt(props.computedMatch.params.id);
+    const expense = expenses.find(e => e.id === expenseID) || {};
 
     const [type, setType] = useState(expense.expense_type || '');
     const [category, setCategory] = useState(expense.expense_category || '');
@@ -28,29 +29,28 @@ const Editor = props => {
     const [amount, setAmount] = useState(expense.expense_amount || 0);
 
     const notFoundRedirect = () => {
-        return props.computedMatch.params.id && !expense.id ? <AuthenticatedRedirect /> : null;
+        return expenseID && !expense.id ? <AuthenticatedRedirect /> : null;
     };
 
     const renderHeadingText = () => {
         const formattedDate = format(selectedDate, 'MMMM do yyyy');
-        return props.computedMatch.params.id ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
+        return expenseID ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
     };
 
     const renderDeleteButton = () => {
-        return props.computedMatch.params.id ? <Button text='Delete' className='editor__delete button--red' onClick={onExpenseDelete} /> : null;
+        return expenseID ? <Button text='Delete' className='editor__delete button--red' onClick={onExpenseDelete} /> : null;
     };
 
     const renderSubmitButtonText = () => {
-        return props.computedMatch.params.id ? 'Save' : 'Create';
+        return expenseID ? 'Save' : 'Create';
     };
 
     const onExpenseDelete = () => {
-        const id = props.computedMatch.params.id;
-        deleteExpense(id);
+        deleteExpense(expenseID);
     };
 
     const onExpenseSubmit = () => {
-        const id = props.computedMatch.params.id || 0;
+        const id = expenseID || 0;
         const data = {
             type,
             category,
