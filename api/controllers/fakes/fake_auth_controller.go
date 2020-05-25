@@ -2,10 +2,10 @@
 package fakes
 
 import (
-	http "net/http"
-	sync "sync"
+	"net/http"
+	"sync"
 
-	controllers "github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/controllers"
 )
 
 type FakeAuthController struct {

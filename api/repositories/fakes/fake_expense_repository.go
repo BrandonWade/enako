@@ -2,18 +2,18 @@
 package fakes
 
 import (
-	sync "sync"
+	"sync"
 
-	models "github.com/BrandonWade/enako/api/models"
-	repositories "github.com/BrandonWade/enako/api/repositories"
+	"github.com/BrandonWade/enako/api/models"
+	"github.com/BrandonWade/enako/api/repositories"
 )
 
 type FakeExpenseRepository struct {
-	CreateExpenseStub        func(int64, *models.UserExpense) (int64, error)
+	CreateExpenseStub        func(int64, *models.Expense) (int64, error)
 	createExpenseMutex       sync.RWMutex
 	createExpenseArgsForCall []struct {
 		arg1 int64
-		arg2 *models.UserExpense
+		arg2 *models.Expense
 	}
 	createExpenseReturns struct {
 		result1 int64
@@ -37,25 +37,25 @@ type FakeExpenseRepository struct {
 		result1 int64
 		result2 error
 	}
-	GetExpensesStub        func(int64) ([]models.UserExpense, error)
+	GetExpensesStub        func(int64) ([]models.Expense, error)
 	getExpensesMutex       sync.RWMutex
 	getExpensesArgsForCall []struct {
 		arg1 int64
 	}
 	getExpensesReturns struct {
-		result1 []models.UserExpense
+		result1 []models.Expense
 		result2 error
 	}
 	getExpensesReturnsOnCall map[int]struct {
-		result1 []models.UserExpense
+		result1 []models.Expense
 		result2 error
 	}
-	UpdateExpenseStub        func(int64, int64, *models.UserExpense) (int64, error)
+	UpdateExpenseStub        func(int64, int64, *models.Expense) (int64, error)
 	updateExpenseMutex       sync.RWMutex
 	updateExpenseArgsForCall []struct {
 		arg1 int64
 		arg2 int64
-		arg3 *models.UserExpense
+		arg3 *models.Expense
 	}
 	updateExpenseReturns struct {
 		result1 int64
@@ -69,12 +69,12 @@ type FakeExpenseRepository struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeExpenseRepository) CreateExpense(arg1 int64, arg2 *models.UserExpense) (int64, error) {
+func (fake *FakeExpenseRepository) CreateExpense(arg1 int64, arg2 *models.Expense) (int64, error) {
 	fake.createExpenseMutex.Lock()
 	ret, specificReturn := fake.createExpenseReturnsOnCall[len(fake.createExpenseArgsForCall)]
 	fake.createExpenseArgsForCall = append(fake.createExpenseArgsForCall, struct {
 		arg1 int64
-		arg2 *models.UserExpense
+		arg2 *models.Expense
 	}{arg1, arg2})
 	fake.recordInvocation("CreateExpense", []interface{}{arg1, arg2})
 	fake.createExpenseMutex.Unlock()
@@ -94,13 +94,13 @@ func (fake *FakeExpenseRepository) CreateExpenseCallCount() int {
 	return len(fake.createExpenseArgsForCall)
 }
 
-func (fake *FakeExpenseRepository) CreateExpenseCalls(stub func(int64, *models.UserExpense) (int64, error)) {
+func (fake *FakeExpenseRepository) CreateExpenseCalls(stub func(int64, *models.Expense) (int64, error)) {
 	fake.createExpenseMutex.Lock()
 	defer fake.createExpenseMutex.Unlock()
 	fake.CreateExpenseStub = stub
 }
 
-func (fake *FakeExpenseRepository) CreateExpenseArgsForCall(i int) (int64, *models.UserExpense) {
+func (fake *FakeExpenseRepository) CreateExpenseArgsForCall(i int) (int64, *models.Expense) {
 	fake.createExpenseMutex.RLock()
 	defer fake.createExpenseMutex.RUnlock()
 	argsForCall := fake.createExpenseArgsForCall[i]
@@ -197,7 +197,7 @@ func (fake *FakeExpenseRepository) DeleteExpenseReturnsOnCall(i int, result1 int
 	}{result1, result2}
 }
 
-func (fake *FakeExpenseRepository) GetExpenses(arg1 int64) ([]models.UserExpense, error) {
+func (fake *FakeExpenseRepository) GetExpenses(arg1 int64) ([]models.Expense, error) {
 	fake.getExpensesMutex.Lock()
 	ret, specificReturn := fake.getExpensesReturnsOnCall[len(fake.getExpensesArgsForCall)]
 	fake.getExpensesArgsForCall = append(fake.getExpensesArgsForCall, struct {
@@ -221,7 +221,7 @@ func (fake *FakeExpenseRepository) GetExpensesCallCount() int {
 	return len(fake.getExpensesArgsForCall)
 }
 
-func (fake *FakeExpenseRepository) GetExpensesCalls(stub func(int64) ([]models.UserExpense, error)) {
+func (fake *FakeExpenseRepository) GetExpensesCalls(stub func(int64) ([]models.Expense, error)) {
 	fake.getExpensesMutex.Lock()
 	defer fake.getExpensesMutex.Unlock()
 	fake.GetExpensesStub = stub
@@ -234,39 +234,39 @@ func (fake *FakeExpenseRepository) GetExpensesArgsForCall(i int) int64 {
 	return argsForCall.arg1
 }
 
-func (fake *FakeExpenseRepository) GetExpensesReturns(result1 []models.UserExpense, result2 error) {
+func (fake *FakeExpenseRepository) GetExpensesReturns(result1 []models.Expense, result2 error) {
 	fake.getExpensesMutex.Lock()
 	defer fake.getExpensesMutex.Unlock()
 	fake.GetExpensesStub = nil
 	fake.getExpensesReturns = struct {
-		result1 []models.UserExpense
+		result1 []models.Expense
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeExpenseRepository) GetExpensesReturnsOnCall(i int, result1 []models.UserExpense, result2 error) {
+func (fake *FakeExpenseRepository) GetExpensesReturnsOnCall(i int, result1 []models.Expense, result2 error) {
 	fake.getExpensesMutex.Lock()
 	defer fake.getExpensesMutex.Unlock()
 	fake.GetExpensesStub = nil
 	if fake.getExpensesReturnsOnCall == nil {
 		fake.getExpensesReturnsOnCall = make(map[int]struct {
-			result1 []models.UserExpense
+			result1 []models.Expense
 			result2 error
 		})
 	}
 	fake.getExpensesReturnsOnCall[i] = struct {
-		result1 []models.UserExpense
+		result1 []models.Expense
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeExpenseRepository) UpdateExpense(arg1 int64, arg2 int64, arg3 *models.UserExpense) (int64, error) {
+func (fake *FakeExpenseRepository) UpdateExpense(arg1 int64, arg2 int64, arg3 *models.Expense) (int64, error) {
 	fake.updateExpenseMutex.Lock()
 	ret, specificReturn := fake.updateExpenseReturnsOnCall[len(fake.updateExpenseArgsForCall)]
 	fake.updateExpenseArgsForCall = append(fake.updateExpenseArgsForCall, struct {
 		arg1 int64
 		arg2 int64
-		arg3 *models.UserExpense
+		arg3 *models.Expense
 	}{arg1, arg2, arg3})
 	fake.recordInvocation("UpdateExpense", []interface{}{arg1, arg2, arg3})
 	fake.updateExpenseMutex.Unlock()
@@ -286,13 +286,13 @@ func (fake *FakeExpenseRepository) UpdateExpenseCallCount() int {
 	return len(fake.updateExpenseArgsForCall)
 }
 
-func (fake *FakeExpenseRepository) UpdateExpenseCalls(stub func(int64, int64, *models.UserExpense) (int64, error)) {
+func (fake *FakeExpenseRepository) UpdateExpenseCalls(stub func(int64, int64, *models.Expense) (int64, error)) {
 	fake.updateExpenseMutex.Lock()
 	defer fake.updateExpenseMutex.Unlock()
 	fake.UpdateExpenseStub = stub
 }
 
-func (fake *FakeExpenseRepository) UpdateExpenseArgsForCall(i int) (int64, int64, *models.UserExpense) {
+func (fake *FakeExpenseRepository) UpdateExpenseArgsForCall(i int) (int64, int64, *models.Expense) {
 	fake.updateExpenseMutex.RLock()
 	defer fake.updateExpenseMutex.RUnlock()
 	argsForCall := fake.updateExpenseArgsForCall[i]

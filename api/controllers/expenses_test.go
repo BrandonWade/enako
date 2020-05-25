@@ -250,7 +250,7 @@ var _ = Describe("ExpenseController", func() {
 				expenseID := int64(123)
 				categoryID := int64(5)
 				description := "test"
-				amount := int64(1234)
+				amount := float64(1234)
 				date := "2019-01-01"
 
 				expenseService.UpdateExpenseReturns(1, nil)

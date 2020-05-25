@@ -2,9 +2,9 @@
 package fakes
 
 import (
-	sync "sync"
+	"sync"
 
-	services "github.com/BrandonWade/enako/api/services"
+	"github.com/BrandonWade/enako/api/services"
 )
 
 type FakeAuthService struct {

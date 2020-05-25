@@ -26,7 +26,7 @@ var _ = Describe("CategoryController", func() {
 		store              *helperfakes.FakeCookieStorer
 		categoryService    *fakes.FakeCategoryService
 		categoryController controllers.CategoryController
-		categories         []models.ExpenseCategory
+		categories         []models.Category
 		w                  *httptest.ResponseRecorder
 		r                  *http.Request
 	)
@@ -40,10 +40,10 @@ var _ = Describe("CategoryController", func() {
 		categoryService = &fakes.FakeCategoryService{}
 		categoryController = controllers.NewCategoryController(logger, store, categoryService)
 
-		categories = []models.ExpenseCategory{
-			models.ExpenseCategory{ID: 1, CategoryName: "category 1", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
-			models.ExpenseCategory{ID: 2, CategoryName: "category 2", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
-			models.ExpenseCategory{ID: 3, CategoryName: "category 3", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
+		categories = []models.Category{
+			models.Category{ID: 1, Name: "category 1", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
+			models.Category{ID: 2, Name: "category 2", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
+			models.Category{ID: 3, Name: "category 3", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
 		}
 
 		w = httptest.NewRecorder()
@@ -55,7 +55,7 @@ var _ = Describe("CategoryController", func() {
 		Context("when requesting the list of categories", func() {
 
 			It("returns an error if an error is encountered", func() {
-				categoryService.GetCategoriesReturns([]models.ExpenseCategory{}, errors.New("service error"))
+				categoryService.GetCategoriesReturns([]models.Category{}, errors.New("service error"))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingCategories)
 
 				categoryController.GetCategories(w, r)

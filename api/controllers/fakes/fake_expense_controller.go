@@ -2,19 +2,19 @@
 package fakes
 
 import (
-	http "net/http"
-	sync "sync"
+	"net/http"
+	"sync"
 
-	controllers "github.com/BrandonWade/enako/api/controllers"
-	models "github.com/BrandonWade/enako/api/models"
+	"github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/models"
 )
 
 type FakeExpenseController struct {
-	CreateExpenseStub        func(http.ResponseWriter, *models.UserExpense)
+	CreateExpenseStub        func(http.ResponseWriter, *models.Expense)
 	createExpenseMutex       sync.RWMutex
 	createExpenseArgsForCall []struct {
 		arg1 http.ResponseWriter
-		arg2 *models.UserExpense
+		arg2 *models.Expense
 	}
 	DeleteExpenseStub        func(http.ResponseWriter, *http.Request)
 	deleteExpenseMutex       sync.RWMutex
@@ -38,11 +38,11 @@ type FakeExpenseController struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeExpenseController) CreateExpense(arg1 http.ResponseWriter, arg2 *models.UserExpense) {
+func (fake *FakeExpenseController) CreateExpense(arg1 http.ResponseWriter, arg2 *models.Expense) {
 	fake.createExpenseMutex.Lock()
 	fake.createExpenseArgsForCall = append(fake.createExpenseArgsForCall, struct {
 		arg1 http.ResponseWriter
-		arg2 *models.UserExpense
+		arg2 *models.Expense
 	}{arg1, arg2})
 	fake.recordInvocation("CreateExpense", []interface{}{arg1, arg2})
 	fake.createExpenseMutex.Unlock()
@@ -57,13 +57,13 @@ func (fake *FakeExpenseController) CreateExpenseCallCount() int {
 	return len(fake.createExpenseArgsForCall)
 }
 
-func (fake *FakeExpenseController) CreateExpenseCalls(stub func(http.ResponseWriter, *models.UserExpense)) {
+func (fake *FakeExpenseController) CreateExpenseCalls(stub func(http.ResponseWriter, *models.Expense)) {
 	fake.createExpenseMutex.Lock()
 	defer fake.createExpenseMutex.Unlock()
 	fake.CreateExpenseStub = stub
 }
 
-func (fake *FakeExpenseController) CreateExpenseArgsForCall(i int) (http.ResponseWriter, *models.UserExpense) {
+func (fake *FakeExpenseController) CreateExpenseArgsForCall(i int) (http.ResponseWriter, *models.Expense) {
 	fake.createExpenseMutex.RLock()
 	defer fake.createExpenseMutex.RUnlock()
 	argsForCall := fake.createExpenseArgsForCall[i]

@@ -2,10 +2,10 @@
 package fakes
 
 import (
-	http "net/http"
-	sync "sync"
+	"net/http"
+	"sync"
 
-	helpers "github.com/BrandonWade/enako/api/helpers"
+	"github.com/BrandonWade/enako/api/helpers"
 )
 
 type FakeCookieStorer struct {
