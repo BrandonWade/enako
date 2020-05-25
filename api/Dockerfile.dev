@@ -1,7 +1,12 @@
-FROM golang:latest
-WORKDIR /go/src/github.com/BrandonWade/enako/api
+FROM golang:1.14
+WORKDIR /app
 
-RUN go get github.com/pilu/fresh
+RUN go get github.com/gravityblast/fresh
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
 
 COPY . .
 
