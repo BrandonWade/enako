@@ -5,12 +5,12 @@
     align-items: center;
     font-weight: 700;
     font-size: 1.75rem;
+
+    &--selected {
+        background-color: rgba(253, 164, 40, 0.45);
+    }
 }
 
 .u-negative {
     color: #ba1f1f;
-}
-
-.u-positive {
-    color: green;
 }

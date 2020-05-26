@@ -9,11 +9,13 @@ const calculateTotal = (date, expenses) => {
     return total.toFixed(2);
 };
 
-const CalendarDate = ({ expenses }) => props => {
+const CalendarDate = ({ expenses, selectedDate }) => props => {
     const total = calculateTotal(props.value, expenses);
-    const className = `${props.children.props.className} calendar-date ${total > 0 ? 'u-negative' : 'u-positive'}`;
+    const selected = props.value.getTime() === selectedDate.getTime() ? 'calendar-date--selected' : '';
+    const negative = total > 0 ? 'u-negative' : '';
+    const className = `${props.children.props.className} calendar-date ${negative} ${selected}`;
 
-    return <div className={className}>{`$${total}`}</div>;
+    return <div className={className}>{total > 0 ? `$${total}` : ''}</div>;
 };
 
 export default CalendarDate;

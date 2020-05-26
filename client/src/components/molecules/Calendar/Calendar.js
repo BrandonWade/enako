@@ -7,6 +7,7 @@ import getDay from 'date-fns/getDay';
 import style from 'react-big-calendar/lib/css/react-big-calendar.css';
 import enUS from 'date-fns/locale/en-US';
 import ExpenseContext from '../../../contexts/ExpenseContext';
+import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import CalendarDate from '../CalendarDate';
 import './Calendar.scss';
 
@@ -22,6 +23,7 @@ const localizer = dateFnsLocalizer({
 
 const Calendar = ({ setSelectedDate }) => {
     const expenses = useContext(ExpenseContext);
+    const selectedDate = useContext(SelectedDateContext);
 
     return (
         <div className='calendar'>
@@ -32,7 +34,7 @@ const Calendar = ({ setSelectedDate }) => {
                 style={style}
                 selectable='ignoreEvents'
                 components={{
-                    dateCellWrapper: CalendarDate({ expenses }),
+                    dateCellWrapper: CalendarDate({ expenses, selectedDate }),
                 }}
                 onSelectSlot={e => setSelectedDate(e.start)}
             />
