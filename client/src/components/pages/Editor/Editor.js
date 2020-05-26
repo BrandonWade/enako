@@ -21,9 +21,9 @@ const Editor = props => {
     const expenseID = parseInt(props.computedMatch.params.id);
     const expense = expenses.find(e => e.id === expenseID) || {};
 
-    const [category, setCategory] = useState(expense.expense_category || '');
-    const [description, setDescription] = useState(expense.expense_description || '');
-    const [amount, setAmount] = useState(expense.expense_amount || 0);
+    const [category, setCategory] = useState(expense.category || '');
+    const [description, setDescription] = useState(expense.description || '');
+    const [amount, setAmount] = useState(expense.amount || 0);
 
     const notFoundRedirect = () => {
         return expenseID && !expense.id ? <AuthenticatedRedirect /> : null;
@@ -77,8 +77,8 @@ const Editor = props => {
                             <option value=''>-- Select a Category -- </option>
                             {categories.map(c => {
                                 return (
-                                    <option key={c.id} value={c.category_name}>
-                                        {c.category_name}
+                                    <option key={c.id} value={c.name}>
+                                        {c.name}
                                     </option>
                                 );
                             })}
