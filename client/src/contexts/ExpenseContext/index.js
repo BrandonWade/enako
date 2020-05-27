@@ -1,3 +1,1 @@
-import ExpenseContext from './ExpenseContext';
-
-export default ExpenseContext;
+export { default } from './ExpenseContext';

@@ -1,3 +1,1 @@
-import DetailRow from './DetailRow';
-
-export default DetailRow;
+export { default } from './DetailRow';

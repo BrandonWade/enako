@@ -1,3 +1,1 @@
-import CategoryContext from './CategoryContext';
-
-export default CategoryContext;
+export { default } from './CategoryContext';

@@ -1,3 +1,1 @@
-import DetailList from './DetailList';
-
-export default DetailList;
+export { default } from './DetailList';

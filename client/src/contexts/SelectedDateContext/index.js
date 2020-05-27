@@ -1,3 +1,1 @@
-import SelectedDateContext from './SelectedDateContext';
-
-export default SelectedDateContext;
+export { default } from './SelectedDateContext';

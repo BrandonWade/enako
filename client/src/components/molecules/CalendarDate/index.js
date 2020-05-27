@@ -1,3 +1,1 @@
-import CalendarDate from './CalendarDate';
-
-export default CalendarDate;
+export { default } from './CalendarDate';
