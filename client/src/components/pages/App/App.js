@@ -37,9 +37,9 @@ const App = () => {
                         <BrowserRouter>
                             <Switch>
                                 <Route path='/login' component={Login} />
-                                <AuthenticatedRoute path='/' exact selectedDate={selectedDate} setSelectedDate={setSelectedDate} component={Home} />
-                                <AuthenticatedRoute path='/expenses' exact component={Editor} />
-                                <AuthenticatedRoute path='/expenses/:id' selectedDate={selectedDate} component={Editor} />
+                                <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                                <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} />
+                                <AuthenticatedRoute path='/expenses/:id' component={Editor} setExpenses={setExpenses} />
                                 <AuthenticatedRedirect />
                             </Switch>
                         </BrowserRouter>

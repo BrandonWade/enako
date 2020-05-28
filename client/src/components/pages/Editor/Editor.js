@@ -48,20 +48,38 @@ const Editor = props => {
 
     const onExpenseDelete = () => {
         deleteExpense(expenseID);
+        props.setExpenses(expenses.filter(e => e.id !== expenseID));
     };
 
     const onExpenseSubmit = () => {
         const id = expenseID || 0;
         const data = {
-            category,
+            category_id: Math.random(), // TODO: Return this from the server
             description,
-            amount,
+            amount: parseFloat(amount),
+            expense_date: format(selectedDate, 'yyyy-MM-dd'),
         };
 
         if (id) {
+            const index = expenses.findIndex(e => e.id === id);
             updateExpense(id, data);
+            props.setExpenses([
+                ...expenses.slice(0, index),
+                {
+                    ...expenses[index],
+                    ...data,
+                },
+                ...expenses.slice(index + 1),
+            ]);
         } else {
             createExpense(data);
+            props.setExpenses([
+                ...expenses,
+                {
+                    id: Math.random(), // TODO: Return this from the server
+                    ...data,
+                },
+            ]);
         }
     };
 
@@ -81,7 +99,7 @@ const Editor = props => {
                             <option value=''>-- Select a Category -- </option>
                             {categories.map(c => {
                                 return (
-                                    <option key={c.id} value={c.name}>
+                                    <option key={c.id} value={c.id}>
                                         {c.name}
                                     </option>
                                 );

@@ -58,7 +58,6 @@ func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.E
 			?,
 			?,
 			?,
-			?,
 			?
 		);
 	`,
