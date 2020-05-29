@@ -132,7 +132,7 @@ var _ = Describe("ExpenseController", func() {
 				expenseService.CreateExpenseReturns(expenseID, nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 
-				response := models.Expense{ID: expenseID, CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
+				response := models.Expense{ID: expenseID, CategoryID: 5, Description: "test", Amount: 12.34, ExpenseDate: "2019-01-01"}
 				responseJSON, _ := json.Marshal(response)
 
 				expenseController.CreateExpense(w, &payload)
@@ -260,7 +260,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": strconv.FormatInt(expenseID, 10)})
 
-				response := models.Expense{ID: expenseID, CategoryID: categoryID, Description: description, Amount: amount, ExpenseDate: date}
+				response := models.Expense{ID: expenseID, CategoryID: categoryID, Description: description, Amount: amount / 100, ExpenseDate: date}
 				responseJSON, _ := json.Marshal(response)
 
 				expenseController.UpdateExpense(w, r)
