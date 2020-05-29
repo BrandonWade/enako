@@ -13,9 +13,9 @@ const DetailList = ({ expenses }) => {
                 <h4 className='detail-list__section-heading'>Expenses</h4>
                 <table>
                     <tbody>
-                        {expenses.map(expense => {
-                            return <DetailRow key={expense.id} expense={expense} />;
-                        })}
+                        {expenses.map(e => (
+                            <DetailRow key={e.id} expense={e} />
+                        ))}
                     </tbody>
                 </table>
             </>

@@ -12,7 +12,7 @@ const DetailRow = ({ expense }) => {
                 </Link>
             </td>
             <td>
-                <Category type={expense.category} />
+                <Category id={expense.category_id} />
             </td>
             <td className='detail-row__description'>{expense.description}</td>
             <td className='detail-row__amount'>${expense.amount.toFixed(2)}</td>

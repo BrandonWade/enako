@@ -21,7 +21,7 @@ const Editor = props => {
     const expenseID = parseInt(props.computedMatch.params.id);
     const expense = expenses.find(e => e.id === expenseID) || {};
 
-    const [category, setCategory] = useState(expense.category || '');
+    const [categoryID, setCategoryID] = useState(expense.category_id || '');
     const [description, setDescription] = useState(expense.description || '');
     const [amount, setAmount] = useState(expense.amount || 0);
 
@@ -51,35 +51,22 @@ const Editor = props => {
         props.setExpenses(expenses.filter(e => e.id !== expenseID));
     };
 
-    const onExpenseSubmit = () => {
+    const onExpenseSubmit = async () => {
         const id = expenseID || 0;
         const data = {
-            category_id: Math.random(), // TODO: Return this from the server
+            category_id: parseInt(categoryID),
             description,
-            amount: parseFloat(amount),
+            amount: parseFloat(amount) * 100,
             expense_date: format(selectedDate, 'yyyy-MM-dd'),
         };
 
         if (id) {
             const index = expenses.findIndex(e => e.id === id);
-            updateExpense(id, data);
-            props.setExpenses([
-                ...expenses.slice(0, index),
-                {
-                    ...expenses[index],
-                    ...data,
-                },
-                ...expenses.slice(index + 1),
-            ]);
+            const expense = await updateExpense(id, data);
+            props.setExpenses([...expenses.slice(0, index), expense, ...expenses.slice(index + 1)]);
         } else {
-            createExpense(data);
-            props.setExpenses([
-                ...expenses,
-                {
-                    id: Math.random(), // TODO: Return this from the server
-                    ...data,
-                },
-            ]);
+            const expense = await createExpense(data);
+            props.setExpenses([...expenses, expense]);
         }
     };
 
@@ -92,9 +79,9 @@ const Editor = props => {
                         <SelectField
                             name='category'
                             label='Category'
-                            value={category}
+                            value={categoryID}
                             description='Choose the most relevant category of expense'
-                            onChange={e => setCategory(e.target.value)}
+                            onChange={e => setCategoryID(e.target.value)}
                         >
                             <option value=''>-- Select a Category -- </option>
                             {categories.map(c => {

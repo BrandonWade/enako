@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import CategoryContext from '../../../contexts/CategoryContext';
 import './Category.scss';
 
-const Category = ({ type }) => {
-    return <div className={`category category--${type}`}>{type}</div>;
+const Category = ({ id }) => {
+    const categories = useContext(CategoryContext);
+    const category = categories.find(c => c.id === id);
+
+    return <div className={`category category--${category.name}`}>{category.name}</div>;
 };
 
 export default Category;

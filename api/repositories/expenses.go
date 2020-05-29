@@ -30,6 +30,7 @@ func (e *expenseRepository) GetExpenses(userAccountID int64) ([]models.Expense, 
 
 	err := e.DB.Select(&expenses, `SELECT
 		e.id,
+		c.id category_id,
 		c.name category,
 		e.description,
 		e.amount / 100 amount,
@@ -86,7 +87,7 @@ func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *mode
 			category_id = ?,
 			description = ?,
 			amount = ?,
-			date = ?
+			expense_date = ?
 		WHERE id = ?;
 	`,
 		userAccountID,

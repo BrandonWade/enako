@@ -99,6 +99,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, expense *models
 	}
 
 	expense.ID = ID
+	expense.Amount = expense.Amount / 100
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(expense)
@@ -178,6 +179,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	expense.ID = ID
+	expense.Amount = expense.Amount / 100
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(expense)
