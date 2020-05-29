@@ -5,7 +5,7 @@ import Button from '../../atoms/Button';
 import './DetailList.scss';
 
 const DetailList = ({ expenses }) => {
-    const total = expenses.reduce((total, expense) => (total += expense.expense_amount), 0);
+    const total = expenses.reduce((total, expense) => (total += expense.amount), 0);
 
     const renderPaymentsSection = () => {
         return expenses.length > 0 ? (
