@@ -1,0 +1,13 @@
+version: 2
+jobs:
+    build:
+        docker:
+            - image: golang:1.14
+        working_directory: /app
+        steps:
+            - checkout
+            - run: go get -v github.com/onsi/ginkgo/ginkgo
+            - run: go get -v github.com/onsi/gomega
+            - run:
+                  name: run unit tests
+                  command: cd api && ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
