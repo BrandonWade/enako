@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import createExpense from '../../../effects/createExpense';
 import updateExpense from '../../../effects/updateExpense';
 import deleteExpense from '../../../effects/deleteExpense';
@@ -15,13 +15,14 @@ import SelectField from '../../molecules/SelectField';
 import './Editor.scss';
 
 const Editor = props => {
+    const history = useHistory();
     const selectedDate = useContext(SelectedDateContext);
     const categories = useContext(CategoryContext);
     const expenses = useContext(ExpenseContext);
     const expenseID = parseInt(props.computedMatch.params.id);
     const expense = expenses.find(e => e.id === expenseID) || {};
 
-    const [categoryID, setCategoryID] = useState(expense.category_id || '');
+    const [categoryID, setCategoryID] = useState(expense.category_id || 0);
     const [description, setDescription] = useState(expense.description || '');
     const [amount, setAmount] = useState(expense.amount || 0);
 
@@ -52,11 +53,17 @@ const Editor = props => {
     };
 
     const onExpenseSubmit = async () => {
+        if (categoryID === 0 || description === '' || amount <= 0) {
+            return;
+        }
+
+        history.push('/');
+
         const id = expenseID || 0;
         const data = {
             category_id: parseInt(categoryID),
             description,
-            amount: parseFloat(amount) * 100,
+            amount: amount * 100,
             expense_date: format(selectedDate, 'yyyy-MM-dd'),
         };
 
@@ -100,6 +107,7 @@ const Editor = props => {
                             onChange={e => setDescription(e.target.value)}
                         />
                         <InputField
+                            type='number'
                             name='amount'
                             label='Amount'
                             value={amount}
@@ -112,9 +120,7 @@ const Editor = props => {
                             </Link>
                             <div>
                                 {renderDeleteButton()}
-                                <Link to='/' onClick={() => onExpenseSubmit()}>
-                                    <Button primary text={renderSubmitButtonText()} />
-                                </Link>
+                                <Button primary text={renderSubmitButtonText()} onClick={() => onExpenseSubmit()} />
                             </div>
                         </div>
                     </Card>

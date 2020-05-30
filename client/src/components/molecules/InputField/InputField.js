@@ -3,7 +3,15 @@ import withFormField from '../../hocs/withFormField';
 import './InputField.scss';
 
 const InputField = props => {
-    return <input type='text' name={props.name} value={props.value} onChange={props.onChange} />;
+    return (
+        <input
+            type={props.type || 'text'}
+            name={props.name}
+            value={props.value}
+            step={props.type === 'number' ? '0.01' : ''}
+            onChange={props.onChange}
+        />
+    );
 };
 
 export default withFormField(InputField);
