@@ -1,0 +1,5 @@
+FROM mysql:8.0
+WORKDIR /docker-entrypoint-initdb.d
+
+COPY ./schema.sql .
+COPY ./seed.sql .
