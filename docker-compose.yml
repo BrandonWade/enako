@@ -19,7 +19,7 @@ services:
         depends_on:
             - 'db'
         volumes:
-            - ./api:/go/src/github.com/BrandonWade/enako/api
+            - ./api:/app
         ports:
             - '8000:8000'
         environment:
