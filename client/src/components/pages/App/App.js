@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import fetchBootInfo from '../../../effects/fetchBootInfo';
+import fetchCategories from '../../../effects/fetchCategories';
+import fetchExpenses from '../../../effects/fetchExpenses';
 import AuthenticatedContext from '../../../contexts/AuthenticatedContext';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import CategoryContext from '../../../contexts/CategoryContext';
@@ -21,13 +22,14 @@ const App = () => {
     const [expenses, setExpenses] = useState([]);
 
     useEffect(() => {
-        const boot = async () => {
-            const bootInfo = await fetchBootInfo();
+        const Boot = async () => {
+            const categories = await fetchCategories();
+            const expenses = await fetchExpenses();
 
-            setCategories(bootInfo.categories);
-            setExpenses(bootInfo.expenses);
+            setCategories(categories);
+            setExpenses(expenses);
         };
-        boot();
+        Boot();
     }, []);
 
     return (

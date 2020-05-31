@@ -11,9 +11,11 @@ CREATE TABLE categories (
 DROP TABLE IF EXISTS user_accounts;
 CREATE TABLE user_accounts (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  username varchar(32) NOT NULL DEFAULT '',
   email varchar(256) NOT NULL DEFAULT '',
   password varbinary(60) NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
+  UNIQUE KEY U_username (username),
   UNIQUE KEY U_email (email)
 );
 

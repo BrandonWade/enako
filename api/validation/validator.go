@@ -2,6 +2,7 @@ package validation
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"regexp"
 	"time"
@@ -10,18 +11,51 @@ import (
 )
 
 const (
+	minUsernameLength = 5
+	maxUsernameLength = 32
 	minPasswordLength = 15
 	maxPasswordLength = 50
 )
 
 var (
-	errMustBeString    = errors.New("must be string")
-	errInvalidEmail    = errors.New("invalid email")
-	errInvalidPassword = errors.New("invalid password")
-	errInvalidDate     = errors.New("invalid date")
+	errMustBeString              = errors.New("must be string")
+	errUsernameTooShort          = fmt.Errorf("username must be minimum %d characters", minUsernameLength)
+	errUsernameTooLong           = fmt.Errorf("username must be maximum %d characters", maxUsernameLength)
+	errInvalidUsernameCharacters = errors.New("username may only contain alphanumeric characters and underscores")
+	errInvalidEmail              = errors.New("invalid email")
+	errPasswordTooShort          = fmt.Errorf("password must be minimum %d characters", minPasswordLength)
+	errPasswordTooLong           = fmt.Errorf("password must be maximum %d characters", maxPasswordLength)
+	errInvalidPasswordCharacters = errors.New("password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *")
+	errInvalidDate               = errors.New("invalid date")
 )
 
 func InitValidator() {
+	// Add a username validation rule
+	validator.SetValidationFunc("uname", func(v interface{}, param string) error {
+		t := reflect.ValueOf(v)
+		if t.Kind() != reflect.String {
+			return errMustBeString
+		}
+
+		uname := t.String()
+		l := len(uname)
+
+		if l < minUsernameLength {
+			return errUsernameTooShort
+		}
+
+		if l > maxUsernameLength {
+			return errUsernameTooLong
+		}
+
+		match, err := regexp.MatchString("^\\w+$", uname)
+		if err != nil || match != true {
+			return errInvalidUsernameCharacters
+		}
+
+		return nil
+	})
+
 	// Add a simple email validation rule
 	validator.SetValidationFunc("email", func(v interface{}, param string) error {
 		t := reflect.ValueOf(v)
@@ -45,16 +79,20 @@ func InitValidator() {
 		}
 
 		pword := t.String()
+		l := len(pword)
 
 		// Ensure length is compatible with bcrypt requirements
-		l := len(pword)
-		if l < minPasswordLength || l > maxPasswordLength {
-			return errInvalidPassword
+		if l < minPasswordLength {
+			return errPasswordTooShort
 		}
 
-		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\&\\*]+$", pword)
+		if l > maxPasswordLength {
+			return errPasswordTooLong
+		}
+
+		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\*]+$", pword)
 		if err != nil || match != true {
-			return errInvalidPassword
+			return errInvalidPasswordCharacters
 		}
 
 		return nil
