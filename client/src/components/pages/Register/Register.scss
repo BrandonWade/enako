@@ -1,18 +1,16 @@
-.editor {
-    display: flex;
+.register {
+    height: 100%;
+    display: grid;
     justify-content: center;
+    align-items: start;
 
     &__content {
-        width: 40vw;
-        margin-top: 10rem;
+        width: 30vw;
+        margin-top: 15rem;
     }
 
     &__buttons {
         display: flex;
         justify-content: space-between;
-    }
-
-    &__delete {
-        margin-right: 1rem;
     }
 }

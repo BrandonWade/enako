@@ -39,7 +39,7 @@ const DetailList = ({ expenses }) => {
             {renderTotalsSection()}
             <div className='detail-list__add-container'>
                 <Link to='/expenses'>
-                    <Button primary text='Add' />
+                    <Button color='orange' text='Add' />
                 </Link>
             </div>
         </div>

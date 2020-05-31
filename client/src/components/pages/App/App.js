@@ -8,6 +8,7 @@ import ExpenseContext from '../../../contexts/ExpenseContext';
 import AuthenticatedRoute from '../../routing/AuthenticatedRoute';
 import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
 import Home from '../Home';
+import Register from '../Register';
 import Login from '../Login';
 import Editor from '../Editor';
 import './App.scss';
@@ -37,6 +38,7 @@ const App = () => {
                         <BrowserRouter>
                             <Switch>
                                 <Route path='/login' component={Login} />
+                                <Route path='/register' component={Register} />
                                 <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
                                 <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} />
                                 <AuthenticatedRoute path='/expenses/:id' component={Editor} setExpenses={setExpenses} />

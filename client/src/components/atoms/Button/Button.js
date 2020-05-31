@@ -2,12 +2,11 @@ import React from 'react';
 import './Button.scss';
 
 const Button = props => {
-    const getButtonType = () => {
-        return props.primary ? ' button--primary' : '';
-    };
+    const color = props.color ? `button--${props.color}` : '';
+    const full = props.full ? 'button--full' : '';
 
     return (
-        <button className={`button ${getButtonType()} ${props.className || ''}`} onClick={props.onClick}>
+        <button className={`button ${color} ${full} ${props.className || ''}`} onClick={props.onClick}>
             {props.text}
         </button>
     );

@@ -38,7 +38,7 @@ const Editor = props => {
     const renderDeleteButton = () => {
         return expenseID ? (
             <Link to='/' onClick={onExpenseDelete}>
-                <Button text='Delete' className='editor__delete button--red' />
+                <Button color='red' text='Delete' className='editor__delete' />
             </Link>
         ) : null;
     };
@@ -120,7 +120,7 @@ const Editor = props => {
                             </Link>
                             <div>
                                 {renderDeleteButton()}
-                                <Button primary text={renderSubmitButtonText()} onClick={() => onExpenseSubmit()} />
+                                <Button color='orange' text={renderSubmitButtonText()} onClick={() => onExpenseSubmit()} />
                             </div>
                         </div>
                     </Card>

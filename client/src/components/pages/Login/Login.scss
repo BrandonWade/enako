@@ -2,13 +2,28 @@
     height: 100%;
     display: grid;
     justify-content: center;
-    align-items: center;
+    align-items: start;
 
     &__content {
-        width: 20vw;
+        width: 30vw;
+        margin-top: 15rem;
     }
 
-    &__button {
-        width: 100%;
+    &__separator {
+        font-size: 1.2rem;
+        color: rgba(0, 0, 0, 0.35);
+        margin: 1rem 0;
+        display: grid;
+        grid-template-columns: 1fr max-content 1fr;
+        grid-gap: 1.5rem;
+        align-items: center;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            height: 1px;
+            border-top: var(--line);
+        }
     }
 }

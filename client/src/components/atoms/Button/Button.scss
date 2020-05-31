@@ -14,7 +14,7 @@
         background-color: #d9d8d7;
     }
 
-    &--primary {
+    &--orange {
         background-color: orange;
         color: #ffffff;
 
@@ -38,5 +38,22 @@
         &:active {
             background-color: #ad1433;
         }
+    }
+
+    &--blue {
+        background-color: #0a84ff;
+        color: #ffffff;
+
+        &:hover {
+            background-color: #3b9cff;
+        }
+
+        &:active {
+            background-color: #0069d4;
+        }
+    }
+
+    &--full {
+        width: 100%;
     }
 }
