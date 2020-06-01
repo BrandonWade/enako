@@ -50,15 +50,16 @@ func init() {
 }
 
 func main() {
+	hasher := helpers.NewPasswordHasher(logger)
+	store := helpers.NewCookieStore([]byte(cookieSecret))
+
 	authRepository := repositories.NewAuthRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
-	authService := services.NewAuthService(logger, authRepository)
+	authService := services.NewAuthService(logger, hasher, authRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
-
-	store := helpers.NewCookieStore([]byte(cookieSecret))
 
 	authController := controllers.NewAuthController(logger, store, authService)
 	categoryController := controllers.NewCategoryController(logger, store, categoryService)

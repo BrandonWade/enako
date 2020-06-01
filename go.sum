@@ -4,6 +4,7 @@ github.com/BrandonWade/enako/api v0.0.0-20200531034823-2a85fac064d1 h1:ujMqR7PU/
 github.com/BrandonWade/enako/api v0.0.0-20200531055904-9654ed72b76e h1:sIn4Qjv3cpBkkWdxc64AdTigdfOqFTNpDASeEnMDwGs=
 github.com/BrandonWade/enako/api v0.0.0-20200531055904-9654ed72b76e/go.mod h1:fJLh1uPOO4AAnMGmdbBa7fXsi/FyAwCv4QHMEbW+rJ0=
 github.com/BrandonWade/enako/api v0.0.0-20200531060414-9ac5390230a8 h1:TJ6EEuzOS6OJ2v4zk4cLj7mdp89nrpCUVfSOZJndO2c=
+github.com/BrandonWade/enako/api v0.0.0-20200601012845-d4b2d79b0979 h1:jwJI1TsYvK9+60LaTFYU6MOOqjYTHbwJadHxu2DoFO4=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=

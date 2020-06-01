@@ -14,10 +14,11 @@ import (
 )
 
 var (
-	ErrInvalidAccountPayload = errors.New("invalid account payload")
-	ErrPasswordsDoNotMatch   = errors.New("passwords do not match")
-	ErrCreatingAccount       = errors.New("error creating account")
-	ErrFetchingSession       = errors.New("error fetching session")
+	ErrInvalidAccountPayload     = errors.New("invalid account payload")
+	ErrPasswordsDoNotMatch       = errors.New("passwords do not match")
+	ErrCreatingAccount           = errors.New("error creating account")
+	ErrFetchingSession           = errors.New("error fetching session")
+	ErrInvalidUsernameOrPassword = errors.New("invalid username or password")
 )
 
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
@@ -115,14 +116,43 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Authenticate and return a real ID
-	userAccountID := int64(123)
+	var userAccount models.UserAccount
+	err = json.NewDecoder(r.Body).Decode(&userAccount)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AuthController.Login",
+			"ip":     r.RemoteAddr,
+			"err":    err.Error(),
+		}).Error(ErrInvalidAccountPayload)
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidAccountPayload))
+		return
+	}
+
+	ID, err := a.service.VerifyAccount(userAccount.Username, userAccount.Password)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":   "AuthController.Login",
+			"ip":       r.RemoteAddr,
+			"username": userAccount.Username,
+			"err":      err.Error(),
+		}).Error(ErrInvalidUsernameOrPassword)
+
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidUsernameOrPassword))
+		return
+	}
 
 	session.Set("authenticated", true)
-	session.Set("user_account_id", userAccountID)
+	session.Set("user_account_id", ID)
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	userAccount.ID = ID
+	userAccount.Password = ""
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(userAccount)
 	return
 }
 

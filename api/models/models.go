@@ -10,7 +10,7 @@ type Category struct {
 type UserAccount struct {
 	ID              int64  `json:"id" db:"id"`
 	Username        string `json:"username" db:"username" validate:"uname"`
-	Email           string `json:"email" db:"email" validate:"email"`
+	Email           string `json:"email,omitempty" db:"email" validate:"email"`
 	Password        string `json:"password,omitempty" db:"password" validate:"pword"`
 	ConfirmPassword string `json:"confirm_password,omitempty" validate:"pword"`
 }

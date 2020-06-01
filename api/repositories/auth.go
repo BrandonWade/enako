@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"github.com/BrandonWade/enako/api/models"
 	"github.com/jmoiron/sqlx"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -9,6 +10,7 @@ import (
 //go:generate counterfeiter -o fakes/fake_auth_repository.go . AuthRepository
 type AuthRepository interface {
 	CreateAccount(username, email, password string) (int64, error)
+	GetAccount(username string) (*models.UserAccount, error)
 }
 
 type authRepository struct {
@@ -47,4 +49,21 @@ func (a *authRepository) CreateAccount(username, email, password string) (int64,
 	}
 
 	return ID, nil
+}
+
+func (a *authRepository) GetAccount(username string) (*models.UserAccount, error) {
+	account := models.UserAccount{}
+
+	err := a.DB.Get(&account, `SELECT
+		*
+		FROM user_accounts u
+		WHERE u.username = ?
+	`,
+		username,
+	)
+	if err != nil {
+		return &models.UserAccount{}, err
+	}
+
+	return &account, nil
 }

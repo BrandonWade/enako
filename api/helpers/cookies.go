@@ -19,6 +19,7 @@ var (
 //go:generate counterfeiter -o fakes/fake_cookie_helper.go . CookieStorer
 type CookieStorer interface {
 	Get(r *http.Request, name string) (*Session, error)
+	IsAuthenticated(r *http.Request) (bool, error)
 }
 
 // CookieStore a wrapper around the gorilla/sessions CookieStore to allow mocking
@@ -41,4 +42,14 @@ func (c *CookieStore) Get(r *http.Request, name string) (*Session, error) {
 	}
 
 	return &Session{s}, nil
+}
+
+// IsAuthenticated returns
+func (c *CookieStore) IsAuthenticated(r *http.Request) (bool, error) {
+	s, err := c.store.Get(r, SessionCookieName)
+	if err != nil {
+		return false, ErrFetchingSession
+	}
+
+	return s.Values["authenticated"] == "true", nil
 }
