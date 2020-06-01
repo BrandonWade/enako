@@ -30,7 +30,7 @@ var (
 )
 
 func InitValidator() {
-	// Add a username validation rule
+	// Add a username validation rule (alphanumeric plus underscore)
 	validator.SetValidationFunc("uname", func(v interface{}, param string) error {
 		t := reflect.ValueOf(v)
 		if t.Kind() != reflect.String {

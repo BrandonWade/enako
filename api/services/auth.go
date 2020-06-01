@@ -13,7 +13,7 @@ var errCreatingAccount = errors.New("error creating account")
 
 //go:generate counterfeiter -o fakes/fake_auth_service.go . AuthService
 type AuthService interface {
-	CreateAccount(email, password string) (int64, error)
+	CreateAccount(username, email, password string) (int64, error)
 }
 
 type authService struct {
@@ -28,11 +28,12 @@ func NewAuthService(logger *logrus.Logger, repo repositories.AuthRepository) Aut
 	}
 }
 
-func (a *authService) CreateAccount(email, password string) (int64, error) {
+func (a *authService) CreateAccount(username, email, password string) (int64, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":   "AuthService.CreateAccount",
+			"username": username,
 			"email":    email,
 			"password": password,
 			"err":      err.Error(),
@@ -41,5 +42,5 @@ func (a *authService) CreateAccount(email, password string) (int64, error) {
 		return 0, errCreatingAccount
 	}
 
-	return a.repo.CreateAccount(email, string(passwordHash))
+	return a.repo.CreateAccount(username, email, string(passwordHash))
 }

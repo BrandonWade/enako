@@ -1,23 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import createAccount from '../../../effects/createAccount';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import Button from '../../atoms/Button';
 import './Register.scss';
 
 const Register = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const onCreateAccount = async () => {
+        const data = {
+            username,
+            email,
+            password,
+            confirm_password: confirmPassword,
+        };
+        const response = await createAccount(data);
+        console.log(response);
+    };
+
     return (
         <div className='register'>
             <Card className='register__content' heading='Create Account'>
-                <InputField label='Username' />
-                <InputField label='Email' />
-                <InputField type='password' label='Password' />
-                <InputField type='password' label='Confirm Password' />
+                <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
+                <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
+                <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
+                <InputField type='password' label='Confirm Password' value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
                 <div className='register__buttons'>
                     <Link to='/login'>
                         <Button text='Cancel' />
                     </Link>
-                    <Button color='orange' text='Create' />
+                    <Button color='orange' text='Create' onClick={onCreateAccount} />
                 </div>
             </Card>
         </div>

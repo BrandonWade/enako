@@ -8,7 +8,7 @@ import (
 
 //go:generate counterfeiter -o fakes/fake_auth_repository.go . AuthRepository
 type AuthRepository interface {
-	CreateAccount(email, password string) (int64, error)
+	CreateAccount(username, email, password string) (int64, error)
 }
 
 type authRepository struct {
@@ -21,16 +21,19 @@ func NewAuthRepository(DB *sqlx.DB) AuthRepository {
 	}
 }
 
-func (a *authRepository) CreateAccount(email, password string) (int64, error) {
+func (a *authRepository) CreateAccount(username, email, password string) (int64, error) {
 	result, err := a.DB.Exec(`INSERT
 		INTO user_accounts(
+			username,
 			email,
 			password
 		) VALUES (
 			?,
+			?,
 			?
 		);
 	`,
+		username,
 		email,
 		password,
 	)
