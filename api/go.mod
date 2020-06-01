@@ -3,7 +3,6 @@ module github.com/BrandonWade/enako/api
 go 1.12
 
 require (
-	github.com/BrandonWade/enako v0.0.0-20200531055904-9654ed72b76e // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/sessions v1.2.0

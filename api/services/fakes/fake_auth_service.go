@@ -8,11 +8,12 @@ import (
 )
 
 type FakeAuthService struct {
-	CreateAccountStub        func(string, string) (int64, error)
+	CreateAccountStub        func(string, string, string) (int64, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
 		arg1 string
 		arg2 string
+		arg3 string
 	}
 	createAccountReturns struct {
 		result1 int64
@@ -22,21 +23,36 @@ type FakeAuthService struct {
 		result1 int64
 		result2 error
 	}
+	VerifyAccountStub        func(string, string) (int64, error)
+	verifyAccountMutex       sync.RWMutex
+	verifyAccountArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	verifyAccountReturns struct {
+		result1 int64
+		result2 error
+	}
+	verifyAccountReturnsOnCall map[int]struct {
+		result1 int64
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAuthService) CreateAccount(arg1 string, arg2 string) (int64, error) {
+func (fake *FakeAuthService) CreateAccount(arg1 string, arg2 string, arg3 string) (int64, error) {
 	fake.createAccountMutex.Lock()
 	ret, specificReturn := fake.createAccountReturnsOnCall[len(fake.createAccountArgsForCall)]
 	fake.createAccountArgsForCall = append(fake.createAccountArgsForCall, struct {
 		arg1 string
 		arg2 string
-	}{arg1, arg2})
-	fake.recordInvocation("CreateAccount", []interface{}{arg1, arg2})
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("CreateAccount", []interface{}{arg1, arg2, arg3})
 	fake.createAccountMutex.Unlock()
 	if fake.CreateAccountStub != nil {
-		return fake.CreateAccountStub(arg1, arg2)
+		return fake.CreateAccountStub(arg1, arg2, arg3)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -51,17 +67,17 @@ func (fake *FakeAuthService) CreateAccountCallCount() int {
 	return len(fake.createAccountArgsForCall)
 }
 
-func (fake *FakeAuthService) CreateAccountCalls(stub func(string, string) (int64, error)) {
+func (fake *FakeAuthService) CreateAccountCalls(stub func(string, string, string) (int64, error)) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = stub
 }
 
-func (fake *FakeAuthService) CreateAccountArgsForCall(i int) (string, string) {
+func (fake *FakeAuthService) CreateAccountArgsForCall(i int) (string, string, string) {
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
 	argsForCall := fake.createAccountArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
 func (fake *FakeAuthService) CreateAccountReturns(result1 int64, result2 error) {
@@ -90,11 +106,77 @@ func (fake *FakeAuthService) CreateAccountReturnsOnCall(i int, result1 int64, re
 	}{result1, result2}
 }
 
+func (fake *FakeAuthService) VerifyAccount(arg1 string, arg2 string) (int64, error) {
+	fake.verifyAccountMutex.Lock()
+	ret, specificReturn := fake.verifyAccountReturnsOnCall[len(fake.verifyAccountArgsForCall)]
+	fake.verifyAccountArgsForCall = append(fake.verifyAccountArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("VerifyAccount", []interface{}{arg1, arg2})
+	fake.verifyAccountMutex.Unlock()
+	if fake.VerifyAccountStub != nil {
+		return fake.VerifyAccountStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.verifyAccountReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAuthService) VerifyAccountCallCount() int {
+	fake.verifyAccountMutex.RLock()
+	defer fake.verifyAccountMutex.RUnlock()
+	return len(fake.verifyAccountArgsForCall)
+}
+
+func (fake *FakeAuthService) VerifyAccountCalls(stub func(string, string) (int64, error)) {
+	fake.verifyAccountMutex.Lock()
+	defer fake.verifyAccountMutex.Unlock()
+	fake.VerifyAccountStub = stub
+}
+
+func (fake *FakeAuthService) VerifyAccountArgsForCall(i int) (string, string) {
+	fake.verifyAccountMutex.RLock()
+	defer fake.verifyAccountMutex.RUnlock()
+	argsForCall := fake.verifyAccountArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeAuthService) VerifyAccountReturns(result1 int64, result2 error) {
+	fake.verifyAccountMutex.Lock()
+	defer fake.verifyAccountMutex.Unlock()
+	fake.VerifyAccountStub = nil
+	fake.verifyAccountReturns = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthService) VerifyAccountReturnsOnCall(i int, result1 int64, result2 error) {
+	fake.verifyAccountMutex.Lock()
+	defer fake.verifyAccountMutex.Unlock()
+	fake.VerifyAccountStub = nil
+	if fake.verifyAccountReturnsOnCall == nil {
+		fake.verifyAccountReturnsOnCall = make(map[int]struct {
+			result1 int64
+			result2 error
+		})
+	}
+	fake.verifyAccountReturnsOnCall[i] = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAuthService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
+	fake.verifyAccountMutex.RLock()
+	defer fake.verifyAccountMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

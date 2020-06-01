@@ -12,6 +12,7 @@ var (
 	errComparingHash  = errors.New("error comparing password and hash")
 )
 
+//go:generate counterfeiter -o fakes/fake_password_hasher.go . PasswordHasher
 type PasswordHasher interface {
 	Generate(password string) (string, error)
 	Compare(hash, password string) error
