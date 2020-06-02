@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import createAccount from '../../../effects/createAccount';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
@@ -7,6 +7,7 @@ import Button from '../../atoms/Button';
 import './Register.scss';
 
 const Register = () => {
+    const history = useHistory();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -19,8 +20,14 @@ const Register = () => {
             password,
             confirm_password: confirmPassword,
         };
+
         const response = await createAccount(data);
-        console.log(response);
+        if (response.errors) {
+            console.error(response); // TODO: Implement proper error handling
+            return;
+        }
+
+        history.push('/login');
     };
 
     return (
