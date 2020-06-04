@@ -170,10 +170,9 @@ func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session.Set("authenticated", false)
-	session.Set("user_account_id", int64(0))
+	session.Delete()
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/login", http.StatusFound)
+	w.WriteHeader(http.StatusOK)
 	return
 }
