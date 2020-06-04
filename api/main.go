@@ -72,7 +72,7 @@ func main() {
 	// Auth
 	api.HandleFunc("/accounts", authController.CreateAccount).Methods("POST")
 	api.HandleFunc("/login", authController.Login).Methods("POST")
-	api.HandleFunc("/logout", authController.Logout).Methods("POST")
+	api.HandleFunc("/logout", authController.Logout).Methods("GET")
 
 	// Categories
 	api.HandleFunc("/categories", categoryController.GetCategories).Methods("GET")

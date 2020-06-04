@@ -173,6 +173,6 @@ func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 	session.Delete()
 	session.Save(r, w)
 
-	w.WriteHeader(http.StatusOK)
+	http.Redirect(w, r, "/login", http.StatusFound)
 	return
 }
