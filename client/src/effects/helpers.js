@@ -6,6 +6,7 @@ export const fetchFromServer = async url => {
 export const postToServer = async (url, data) => {
     const response = await fetch(url, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -18,6 +19,7 @@ export const postToServer = async (url, data) => {
 export const putToServer = async (url, data) => {
     const response = await fetch(url, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -30,6 +32,7 @@ export const putToServer = async (url, data) => {
 export const deleteFromServer = async url => {
     const response = await fetch(url, {
         method: 'DELETE',
+        credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
         },

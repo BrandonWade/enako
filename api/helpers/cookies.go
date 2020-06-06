@@ -51,5 +51,5 @@ func (c *CookieStore) IsAuthenticated(r *http.Request) (bool, error) {
 		return false, ErrFetchingSession
 	}
 
-	return s.Values["authenticated"] == "true", nil
+	return s.Values["authenticated"] == true, nil
 }

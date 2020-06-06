@@ -23,6 +23,7 @@ const Login = () => {
             return;
         }
 
+        // TODO: This is broken after login, revisiting page manually works
         history.push('/');
     };
 

@@ -53,6 +53,11 @@ func main() {
 	hasher := helpers.NewPasswordHasher(logger)
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
+	stack := middleware.NewMiddlewareStack(logger, store)
+	mw := []middleware.Middleware{
+		stack.Authenticate(),
+	}
+
 	authRepository := repositories.NewAuthRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
@@ -75,13 +80,13 @@ func main() {
 	api.HandleFunc("/logout", authController.Logout).Methods("GET")
 
 	// Categories
-	api.HandleFunc("/categories", categoryController.GetCategories).Methods("GET")
+	api.HandleFunc("/categories", stack.Apply(categoryController.GetCategories, mw)).Methods("GET")
 
 	// Expenses
-	api.HandleFunc("/expenses", expenseController.GetExpenses).Methods("GET")
+	api.HandleFunc("/expenses", stack.Apply(expenseController.GetExpenses, mw)).Methods("GET")
 	api.HandleFunc("/expenses", middleware.DecodeExpense(logger, expenseController.CreateExpense)).Methods("POST")
-	api.HandleFunc("/expenses/{id}", expenseController.UpdateExpense).Methods("PUT")
-	api.HandleFunc("/expenses/{id}", expenseController.DeleteExpense).Methods("DELETE")
+	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.UpdateExpense, mw)).Methods("PUT")
+	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.DeleteExpense, mw)).Methods("DELETE")
 
 	http.ListenAndServe(":8000", r)
 }

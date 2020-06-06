@@ -17,7 +17,6 @@ var (
 	ErrInvalidAccountPayload     = errors.New("invalid account payload")
 	ErrPasswordsDoNotMatch       = errors.New("passwords do not match")
 	ErrCreatingAccount           = errors.New("error creating account")
-	ErrFetchingSession           = errors.New("error fetching session")
 	ErrInvalidUsernameOrPassword = errors.New("invalid username or password")
 )
 
@@ -109,10 +108,10 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 			"method": "AuthController.Login",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
-		}).Error(ErrFetchingSession)
+		}).Error(helpers.ErrorFetchingSession())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrFetchingSession))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
 		return
 	}
 
@@ -163,10 +162,10 @@ func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 			"method": "AuthController.Logout",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
-		}).Error(ErrFetchingSession)
+		}).Error(helpers.ErrorFetchingSession())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrFetchingSession))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
 		return
 	}
 
