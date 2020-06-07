@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import loginToAccount from '../../../effects/loginToAccount';
+import fetchCategories from '../../../effects/fetchCategories';
+import fetchExpenses from '../../../effects/fetchExpenses';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import Button from '../../atoms/Button';
 import './Login.scss';
 
-const Login = () => {
+const Login = props => {
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +25,19 @@ const Login = () => {
             return;
         }
 
-        // TODO: This is broken after login, revisiting page manually works
+        const categories = await fetchCategories();
+        const expenses = await fetchExpenses();
+
+        // TODO: Implement proper error handling
+        if (categories.errors || expenses.errors) {
+            console.error(categories);
+            console.error(expenses);
+            return;
+        }
+
+        props.setCategories(categories);
+        props.setExpenses(expenses);
+
         history.push('/');
     };
 

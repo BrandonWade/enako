@@ -23,8 +23,19 @@ const App = () => {
 
     useEffect(() => {
         const Boot = async () => {
+            if (!document.cookie.includes('enako-session')) {
+                return;
+            }
+
             const categories = await fetchCategories();
             const expenses = await fetchExpenses();
+
+            // TODO: Implement proper error handling
+            if (categories.errors || expenses.errors) {
+                console.error(categories);
+                console.error(expenses);
+                return;
+            }
 
             setCategories(categories);
             setExpenses(expenses);
@@ -39,7 +50,7 @@ const App = () => {
                     <ExpenseContext.Provider value={expenses}>
                         <BrowserRouter>
                             <Switch>
-                                <Route path='/login' component={Login} />
+                                <Route path='/login' render={() => <Login setCategories={setCategories} setExpenses={setExpenses} />} />
                                 <Route path='/register' component={Register} />
                                 <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
                                 <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} />
