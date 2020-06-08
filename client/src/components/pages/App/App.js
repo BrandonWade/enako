@@ -15,7 +15,7 @@ import Editor from '../Editor';
 import './App.scss';
 
 const App = () => {
-    const authenticated = true; // TODO: For testing
+    const [authenticated, setAuthenticated] = useState(document.cookie.includes('enako-session'));
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     const [categories, setCategories] = useState([]);
@@ -23,7 +23,7 @@ const App = () => {
 
     useEffect(() => {
         const Boot = async () => {
-            if (!document.cookie.includes('enako-session')) {
+            if (!authenticated) {
                 return;
             }
 
@@ -50,7 +50,12 @@ const App = () => {
                     <ExpenseContext.Provider value={expenses}>
                         <BrowserRouter>
                             <Switch>
-                                <Route path='/login' render={() => <Login setCategories={setCategories} setExpenses={setExpenses} />} />
+                                <Route
+                                    path='/login'
+                                    render={() => (
+                                        <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />
+                                    )}
+                                />
                                 <Route path='/register' component={Register} />
                                 <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
                                 <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} />

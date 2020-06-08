@@ -2,6 +2,7 @@ package controllers_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,7 +10,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strconv"
-	"strings"
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/models"
@@ -53,9 +53,7 @@ var _ = Describe("ExpenseController", func() {
 	})
 
 	Describe("GetExpenses", func() {
-
 		Context("when requesting the list of expenses", func() {
-
 			It("returns an error when the expense service returns an error", func() {
 				expenseService.GetExpensesReturns([]models.Expense{}, errors.New("service error"))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingExpenses)
@@ -77,65 +75,81 @@ var _ = Describe("ExpenseController", func() {
 	})
 
 	Describe("CreateExpense", func() {
-
 		Context("when creating a new expense", func() {
-
 			It("returns an error if an invalid expense category id is submitted", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 0, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 				resBody := `{"errors":["CategoryID: less than min"]}`
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
-				expenseController.CreateExpense(w, &payload)
+				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnprocessableEntity))
 				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
 			})
 
 			It("returns an error if an invalid expense amount is submitted", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 0, ExpenseDate: "2019-01-01"}
 				resBody := `{"errors":["Amount: less than min"]}`
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
-				expenseController.CreateExpense(w, &payload)
+				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnprocessableEntity))
 				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
 			})
 
 			It("returns an error if an invalid date is submitted", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "0000-00-00"}
 				resBody := `{"errors":["ExpenseDate: invalid date"]}`
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
-				expenseController.CreateExpense(w, &payload)
+				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnprocessableEntity))
 				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
 			})
 
 			It("returns an error if a malformed date is submitted", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01"}
 				resBody := `{"errors":["ExpenseDate: invalid date"]}`
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
-				expenseController.CreateExpense(w, &payload)
+				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnprocessableEntity))
 				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
 			})
 
 			It("returns an error if one was encountered while communicating with the expense service", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				expenseService.CreateExpenseReturns(0, errors.New("service error"))
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrCreatingExpense)
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
-				expenseController.CreateExpense(w, &payload)
+				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
 				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
 			})
 
 			It("returns the info for the created expense with no error", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				expenseID := int64(100)
 
 				expenseService.CreateExpenseReturns(expenseID, nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
 				response := models.Expense{ID: expenseID, CategoryID: 5, Description: "test", Amount: 12.34, ExpenseDate: "2019-01-01"}
 				responseJSON, _ := json.Marshal(response)
 
-				expenseController.CreateExpense(w, &payload)
+				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusCreated))
 				Expect(w.Body.String()).To(BeEquivalentTo(string(responseJSON) + "\n"))
 			})
@@ -143,23 +157,14 @@ var _ = Describe("ExpenseController", func() {
 	})
 
 	Describe("UpdateExpense", func() {
-
 		Context("when updating an expense", func() {
-
 			It("returns an error if an invalid expense id is provided", func() {
+				payload := models.Expense{CategoryID: 1, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "foo"})
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrInvalidExpenseID)
-
-				expenseController.UpdateExpense(w, r)
-				Expect(w.Code).To(Equal(http.StatusBadRequest))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
-			})
-
-			It("returns an error if a malformed payload is submitted", func() {
-				r = httptest.NewRequest("PUT", "/v1/expenses/id", strings.NewReader("{foo}"))
-				r = mux.SetURLVars(r, map[string]string{"id": "123"})
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrInvalidExpensePayload)
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusBadRequest))
@@ -172,6 +177,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 				resBody := `{"errors":["CategoryID: less than min"]}`
 
 				expenseController.UpdateExpense(w, r)
@@ -185,6 +192,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 				resBody := `{"errors":["Amount: less than min"]}`
 
 				expenseController.UpdateExpense(w, r)
@@ -198,6 +207,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 				resBody := `{"errors":["ExpenseDate: invalid date"]}`
 
 				expenseController.UpdateExpense(w, r)
@@ -211,6 +222,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 				resBody := `{"errors":["ExpenseDate: invalid date"]}`
 
 				expenseController.UpdateExpense(w, r)
@@ -225,6 +238,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrUpdatingExpense)
 
 				expenseController.UpdateExpense(w, r)
@@ -239,6 +254,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrNoExpensesUpdated)
 
 				expenseController.UpdateExpense(w, r)
@@ -259,6 +276,8 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": strconv.FormatInt(expenseID, 10)})
+				ctx := context.WithValue(r.Context(), "expense", payload)
+				r = r.WithContext(ctx)
 
 				response := models.Expense{ID: expenseID, CategoryID: categoryID, Description: description, Amount: amount / 100, ExpenseDate: date}
 				responseJSON, _ := json.Marshal(response)
@@ -271,9 +290,7 @@ var _ = Describe("ExpenseController", func() {
 	})
 
 	Describe("DeleteExpense", func() {
-
 		Context("when deleting an expense", func() {
-
 			It("returns an error if an invalid expense id is provided", func() {
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "foo"})

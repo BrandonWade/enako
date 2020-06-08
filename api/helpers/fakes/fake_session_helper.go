@@ -9,6 +9,10 @@ import (
 )
 
 type FakeSessionStorer struct {
+	DeleteStub        func()
+	deleteMutex       sync.RWMutex
+	deleteArgsForCall []struct {
+	}
 	GetStub        func(interface{}) interface{}
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
@@ -40,6 +44,29 @@ type FakeSessionStorer struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeSessionStorer) Delete() {
+	fake.deleteMutex.Lock()
+	fake.deleteArgsForCall = append(fake.deleteArgsForCall, struct {
+	}{})
+	fake.recordInvocation("Delete", []interface{}{})
+	fake.deleteMutex.Unlock()
+	if fake.DeleteStub != nil {
+		fake.DeleteStub()
+	}
+}
+
+func (fake *FakeSessionStorer) DeleteCallCount() int {
+	fake.deleteMutex.RLock()
+	defer fake.deleteMutex.RUnlock()
+	return len(fake.deleteArgsForCall)
+}
+
+func (fake *FakeSessionStorer) DeleteCalls(stub func()) {
+	fake.deleteMutex.Lock()
+	defer fake.deleteMutex.Unlock()
+	fake.DeleteStub = stub
 }
 
 func (fake *FakeSessionStorer) Get(arg1 interface{}) interface{} {
@@ -198,6 +225,8 @@ func (fake *FakeSessionStorer) SetArgsForCall(i int) (interface{}, interface{}) 
 func (fake *FakeSessionStorer) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.deleteMutex.RLock()
+	defer fake.deleteMutex.RUnlock()
 	fake.getMutex.RLock()
 	defer fake.getMutex.RUnlock()
 	fake.saveMutex.RLock()

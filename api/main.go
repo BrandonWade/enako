@@ -54,8 +54,13 @@ func main() {
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
 	stack := middleware.NewMiddlewareStack(logger, store)
+	// TODO: Clean these up
 	mw := []middleware.Middleware{
 		stack.Authenticate(),
+	}
+	mw2 := []middleware.Middleware{
+		stack.Authenticate(),
+		stack.DecodeExpense(),
 	}
 
 	authRepository := repositories.NewAuthRepository(DB)
@@ -84,8 +89,8 @@ func main() {
 
 	// Expenses
 	api.HandleFunc("/expenses", stack.Apply(expenseController.GetExpenses, mw)).Methods("GET")
-	api.HandleFunc("/expenses", middleware.DecodeExpense(logger, expenseController.CreateExpense)).Methods("POST")
-	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.UpdateExpense, mw)).Methods("PUT")
+	api.HandleFunc("/expenses", stack.Apply(expenseController.CreateExpense, mw2)).Methods("POST")
+	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.UpdateExpense, mw2)).Methods("PUT")
 	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.DeleteExpense, mw)).Methods("DELETE")
 
 	http.ListenAndServe(":8000", r)

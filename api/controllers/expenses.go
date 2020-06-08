@@ -30,7 +30,7 @@ var (
 //go:generate counterfeiter -o fakes/fake_expense_controller.go . ExpenseController
 type ExpenseController interface {
 	GetExpenses(w http.ResponseWriter, r *http.Request)
-	CreateExpense(w http.ResponseWriter, e *models.Expense)
+	CreateExpense(w http.ResponseWriter, r *http.Request)
 	UpdateExpense(w http.ResponseWriter, r *http.Request)
 	DeleteExpense(w http.ResponseWriter, r *http.Request)
 }
@@ -71,8 +71,10 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 	return
 }
 
-func (e *expenseController) CreateExpense(w http.ResponseWriter, expense *models.Expense) {
+func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	userAccountID := int64(1) // TODO: Hardcoded for testing
+
+	expense := r.Context().Value("expense").(models.Expense)
 
 	if err := validator.Validate(expense); err != nil {
 		e.logger.WithFields(logrus.Fields{
@@ -85,7 +87,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, expense *models
 		return
 	}
 
-	ID, err := e.service.CreateExpense(userAccountID, expense)
+	ID, err := e.service.CreateExpense(userAccountID, &expense)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.CreateExpense",
@@ -125,20 +127,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	expense := models.Expense{}
-	err = json.NewDecoder(r.Body).Decode(&expense)
-	if err != nil {
-		e.logger.WithFields(logrus.Fields{
-			"method":     "ExpenseController.UpdateExpense",
-			"account ID": userAccountID,
-			"id":         ID,
-			"err":        err.Error(),
-		}).Error(ErrInvalidExpensePayload)
-
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidExpensePayload))
-		return
-	}
+	expense := r.Context().Value("expense").(models.Expense)
 
 	if err = validator.Validate(expense); err != nil {
 		e.logger.WithFields(logrus.Fields{

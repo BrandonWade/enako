@@ -25,6 +25,8 @@ const Login = props => {
             return;
         }
 
+        props.setAuthenticated(true);
+
         const categories = await fetchCategories();
         const expenses = await fetchExpenses();
 
