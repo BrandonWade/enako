@@ -54,14 +54,6 @@ func main() {
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
 	stack := middleware.NewMiddlewareStack(logger, store)
-	// TODO: Clean these up
-	mw := []middleware.Middleware{
-		stack.Authenticate(),
-	}
-	mw2 := []middleware.Middleware{
-		stack.Authenticate(),
-		stack.DecodeExpense(),
-	}
 
 	authRepository := repositories.NewAuthRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
@@ -75,8 +67,14 @@ func main() {
 	categoryController := controllers.NewCategoryController(logger, store, categoryService)
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
-	r := mux.NewRouter()
+	// Set up route middleware
+	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
+	getExpensesHandler := stack.Apply(expenseController.GetExpenses, []middleware.Middleware{stack.Authenticate()})
+	createExpenseHandler := stack.Apply(expenseController.CreateExpense, []middleware.Middleware{stack.Authenticate(), stack.DecodeExpense()})
+	updateExpenseHandler := stack.Apply(expenseController.UpdateExpense, []middleware.Middleware{stack.Authenticate(), stack.DecodeExpense()})
+	deleteExpenseHandler := stack.Apply(expenseController.DeleteExpense, []middleware.Middleware{stack.Authenticate()})
 
+	r := mux.NewRouter()
 	api := r.PathPrefix("/v1").Subrouter()
 
 	// Auth
@@ -85,13 +83,13 @@ func main() {
 	api.HandleFunc("/logout", authController.Logout).Methods("GET")
 
 	// Categories
-	api.HandleFunc("/categories", stack.Apply(categoryController.GetCategories, mw)).Methods("GET")
+	api.HandleFunc("/categories", getCategoriesHandler).Methods("GET")
 
 	// Expenses
-	api.HandleFunc("/expenses", stack.Apply(expenseController.GetExpenses, mw)).Methods("GET")
-	api.HandleFunc("/expenses", stack.Apply(expenseController.CreateExpense, mw2)).Methods("POST")
-	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.UpdateExpense, mw2)).Methods("PUT")
-	api.HandleFunc("/expenses/{id}", stack.Apply(expenseController.DeleteExpense, mw)).Methods("DELETE")
+	api.HandleFunc("/expenses", getExpensesHandler).Methods("GET")
+	api.HandleFunc("/expenses", createExpenseHandler).Methods("POST")
+	api.HandleFunc("/expenses/{id}", updateExpenseHandler).Methods("PUT")
+	api.HandleFunc("/expenses/{id}", deleteExpenseHandler).Methods("DELETE")
 
 	http.ListenAndServe(":8000", r)
 }
