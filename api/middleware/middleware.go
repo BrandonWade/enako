@@ -7,6 +7,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type key int
+
+const (
+	// ContextUserAccountKey ...
+	ContextUserAccountKey key = iota
+
+	// ContextExpenseKey ...
+	ContextExpenseKey
+)
+
 // Middleware ...
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 

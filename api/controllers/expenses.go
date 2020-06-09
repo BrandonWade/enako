@@ -7,23 +7,21 @@ import (
 	"strconv"
 
 	"github.com/BrandonWade/enako/api/helpers"
+	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-
-	validator "gopkg.in/validator.v2"
 )
 
 var (
-	ErrFetchingExpenses      = errors.New("error fetching expense list")
-	ErrInvalidExpensePayload = errors.New("invalid expense payload")
-	ErrCreatingExpense       = errors.New("error creating expense")
-	ErrInvalidExpenseID      = errors.New("invalid expense id")
-	ErrUpdatingExpense       = errors.New("error updating expense")
-	ErrNoExpensesUpdated     = errors.New("no expenses were updated")
-	ErrDeletingExpense       = errors.New("error deleting expense")
-	ErrNoExpensesDeleted     = errors.New("no expenses were deleted")
+	ErrFetchingExpenses  = errors.New("error fetching expense list")
+	ErrCreatingExpense   = errors.New("error creating expense")
+	ErrInvalidExpenseID  = errors.New("invalid expense id")
+	ErrUpdatingExpense   = errors.New("error updating expense")
+	ErrNoExpensesUpdated = errors.New("no expenses were updated")
+	ErrDeletingExpense   = errors.New("error deleting expense")
+	ErrNoExpensesDeleted = errors.New("no expenses were deleted")
 )
 
 // ExpenseController the interface for expense related APIs
@@ -74,18 +72,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	userAccountID := int64(1) // TODO: Hardcoded for testing
 
-	expense := r.Context().Value("expense").(models.Expense)
-
-	if err := validator.Validate(expense); err != nil {
-		e.logger.WithFields(logrus.Fields{
-			"method": "ExpenseController.CreateExpense",
-			"err":    err.Error(),
-		}).Error(err)
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(models.NewAPIError(err))
-		return
-	}
+	expense := r.Context().Value(middleware.ContextExpenseKey).(models.Expense)
 
 	ID, err := e.service.CreateExpense(userAccountID, &expense)
 	if err != nil {
@@ -127,19 +114,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	expense := r.Context().Value("expense").(models.Expense)
-
-	if err = validator.Validate(expense); err != nil {
-		e.logger.WithFields(logrus.Fields{
-			"method": "ExpenseController.UpdateExpense",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
-		}).Error(err)
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(models.NewAPIError(err))
-		return
-	}
+	expense := r.Context().Value(middleware.ContextExpenseKey).(models.Expense)
 
 	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
 	if err != nil {

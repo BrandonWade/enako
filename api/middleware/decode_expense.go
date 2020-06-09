@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/sirupsen/logrus"
 )
 
+// DecodeExpense ...
 func (m *MiddlewareStack) DecodeExpense() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
@@ -23,14 +24,14 @@ func (m *MiddlewareStack) DecodeExpense() Middleware {
 			if err != nil {
 				m.logger.WithFields(logrus.Fields{
 					"err": err.Error(),
-				}).Error(controllers.ErrInvalidExpensePayload)
+				}).Error(helpers.ErrorInvalidExpensePayload())
 
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(models.NewAPIError(controllers.ErrInvalidExpensePayload))
+				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), "expense", expense)
+			ctx := context.WithValue(r.Context(), ContextExpenseKey, expense)
 
 			f(w, r.WithContext(ctx))
 		}

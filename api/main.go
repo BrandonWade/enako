@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/BrandonWade/enako/api/controllers"
-	"github.com/BrandonWade/enako/api/controllers/middleware"
 	"github.com/BrandonWade/enako/api/helpers"
+	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/repositories"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/BrandonWade/enako/api/validation"
@@ -68,17 +68,19 @@ func main() {
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	// Set up route middleware
+	createAccountHandler := stack.Apply(authController.CreateAccount, []middleware.Middleware{stack.ValidateUserAccount(), stack.DecodeUserAccount()})
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
+
 	getExpensesHandler := stack.Apply(expenseController.GetExpenses, []middleware.Middleware{stack.Authenticate()})
-	createExpenseHandler := stack.Apply(expenseController.CreateExpense, []middleware.Middleware{stack.Authenticate(), stack.DecodeExpense()})
-	updateExpenseHandler := stack.Apply(expenseController.UpdateExpense, []middleware.Middleware{stack.Authenticate(), stack.DecodeExpense()})
+	createExpenseHandler := stack.Apply(expenseController.CreateExpense, []middleware.Middleware{stack.ValidateExpense(), stack.DecodeExpense(), stack.Authenticate()})
+	updateExpenseHandler := stack.Apply(expenseController.UpdateExpense, []middleware.Middleware{stack.ValidateExpense(), stack.DecodeExpense(), stack.Authenticate()})
 	deleteExpenseHandler := stack.Apply(expenseController.DeleteExpense, []middleware.Middleware{stack.Authenticate()})
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/v1").Subrouter()
 
 	// Auth
-	api.HandleFunc("/accounts", authController.CreateAccount).Methods("POST")
+	api.HandleFunc("/accounts", createAccountHandler).Methods("POST")
 	api.HandleFunc("/login", authController.Login).Methods("POST")
 	api.HandleFunc("/logout", authController.Logout).Methods("GET")
 

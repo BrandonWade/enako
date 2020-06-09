@@ -20,7 +20,7 @@ type Expense struct {
 	UserAccountID int64   `json:"user_account_id,omitempty" db:"user_account_id"`
 	Category      string  `json:"category,omitempty" db:"category"`
 	CategoryID    int64   `json:"category_id,omitempty" db:"category_id" validate:"min=1"`
-	Description   string  `json:"description,omitempty" db:"description"`
+	Description   string  `json:"description,omitempty" db:"description" validate:"nonzero"`
 	Amount        float64 `json:"amount,omitempty" db:"amount" validate:"min=1"`
 	ExpenseDate   string  `json:"expense_date,omitempty" db:"expense_date" validate:"date"`
 	CreatedAt     string  `json:"created_at,omitempty" db:"created_at"`

@@ -6,16 +6,13 @@ import (
 	"net/http"
 
 	"github.com/BrandonWade/enako/api/helpers"
+	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
-
-	validator "gopkg.in/validator.v2"
 )
 
 var (
-	ErrInvalidAccountPayload     = errors.New("invalid account payload")
-	ErrPasswordsDoNotMatch       = errors.New("passwords do not match")
 	ErrCreatingAccount           = errors.New("error creating account")
 	ErrInvalidUsernameOrPassword = errors.New("invalid username or password")
 )
@@ -33,6 +30,7 @@ type authController struct {
 	service services.AuthService
 }
 
+// NewAuthController ...
 func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, service services.AuthService) AuthController {
 	return &authController{
 		logger,
@@ -41,43 +39,9 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 	}
 }
 
+// CreateAccount ...
 func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
-	var userAccount models.UserAccount
-	err := json.NewDecoder(r.Body).Decode(&userAccount)
-	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.CreateAccount",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
-		}).Error(ErrInvalidAccountPayload)
-
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidAccountPayload))
-		return
-	}
-
-	if err = validator.Validate(userAccount); err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.CreateAccount",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
-		}).Error(err)
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(models.NewAPIError(err))
-		return
-	}
-
-	if userAccount.Password != userAccount.ConfirmPassword {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.CreateAccount",
-			"ip":     r.RemoteAddr,
-		}).Error(ErrPasswordsDoNotMatch)
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrPasswordsDoNotMatch))
-		return
-	}
+	userAccount := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
 
 	ID, err := a.service.CreateAccount(userAccount.Username, userAccount.Email, userAccount.Password)
 	if err != nil {
@@ -101,6 +65,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Login ...
 func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {
@@ -122,10 +87,10 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 			"method": "AuthController.Login",
 			"ip":     r.RemoteAddr,
 			"err":    err.Error(),
-		}).Error(ErrInvalidAccountPayload)
+		}).Error(helpers.ErrorInvalidAccountPayload())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidAccountPayload))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
 		return
 	}
 
@@ -155,6 +120,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// Logout ...
 func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {

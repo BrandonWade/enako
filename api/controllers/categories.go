@@ -24,6 +24,7 @@ type categoryController struct {
 	service services.CategoryService
 }
 
+// NewCategoryController ...
 func NewCategoryController(logger *logrus.Logger, store helpers.CookieStorer, service services.CategoryService) CategoryController {
 	return &categoryController{
 		logger,
@@ -32,6 +33,7 @@ func NewCategoryController(logger *logrus.Logger, store helpers.CookieStorer, se
 	}
 }
 
+// GetCategories ...
 func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := c.service.GetCategories()
 	if err != nil {
