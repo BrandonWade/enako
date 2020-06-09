@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	ErrRetrievingAccount         = errors.New("error retrieving user account from context")
 	ErrCreatingAccount           = errors.New("error creating account")
 	ErrInvalidUsernameOrPassword = errors.New("invalid username or password")
 )
@@ -41,14 +42,24 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 
 // CreateAccount ...
 func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
-	userAccount := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
+	a.logger.WithFields(logrus.Fields{
+		"method": "AuthController.CreateAccount",
+		"ip":     r.RemoteAddr,
+	})
+
+	userAccount, ok := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
+	if !ok {
+		a.logger.Error(ErrRetrievingAccount)
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(ErrCreatingAccount))
+		return
+	}
 
 	ID, err := a.service.CreateAccount(userAccount.Username, userAccount.Email, userAccount.Password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.CreateAccount",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
+			"err": err.Error(),
 		}).Error(ErrCreatingAccount)
 
 		w.WriteHeader(http.StatusInternalServerError)

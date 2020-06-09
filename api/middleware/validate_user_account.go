@@ -14,13 +14,16 @@ import (
 func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
+			m.logger.WithFields(logrus.Fields{
+				"method": "middleware.ValidateUserAccount",
+				"ip":     r.RemoteAddr,
+			})
+
 			userAccount := r.Context().Value(ContextUserAccountKey).(models.UserAccount)
 
 			if err := validator.Validate(userAccount); err != nil {
 				m.logger.WithFields(logrus.Fields{
-					"method": "middleware.ValidateUserAccount",
-					"ip":     r.RemoteAddr,
-					"err":    err.Error(),
+					"err": err.Error(),
 				}).Error(err)
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
@@ -29,10 +32,7 @@ func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 			}
 
 			if userAccount.Password != userAccount.ConfirmPassword {
-				m.logger.WithFields(logrus.Fields{
-					"method": "AuthController.CreateAccount",
-					"ip":     r.RemoteAddr,
-				}).Error(helpers.ErrorPasswordsDoNotMatch())
+				m.logger.Info(helpers.ErrorPasswordsDoNotMatch())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorPasswordsDoNotMatch()))
