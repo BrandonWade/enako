@@ -59,7 +59,7 @@ var _ = Describe("ExpenseController", func() {
 		Context("when requesting the list of expenses", func() {
 			It("returns an error when the expense service returns an error", func() {
 				expenseService.GetExpensesReturns([]models.Expense{}, errors.New("service error"))
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingExpenses)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorFetchingExpenses())
 
 				expenseController.GetExpenses(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
@@ -136,7 +136,7 @@ var _ = Describe("ExpenseController", func() {
 				payload := models.Expense{CategoryID: 1, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "foo"})
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrInvalidExpenseID)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidExpenseID())
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -170,7 +170,7 @@ var _ = Describe("ExpenseController", func() {
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrNoExpensesUpdated)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorNoExpensesUpdated())
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusNotFound))
@@ -208,7 +208,7 @@ var _ = Describe("ExpenseController", func() {
 			It("returns an error if an invalid expense id is provided", func() {
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "foo"})
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrInvalidExpenseID)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidExpenseID())
 
 				expenseController.DeleteExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusBadRequest))
@@ -222,7 +222,7 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrDeletingExpense)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorDeletingExpense())
 
 				expenseController.DeleteExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
@@ -236,7 +236,7 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrNoExpensesDeleted)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorNoExpensesDeleted())
 
 				expenseController.DeleteExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusNotFound))

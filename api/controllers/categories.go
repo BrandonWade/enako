@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/BrandonWade/enako/api/helpers"
@@ -10,8 +9,6 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
 )
-
-var ErrFetchingCategories = errors.New("error fetching categories")
 
 //go:generate counterfeiter -o fakes/fake_category_controller.go . CategoryController
 type CategoryController interface {
@@ -40,10 +37,10 @@ func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Reques
 		c.logger.WithFields(logrus.Fields{
 			"method": "CategoryController.GetCategories",
 			"err":    err.Error(),
-		}).Error(ErrFetchingCategories)
+		}).Error(helpers.ErrorFetchingCategories())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrFetchingCategories))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingCategories()))
 		return
 	}
 

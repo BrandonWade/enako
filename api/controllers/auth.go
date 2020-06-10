@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/BrandonWade/enako/api/helpers"
@@ -10,12 +9,6 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
-)
-
-var (
-	ErrRetrievingAccount         = errors.New("error retrieving user account from context")
-	ErrCreatingAccount           = errors.New("error creating account")
-	ErrInvalidUsernameOrPassword = errors.New("invalid username or password")
 )
 
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
@@ -49,10 +42,10 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 
 	userAccount, ok := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
 	if !ok {
-		a.logger.Error(ErrRetrievingAccount)
+		a.logger.Error(helpers.ErrorRetrievingAccount())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrCreatingAccount))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
 		return
 	}
 
@@ -60,10 +53,10 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"err": err.Error(),
-		}).Error(ErrCreatingAccount)
+		}).Error(helpers.ErrorCreatingAccount())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrCreatingAccount))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
 		return
 	}
 
@@ -112,10 +105,10 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 			"ip":       r.RemoteAddr,
 			"username": userAccount.Username,
 			"err":      err.Error(),
-		}).Error(ErrInvalidUsernameOrPassword)
+		}).Error(helpers.ErrorInvalidUsernameOrPassword())
 
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrInvalidUsernameOrPassword))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidUsernameOrPassword()))
 		return
 	}
 

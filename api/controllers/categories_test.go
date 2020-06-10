@@ -7,8 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 
 	"github.com/BrandonWade/enako/api/controllers"
+	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
 	"github.com/sirupsen/logrus"
@@ -53,11 +55,11 @@ var _ = Describe("CategoryController", func() {
 		Context("when requesting the list of categories", func() {
 			It("returns an error if an error is encountered", func() {
 				categoryService.GetCategoriesReturns([]models.Category{}, errors.New("service error"))
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingCategories)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorFetchingCategories())
 
 				categoryController.GetCategories(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns the list of categories with no error", func() {
@@ -66,7 +68,7 @@ var _ = Describe("CategoryController", func() {
 
 				categoryController.GetCategories(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
-				Expect(w.Body.String()).To(BeEquivalentTo(string(resBody) + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
 			})
 		})
 	})

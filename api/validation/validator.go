@@ -1,12 +1,11 @@
 package validation
 
 import (
-	"errors"
-	"fmt"
 	"reflect"
 	"regexp"
 	"time"
 
+	"github.com/BrandonWade/enako/api/helpers"
 	validator "gopkg.in/validator.v2"
 )
 
@@ -17,40 +16,29 @@ const (
 	maxPasswordLength = 50
 )
 
-var (
-	errMustBeString              = errors.New("must be string")
-	errUsernameTooShort          = fmt.Errorf("username must be minimum %d characters", minUsernameLength)
-	errUsernameTooLong           = fmt.Errorf("username must be maximum %d characters", maxUsernameLength)
-	errInvalidUsernameCharacters = errors.New("username may only contain alphanumeric characters and underscores")
-	errInvalidEmail              = errors.New("invalid email")
-	errPasswordTooShort          = fmt.Errorf("password must be minimum %d characters", minPasswordLength)
-	errPasswordTooLong           = fmt.Errorf("password must be maximum %d characters", maxPasswordLength)
-	errInvalidPasswordCharacters = errors.New("password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *")
-	errInvalidDate               = errors.New("invalid date")
-)
-
+// InitValidator ...
 func InitValidator() {
 	// Add a username validation rule (alphanumeric plus underscore)
 	validator.SetValidationFunc("uname", func(v interface{}, param string) error {
 		t := reflect.ValueOf(v)
 		if t.Kind() != reflect.String {
-			return errMustBeString
+			return helpers.ErrorMustBeString()
 		}
 
 		uname := t.String()
 		l := len(uname)
 
 		if l < minUsernameLength {
-			return errUsernameTooShort
+			return helpers.ErrorUsernameTooShort(minUsernameLength)
 		}
 
 		if l > maxUsernameLength {
-			return errUsernameTooLong
+			return helpers.ErrorUsernameTooLong(maxUsernameLength)
 		}
 
 		match, err := regexp.MatchString("^\\w+$", uname)
 		if err != nil || match != true {
-			return errInvalidUsernameCharacters
+			return helpers.ErrorInvalidUsernameCharacters()
 		}
 
 		return nil
@@ -60,12 +48,12 @@ func InitValidator() {
 	validator.SetValidationFunc("email", func(v interface{}, param string) error {
 		t := reflect.ValueOf(v)
 		if t.Kind() != reflect.String {
-			return errMustBeString
+			return helpers.ErrorMustBeString()
 		}
 
 		match, err := regexp.MatchString("^[^@]+@[^\\.@]+\\..+$", t.String())
 		if err != nil || match != true {
-			return errInvalidEmail
+			return helpers.ErrorInvalidEmail()
 		}
 
 		return nil
@@ -75,7 +63,7 @@ func InitValidator() {
 	validator.SetValidationFunc("pword", func(v interface{}, param string) error {
 		t := reflect.ValueOf(v)
 		if t.Kind() != reflect.String {
-			return errMustBeString
+			return helpers.ErrorMustBeString()
 		}
 
 		pword := t.String()
@@ -83,16 +71,16 @@ func InitValidator() {
 
 		// Ensure length is compatible with bcrypt requirements
 		if l < minPasswordLength {
-			return errPasswordTooShort
+			return helpers.ErrorPasswordTooShort(minPasswordLength)
 		}
 
 		if l > maxPasswordLength {
-			return errPasswordTooLong
+			return helpers.ErrorPasswordTooLong(maxPasswordLength)
 		}
 
 		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\*]+$", pword)
 		if err != nil || match != true {
-			return errInvalidPasswordCharacters
+			return helpers.ErrorInvalidPasswordCharacters()
 		}
 
 		return nil
@@ -102,12 +90,12 @@ func InitValidator() {
 	validator.SetValidationFunc("date", func(v interface{}, param string) error {
 		t := reflect.ValueOf(v)
 		if t.Kind() != reflect.String {
-			return errMustBeString
+			return helpers.ErrorMustBeString()
 		}
 
 		_, err := time.Parse("2006-01-02", t.String())
 		if err != nil {
-			return errInvalidDate
+			return helpers.ErrorInvalidDate()
 		}
 
 		return nil
