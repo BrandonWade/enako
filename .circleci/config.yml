@@ -6,8 +6,9 @@ jobs:
         working_directory: /app
         steps:
             - checkout
-            - run: go get -v github.com/onsi/ginkgo/ginkgo
-            - run: go get -v github.com/onsi/gomega
             - run:
-                  name: run unit tests
+                  name: Fetch Unit Test Dependencies
+                  command: go get -v github.com/onsi/ginkgo/ginkgo && go get -v github.com/onsi/gomega
+            - run:
+                  name: Run Unit Tests
                   command: cd api && ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
