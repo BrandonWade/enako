@@ -19,14 +19,14 @@ func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 				"ip":     r.RemoteAddr,
 			})
 
-			userAccount := r.Context().Value(ContextUserAccountKey).(models.UserAccount)
-			// if !ok {
-			// m.logger.Error(helpers.ErrorRetrievingAccount())
+			userAccount, ok := r.Context().Value(ContextUserAccountKey).(models.UserAccount)
+			if !ok {
+				m.logger.Error(helpers.ErrorRetrievingAccount())
 
-			// w.WriteHeader(http.StatusInternalServerError)
-			// json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
-			// return
-			// }
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
+				return
+			}
 
 			if err := validator.Validate(userAccount); err != nil {
 				m.logger.WithFields(logrus.Fields{

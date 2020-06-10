@@ -19,7 +19,7 @@ func (m *MiddlewareStack) ValidateExpense() Middleware {
 				m.logger.Error(helpers.ErrorRetrievingExpense())
 
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingExpense()))
+				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
 				return
 			}
 

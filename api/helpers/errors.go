@@ -7,6 +7,16 @@ func ErrorInvalidAccountPayload() error {
 	return errors.New("invalid account payload")
 }
 
+// ErrorRetrievingAccount ...
+func ErrorRetrievingAccount() error {
+	return errors.New("error retrieving account from context")
+}
+
+// ErrorCreatingAccount ...
+func ErrorCreatingAccount() error {
+	return errors.New("error creating account")
+}
+
 // ErrorPasswordsDoNotMatch ...
 func ErrorPasswordsDoNotMatch() error {
 	return errors.New("passwords do not match")
