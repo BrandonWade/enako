@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+	"strings"
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/helpers"
@@ -62,7 +63,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.GetExpenses(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
-				Expect(w.Body.String()).To(BeEquivalentTo(string(resBody) + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
 			})
 
 			It("returns the list of expenses with no error", func() {
@@ -71,16 +72,21 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.GetExpenses(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
-				Expect(w.Body.String()).To(BeEquivalentTo(string(resBody) + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
 			})
 		})
 	})
 
 	Describe("CreateExpense", func() {
 		Context("when creating a new expense", func() {
-			// TODO: Add test case if retrieving Expense from context fails
-			// It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
-			// })
+			It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingExpense())
+
+				expenseController.CreateExpense(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
 
 			It("returns an error if one was encountered while communicating with the expense service", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
@@ -92,7 +98,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns the info for the created expense with no error", func() {
@@ -109,13 +115,23 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.CreateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusCreated))
-				Expect(w.Body.String()).To(BeEquivalentTo(string(responseJSON) + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(responseJSON)))
 			})
 		})
 	})
 
 	Describe("UpdateExpense", func() {
 		Context("when updating an expense", func() {
+			It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
+				r = httptest.NewRequest("PUT", "/v1/expenses/id", nil)
+				r = mux.SetURLVars(r, map[string]string{"id": "123"})
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorUpdatingExpense())
+
+				expenseController.UpdateExpense(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
+
 			It("returns an error if an invalid expense id is provided", func() {
 				payload := models.Expense{CategoryID: 1, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", nil)
@@ -126,7 +142,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusBadRequest))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns an error if one is encountered while communicating with the expense service", func() {
@@ -138,11 +154,11 @@ var _ = Describe("ExpenseController", func() {
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrUpdatingExpense)
+				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorUpdatingExpense())
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns an error if the given expense could not be found", func() {
@@ -158,7 +174,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusNotFound))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns the info for the updated expense with no error", func() {
@@ -182,7 +198,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
-				Expect(w.Body.String()).To(BeEquivalentTo(string(responseJSON) + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(responseJSON)))
 			})
 		})
 	})
@@ -196,7 +212,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.DeleteExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusBadRequest))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns an error if one is encountered while communicating with the expense service", func() {
@@ -210,7 +226,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.DeleteExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns an error if the given expense could not be found", func() {
@@ -224,7 +240,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseController.DeleteExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusNotFound))
-				Expect(w.Body.String()).To(BeEquivalentTo(resBody + "\n"))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
 			It("returns content and no error if the expense was deleted", func() {

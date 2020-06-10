@@ -10,7 +10,6 @@ import (
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
-	"github.com/BrandonWade/enako/api/validation"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
@@ -37,8 +36,6 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 		decorator = func(w http.ResponseWriter, r *http.Request) {}
 		mw = stack.ValidateExpense()
 		w = httptest.NewRecorder()
-
-		validation.InitValidator()
 	})
 
 	Describe("ValidateExpense", func() {

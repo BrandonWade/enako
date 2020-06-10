@@ -42,6 +42,11 @@ func ErrorCreatingExpense() error {
 	return errors.New("error creating expense")
 }
 
+// ErrorUpdatingExpense ...
+func ErrorUpdatingExpense() error {
+	return errors.New("error updating expense")
+}
+
 // ErrorFetchingSession ...
 func ErrorFetchingSession() error {
 	return errors.New("error fetching session")

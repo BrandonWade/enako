@@ -14,7 +14,6 @@ import (
 )
 
 var _ = Describe("CategoryService", func() {
-
 	var (
 		logger          *logrus.Logger
 		categoryRepo    *fakes.FakeCategoryRepository
@@ -22,22 +21,22 @@ var _ = Describe("CategoryService", func() {
 
 		categoryList = []models.Category{
 			models.Category{
-				ID:           111,
-				Name:         "test category",
-				CreatedAt:    "2018-01-01 00:00:00",
-				UpdatedAt:    "2018-01-01 00:00:00",
+				ID:        111,
+				Name:      "test category",
+				CreatedAt: "2018-01-01 00:00:00",
+				UpdatedAt: "2018-01-01 00:00:00",
 			},
 			models.Category{
-				ID:           222,
-				Name:         "another test category",
-				CreatedAt:    "2018-01-01 00:00:00",
-				UpdatedAt:    "2018-01-01 00:00:00",
+				ID:        222,
+				Name:      "another test category",
+				CreatedAt: "2018-01-01 00:00:00",
+				UpdatedAt: "2018-01-01 00:00:00",
 			},
 			models.Category{
-				ID:           333,
-				Name:         "yet another test category",
-				CreatedAt:    "2018-01-01 00:00:00",
-				UpdatedAt:    "2018-01-01 00:00:00",
+				ID:        333,
+				Name:      "yet another test category",
+				CreatedAt: "2018-01-01 00:00:00",
+				UpdatedAt: "2018-01-01 00:00:00",
 			},
 		}
 	)
@@ -51,9 +50,7 @@ var _ = Describe("CategoryService", func() {
 	})
 
 	Describe("GetCategories", func() {
-
 		Context("when requesting the list of categories", func() {
-
 			It("returns an error if an error is encountered", func() {
 				categoryRepo.GetCategoriesReturns([]models.Category{}, errors.New("repo error"))
 

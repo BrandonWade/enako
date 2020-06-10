@@ -14,7 +14,6 @@ import (
 )
 
 var _ = Describe("ExpenseService", func() {
-
 	var (
 		logger         *logrus.Logger
 		expenseRepo    *fakes.FakeExpenseRepository
@@ -23,37 +22,37 @@ var _ = Describe("ExpenseService", func() {
 		accountID   = int64(123456)
 		expenseList = []models.Expense{
 			models.Expense{
-				ID:                 1,
-				UserAccountID:      12345,
-				Category:           "test category",
-				CategoryID:         123,
-				Description:        "test description",
-				Amount:             111,
-				ExpenseDate:        "2018-01-01 00:00:00",
-				CreatedAt:          "2018-01-01 00:00:00",
-				UpdatedAt:          "2018-01-01 00:00:00",
+				ID:            1,
+				UserAccountID: 12345,
+				Category:      "test category",
+				CategoryID:    123,
+				Description:   "test description",
+				Amount:        111,
+				ExpenseDate:   "2018-01-01 00:00:00",
+				CreatedAt:     "2018-01-01 00:00:00",
+				UpdatedAt:     "2018-01-01 00:00:00",
 			},
 			models.Expense{
-				ID:                 2,
-				UserAccountID:      1328904,
-				Category:           "another test category",
-				CategoryID:         2340985,
-				Description:        "another test description",
-				Amount:             222,
-				ExpenseDate:        "2018-01-01 00:00:00",
-				CreatedAt:          "2018-01-01 00:00:00",
-				UpdatedAt:          "2018-01-01 00:00:00",
+				ID:            2,
+				UserAccountID: 1328904,
+				Category:      "another test category",
+				CategoryID:    2340985,
+				Description:   "another test description",
+				Amount:        222,
+				ExpenseDate:   "2018-01-01 00:00:00",
+				CreatedAt:     "2018-01-01 00:00:00",
+				UpdatedAt:     "2018-01-01 00:00:00",
 			},
 			models.Expense{
-				ID:                 3,
-				UserAccountID:      17486329,
-				Category:           "yet another test category",
-				CategoryID:         123678,
-				Description:        "yet another test description",
-				Amount:             333,
-				ExpenseDate:        "2018-01-01 00:00:00",
-				CreatedAt:          "2018-01-01 00:00:00",
-				UpdatedAt:          "2018-01-01 00:00:00",
+				ID:            3,
+				UserAccountID: 17486329,
+				Category:      "yet another test category",
+				CategoryID:    123678,
+				Description:   "yet another test description",
+				Amount:        333,
+				ExpenseDate:   "2018-01-01 00:00:00",
+				CreatedAt:     "2018-01-01 00:00:00",
+				UpdatedAt:     "2018-01-01 00:00:00",
 			},
 		}
 	)
@@ -67,9 +66,7 @@ var _ = Describe("ExpenseService", func() {
 	})
 
 	Describe("GetExpenses", func() {
-
 		Context("when requesting the list of expenses", func() {
-
 			It("returns an error if an error is encountered", func() {
 				expenseRepo.GetExpensesReturns([]models.Expense{}, errors.New("repo error"))
 
@@ -91,14 +88,12 @@ var _ = Describe("ExpenseService", func() {
 	})
 
 	Describe("CreateExpense", func() {
-
 		Context("when creating a new expense", func() {
-
 			var (
 				expenseID = int64(1928736)
 				expense   = &models.Expense{
-					ID:                 123312,
-					Description:        "test expense",
+					ID:          123312,
+					Description: "test expense",
 				}
 			)
 
@@ -123,14 +118,12 @@ var _ = Describe("ExpenseService", func() {
 	})
 
 	Describe("UpdateExpense", func() {
-
 		Context("when updating an existing expense with the given id", func() {
-
 			var (
 				expenseID = int64(235476)
 				expense   = &models.Expense{
-					ID:                 123312,
-					Description:        "test expense",
+					ID:          123312,
+					Description: "test expense",
 				}
 			)
 
@@ -155,9 +148,7 @@ var _ = Describe("ExpenseService", func() {
 	})
 
 	Describe("DeleteExpense", func() {
-
 		Context("when deleting an existing expense with the given id", func() {
-
 			var (
 				expenseID = int64(637485)
 			)

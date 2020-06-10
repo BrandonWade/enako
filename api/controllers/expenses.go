@@ -17,7 +17,6 @@ import (
 var (
 	ErrFetchingExpenses  = errors.New("error fetching expense list")
 	ErrInvalidExpenseID  = errors.New("invalid expense id")
-	ErrUpdatingExpense   = errors.New("error updating expense")
 	ErrNoExpensesUpdated = errors.New("no expenses were updated")
 	ErrDeletingExpense   = errors.New("error deleting expense")
 	ErrNoExpensesDeleted = errors.New("no expenses were deleted")
@@ -131,7 +130,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		e.logger.Error(helpers.ErrorRetrievingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrUpdatingExpense))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorUpdatingExpense()))
 		return
 	}
 
@@ -140,10 +139,10 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		e.logger.WithFields(logrus.Fields{
 			"id":  ID,
 			"err": err.Error(),
-		}).Error(ErrUpdatingExpense)
+		}).Error(helpers.ErrorUpdatingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrUpdatingExpense))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorUpdatingExpense()))
 		return
 	}
 

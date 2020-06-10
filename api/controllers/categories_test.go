@@ -20,7 +20,6 @@ import (
 )
 
 var _ = Describe("CategoryController", func() {
-
 	var (
 		logger             *logrus.Logger
 		store              *helperfakes.FakeCookieStorer
@@ -51,9 +50,7 @@ var _ = Describe("CategoryController", func() {
 	})
 
 	Describe("GetCategories", func() {
-
 		Context("when requesting the list of categories", func() {
-
 			It("returns an error if an error is encountered", func() {
 				categoryService.GetCategoriesReturns([]models.Category{}, errors.New("service error"))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, controllers.ErrFetchingCategories)

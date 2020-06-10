@@ -14,7 +14,6 @@ import (
 )
 
 var _ = Describe("AuthService", func() {
-
 	var (
 		logger      *logrus.Logger
 		hasher      *helpers.FakePasswordHasher
@@ -32,9 +31,7 @@ var _ = Describe("AuthService", func() {
 	})
 
 	Describe("CreateAccount", func() {
-
 		Context("when creating a new account", func() {
-
 			var (
 				accountID = int64(18742356)
 				username  = "foobar"
