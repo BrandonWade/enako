@@ -38,6 +38,8 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 				return
 			}
 
+			// TODO: Inject user account ID from cookie into context
+
 			f(w, r)
 		}
 	}

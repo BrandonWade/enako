@@ -22,6 +22,16 @@ func ErrorInvalidExpensePayload() error {
 	return errors.New("invalid expense payload")
 }
 
+// ErrorRetrievingExpense ...
+func ErrorRetrievingExpense() error {
+	return errors.New("error retrieving expense from context")
+}
+
+// ErrorCreatingExpense ...
+func ErrorCreatingExpense() error {
+	return errors.New("error creating expense")
+}
+
 // ErrorFetchingSession ...
 func ErrorFetchingSession() error {
 	return errors.New("error fetching session")

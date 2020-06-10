@@ -16,8 +16,6 @@ import (
 
 var (
 	ErrFetchingExpenses  = errors.New("error fetching expense list")
-	ErrRetrievingExpense = errors.New("error retrieving expense from context")
-	ErrCreatingExpense   = errors.New("error creating expense")
 	ErrInvalidExpenseID  = errors.New("invalid expense id")
 	ErrUpdatingExpense   = errors.New("error updating expense")
 	ErrNoExpensesUpdated = errors.New("no expenses were updated")
@@ -80,10 +78,10 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 
 	expense, ok := r.Context().Value(middleware.ContextExpenseKey).(models.Expense)
 	if !ok {
-		e.logger.Error(ErrRetrievingExpense)
+		e.logger.Error(helpers.ErrorRetrievingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrCreatingExpense))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingExpense()))
 		return
 	}
 
@@ -91,10 +89,10 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"err": err.Error(),
-		}).Error(ErrCreatingExpense)
+		}).Error(helpers.ErrorCreatingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(ErrCreatingExpense))
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingExpense()))
 		return
 	}
 
@@ -130,7 +128,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 
 	expense, ok := r.Context().Value(middleware.ContextExpenseKey).(models.Expense)
 	if !ok {
-		e.logger.Error(ErrRetrievingExpense)
+		e.logger.Error(helpers.ErrorRetrievingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(ErrUpdatingExpense))

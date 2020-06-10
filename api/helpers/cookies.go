@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -9,11 +8,6 @@ import (
 
 // SessionCookieName the name of the browser session cookie
 const SessionCookieName = "enako-session"
-
-var (
-	// ErrFetchingSession returned when an error was encountered fetching the session
-	ErrFetchingSession = errors.New("error fetching session")
-)
 
 // CookieStorer an interface for working with a CookieStore
 //go:generate counterfeiter -o fakes/fake_cookie_helper.go . CookieStorer
@@ -38,7 +32,7 @@ func NewCookieStore(keys []byte) *CookieStore {
 func (c *CookieStore) Get(r *http.Request, name string) (*Session, error) {
 	s, err := c.store.Get(r, name)
 	if err != nil {
-		return nil, ErrFetchingSession
+		return nil, ErrorFetchingSession()
 	}
 
 	return &Session{s}, nil
@@ -48,7 +42,7 @@ func (c *CookieStore) Get(r *http.Request, name string) (*Session, error) {
 func (c *CookieStore) IsAuthenticated(r *http.Request) (bool, error) {
 	s, err := c.store.Get(r, SessionCookieName)
 	if err != nil {
-		return false, ErrFetchingSession
+		return false, ErrorFetchingSession()
 	}
 
 	return s.Values["authenticated"] == true, nil
