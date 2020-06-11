@@ -32,7 +32,7 @@ func NewCookieStore(keys []byte) *CookieStore {
 func (c *CookieStore) Get(r *http.Request, name string) (*Session, error) {
 	s, err := c.store.Get(r, name)
 	if err != nil {
-		return nil, ErrorFetchingSession()
+		return nil, err
 	}
 
 	return &Session{s}, nil
@@ -42,7 +42,7 @@ func (c *CookieStore) Get(r *http.Request, name string) (*Session, error) {
 func (c *CookieStore) IsAuthenticated(r *http.Request) (bool, error) {
 	s, err := c.store.Get(r, SessionCookieName)
 	if err != nil {
-		return false, ErrorFetchingSession()
+		return false, err
 	}
 
 	return s.Values["authenticated"] == true, nil

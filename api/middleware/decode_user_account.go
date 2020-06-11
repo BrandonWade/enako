@@ -7,24 +7,16 @@ import (
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
-	"github.com/sirupsen/logrus"
 )
 
 // DecodeUserAccount ...
 func (m *MiddlewareStack) DecodeUserAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			m.logger.WithFields(logrus.Fields{
-				"method": "middleware.DecodeUserAccount",
-				"ip":     r.RemoteAddr,
-			})
-
 			var userAccount models.UserAccount
 			err := json.NewDecoder(r.Body).Decode(&userAccount)
 			if err != nil {
-				m.logger.WithFields(logrus.Fields{
-					"err": err.Error(),
-				}).Error(helpers.ErrorInvalidAccountPayload())
+				m.logger.WithField("method", "middleware.DecodeUserAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))

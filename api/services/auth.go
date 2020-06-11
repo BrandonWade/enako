@@ -34,13 +34,9 @@ func (a *authService) CreateAccount(username, email, password string) (int64, er
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":   "AuthService.CreateAccount",
-			"username": username,
-			"email":    email,
 			"password": password,
-			"err":      err.Error(),
-		}).Error(helpers.ErrorCreatingAccount())
-
-		return 0, helpers.ErrorCreatingAccount()
+		}).Error(err.Error())
+		return 0, err
 	}
 
 	return a.repo.CreateAccount(username, email, string(hash))
@@ -48,28 +44,22 @@ func (a *authService) CreateAccount(username, email, password string) (int64, er
 
 // VerifyAccount ...
 func (a *authService) VerifyAccount(username, password string) (int64, error) {
-	a.logger.WithFields(logrus.Fields{
-		"method":   "AuthService.VerifyAccount",
-		"username": username,
-		"password": password,
-	})
-
 	account, err := a.repo.GetAccount(username)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"err": err.Error(),
-		}).Error(helpers.ErrorVerifyingAccount())
-
-		return 0, helpers.ErrorVerifyingAccount()
+			"method":   "AuthService.VerifyAccount",
+			"username": username,
+		}).Error(err.Error())
+		return 0, err
 	}
 
 	err = a.hasher.Compare(account.Password, password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"err": err.Error(),
-		}).Error(helpers.ErrorVerifyingAccount())
-
-		return 0, helpers.ErrorVerifyingAccount()
+			"method":   "AuthService.VerifyAccount",
+			"password": password,
+		}).Error(err.Error())
+		return 0, err
 	}
 
 	return account.ID, nil

@@ -29,10 +29,8 @@ func (p *passwordHasher) Generate(password string) (string, error) {
 		p.logger.WithFields(logrus.Fields{
 			"method":   "PasswordHasher.Generate",
 			"password": password,
-			"err":      err.Error(),
-		}).Error(ErrorGeneratingHash())
-
-		return "", ErrorGeneratingHash()
+		}).Error(err.Error())
+		return "", err
 	}
 
 	return string(hash), nil
@@ -46,10 +44,8 @@ func (p *passwordHasher) Compare(hash, password string) error {
 			"method":   "PasswordHasher.Compare",
 			"hash":     hash,
 			"password": password,
-			"err":      err.Error(),
-		}).Error(ErrorComparingHash())
-
-		return ErrorComparingHash()
+		}).Error(err.Error())
+		return err
 	}
 
 	return nil

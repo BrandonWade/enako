@@ -34,10 +34,7 @@ func NewCategoryController(logger *logrus.Logger, store helpers.CookieStorer, se
 func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := c.service.GetCategories()
 	if err != nil {
-		c.logger.WithFields(logrus.Fields{
-			"method": "CategoryController.GetCategories",
-			"err":    err.Error(),
-		}).Error(helpers.ErrorFetchingCategories())
+		c.logger.WithField("method", "CategoryController.GetCategories").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingCategories()))

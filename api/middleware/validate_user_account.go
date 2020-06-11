@@ -6,7 +6,6 @@ import (
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/validator.v2"
 )
 
@@ -14,14 +13,9 @@ import (
 func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			m.logger.WithFields(logrus.Fields{
-				"method": "middleware.ValidateUserAccount",
-				"ip":     r.RemoteAddr,
-			})
-
 			userAccount, ok := r.Context().Value(ContextUserAccountKey).(models.UserAccount)
 			if !ok {
-				m.logger.Error(helpers.ErrorRetrievingAccount())
+				m.logger.WithField("method", "middleware.ValidateUserAccount").Error(helpers.ErrorRetrievingAccount())
 
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
@@ -29,9 +23,7 @@ func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 			}
 
 			if err := validator.Validate(userAccount); err != nil {
-				m.logger.WithFields(logrus.Fields{
-					"err": err.Error(),
-				}).Error(err)
+				m.logger.WithField("method", "middleware.ValidateUserAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.NewAPIError(err))
@@ -39,7 +31,7 @@ func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 			}
 
 			if userAccount.Password != userAccount.ConfirmPassword {
-				m.logger.Info(helpers.ErrorPasswordsDoNotMatch())
+				m.logger.WithField("method", "middleware.ValidateUserAccount").Info(helpers.ErrorPasswordsDoNotMatch())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorPasswordsDoNotMatch()))

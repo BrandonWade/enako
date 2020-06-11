@@ -6,7 +6,6 @@ import (
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
-	"github.com/sirupsen/logrus"
 	"gopkg.in/validator.v2"
 )
 
@@ -16,7 +15,7 @@ func (m *MiddlewareStack) ValidateExpense() Middleware {
 		return func(w http.ResponseWriter, r *http.Request) {
 			expense, ok := r.Context().Value(ContextExpenseKey).(models.Expense)
 			if !ok {
-				m.logger.Error(helpers.ErrorRetrievingExpense())
+				m.logger.WithField("method", "middleware.ValidateExpense").Error(helpers.ErrorRetrievingExpense())
 
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
@@ -24,10 +23,7 @@ func (m *MiddlewareStack) ValidateExpense() Middleware {
 			}
 
 			if err := validator.Validate(expense); err != nil {
-				m.logger.WithFields(logrus.Fields{
-					"method": "middleware.ValidateExpense",
-					"err":    err.Error(),
-				}).Error(err)
+				m.logger.WithField("method", "middleware.ValidateExpense").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.NewAPIError(err))

@@ -35,14 +35,9 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 
 // CreateAccount ...
 func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
-	a.logger.WithFields(logrus.Fields{
-		"method": "AuthController.CreateAccount",
-		"ip":     r.RemoteAddr,
-	})
-
 	userAccount, ok := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
 	if !ok {
-		a.logger.Error(helpers.ErrorRetrievingAccount())
+		a.logger.WithField("method", "AuthController.CreateAccount").Error(helpers.ErrorRetrievingAccount())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
@@ -51,9 +46,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 
 	ID, err := a.service.CreateAccount(userAccount.Username, userAccount.Email, userAccount.Password)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"err": err.Error(),
-		}).Error(helpers.ErrorCreatingAccount())
+		a.logger.WithField("method", "AuthController.CreateAccount").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
@@ -73,11 +66,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.Login",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
-		}).Error(helpers.ErrorFetchingSession())
+		a.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
@@ -87,11 +76,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	var userAccount models.UserAccount
 	err = json.NewDecoder(r.Body).Decode(&userAccount)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.Login",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
-		}).Error(helpers.ErrorInvalidAccountPayload())
+		a.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
@@ -102,10 +87,8 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":   "AuthController.Login",
-			"ip":       r.RemoteAddr,
 			"username": userAccount.Username,
-			"err":      err.Error(),
-		}).Error(helpers.ErrorInvalidUsernameOrPassword())
+		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidUsernameOrPassword()))
@@ -128,11 +111,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AuthController.Logout",
-			"ip":     r.RemoteAddr,
-			"err":    err.Error(),
-		}).Error(helpers.ErrorFetchingSession())
+		a.logger.WithField("method", "AuthController.Logout").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
