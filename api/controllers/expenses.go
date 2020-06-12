@@ -38,7 +38,14 @@ func NewExpenseController(logger *logrus.Logger, store helpers.CookieStorer, ser
 }
 
 func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) {
-	userAccountID := int64(1) // TODO: Hardcoded for testing
+	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	if !ok {
+		e.logger.WithField("method", "ExpenseController.GetExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		return
+	}
 
 	expenses, err := e.service.GetExpenses(userAccountID)
 	if err != nil {
@@ -58,7 +65,14 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 }
 
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
-	userAccountID := int64(1) // TODO: Hardcoded for testing
+	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	if !ok {
+		e.logger.WithField("method", "ExpenseController.CreateExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		return
+	}
 
 	expense, ok := r.Context().Value(middleware.ContextExpenseKey).(models.Expense)
 	if !ok {
@@ -94,7 +108,14 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 }
 
 func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
-	userAccountID := int64(1) // TODO: Hardcoded for testing
+	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	if !ok {
+		e.logger.WithField("method", "ExpenseController.UpdateExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		return
+	}
 
 	params := mux.Vars(r)
 
@@ -158,7 +179,14 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 }
 
 func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
-	userAccountID := int64(1) // TODO: Hardcoded for testing
+	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	if !ok {
+		e.logger.WithField("method", "ExpenseController.DeleteExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		return
+	}
 
 	params := mux.Vars(r)
 

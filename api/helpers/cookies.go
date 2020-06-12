@@ -12,7 +12,7 @@ const SessionCookieName = "enako-session"
 // CookieStorer an interface for working with a CookieStore
 //go:generate counterfeiter -o fakes/fake_cookie_helper.go . CookieStorer
 type CookieStorer interface {
-	Get(r *http.Request, name string) (*Session, error)
+	Get(r *http.Request, name string) (SessionStorer, error)
 	IsAuthenticated(r *http.Request) (bool, error)
 }
 
@@ -29,13 +29,13 @@ func NewCookieStore(keys []byte) *CookieStore {
 }
 
 // Get retrieve the cookie with the given name from the underlying CookieStore
-func (c *CookieStore) Get(r *http.Request, name string) (*Session, error) {
+func (c *CookieStore) Get(r *http.Request, name string) (SessionStorer, error) {
 	s, err := c.store.Get(r, name)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Session{s}, nil
+	return &SessionStore{s}, nil
 }
 
 // IsAuthenticated returns

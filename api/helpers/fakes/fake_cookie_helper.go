@@ -9,18 +9,18 @@ import (
 )
 
 type FakeCookieStorer struct {
-	GetStub        func(*http.Request, string) (*helpers.Session, error)
+	GetStub        func(*http.Request, string) (helpers.SessionStorer, error)
 	getMutex       sync.RWMutex
 	getArgsForCall []struct {
 		arg1 *http.Request
 		arg2 string
 	}
 	getReturns struct {
-		result1 *helpers.Session
+		result1 helpers.SessionStorer
 		result2 error
 	}
 	getReturnsOnCall map[int]struct {
-		result1 *helpers.Session
+		result1 helpers.SessionStorer
 		result2 error
 	}
 	IsAuthenticatedStub        func(*http.Request) (bool, error)
@@ -40,7 +40,7 @@ type FakeCookieStorer struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeCookieStorer) Get(arg1 *http.Request, arg2 string) (*helpers.Session, error) {
+func (fake *FakeCookieStorer) Get(arg1 *http.Request, arg2 string) (helpers.SessionStorer, error) {
 	fake.getMutex.Lock()
 	ret, specificReturn := fake.getReturnsOnCall[len(fake.getArgsForCall)]
 	fake.getArgsForCall = append(fake.getArgsForCall, struct {
@@ -65,7 +65,7 @@ func (fake *FakeCookieStorer) GetCallCount() int {
 	return len(fake.getArgsForCall)
 }
 
-func (fake *FakeCookieStorer) GetCalls(stub func(*http.Request, string) (*helpers.Session, error)) {
+func (fake *FakeCookieStorer) GetCalls(stub func(*http.Request, string) (helpers.SessionStorer, error)) {
 	fake.getMutex.Lock()
 	defer fake.getMutex.Unlock()
 	fake.GetStub = stub
@@ -78,28 +78,28 @@ func (fake *FakeCookieStorer) GetArgsForCall(i int) (*http.Request, string) {
 	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeCookieStorer) GetReturns(result1 *helpers.Session, result2 error) {
+func (fake *FakeCookieStorer) GetReturns(result1 helpers.SessionStorer, result2 error) {
 	fake.getMutex.Lock()
 	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	fake.getReturns = struct {
-		result1 *helpers.Session
+		result1 helpers.SessionStorer
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeCookieStorer) GetReturnsOnCall(i int, result1 *helpers.Session, result2 error) {
+func (fake *FakeCookieStorer) GetReturnsOnCall(i int, result1 helpers.SessionStorer, result2 error) {
 	fake.getMutex.Lock()
 	defer fake.getMutex.Unlock()
 	fake.GetStub = nil
 	if fake.getReturnsOnCall == nil {
 		fake.getReturnsOnCall = make(map[int]struct {
-			result1 *helpers.Session
+			result1 helpers.SessionStorer
 			result2 error
 		})
 	}
 	fake.getReturnsOnCall[i] = struct {
-		result1 *helpers.Session
+		result1 helpers.SessionStorer
 		result2 error
 	}{result1, result2}
 }

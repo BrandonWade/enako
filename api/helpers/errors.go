@@ -149,3 +149,8 @@ func ErrorInvalidPasswordCharacters() error {
 func ErrorInvalidDate() error {
 	return errors.New("invalid date")
 }
+
+// ErrorRetrievingUserAccountID ...
+func ErrorRetrievingUserAccountID() error {
+	return errors.New("error retrieving user account id")
+}

@@ -1,6 +1,7 @@
 package middleware_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -22,6 +23,7 @@ var _ = Describe("AuthenticateMiddleware", func() {
 	var (
 		logger    *logrus.Logger
 		store     *helperfakes.FakeCookieStorer
+		session   *helperfakes.FakeSessionStorer
 		stack     *middleware.MiddlewareStack
 		mw        middleware.Middleware
 		decorator func(http.ResponseWriter, *http.Request)
@@ -34,6 +36,7 @@ var _ = Describe("AuthenticateMiddleware", func() {
 		logger.Out = ioutil.Discard
 
 		store = &helperfakes.FakeCookieStorer{}
+		session = &helperfakes.FakeSessionStorer{}
 		stack = middleware.NewMiddlewareStack(logger, store)
 
 		decorator = func(w http.ResponseWriter, r *http.Request) {}
@@ -70,8 +73,13 @@ var _ = Describe("AuthenticateMiddleware", func() {
 			})
 
 			It("calls the next function with no error if the session is authenticated", func() {
+				accountID := int64(1)
+				session.GetReturns(1)
+				store.GetReturns(session, nil)
 				store.IsAuthenticatedReturns(true, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
+				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
 				handler(w, r)

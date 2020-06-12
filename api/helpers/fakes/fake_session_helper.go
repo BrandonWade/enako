@@ -24,17 +24,11 @@ type FakeSessionStorer struct {
 	getReturnsOnCall map[int]struct {
 		result1 interface{}
 	}
-	SaveStub        func(*http.Request, http.ResponseWriter) error
+	SaveStub        func(*http.Request, http.ResponseWriter)
 	saveMutex       sync.RWMutex
 	saveArgsForCall []struct {
 		arg1 *http.Request
 		arg2 http.ResponseWriter
-	}
-	saveReturns struct {
-		result1 error
-	}
-	saveReturnsOnCall map[int]struct {
-		result1 error
 	}
 	SetStub        func(interface{}, interface{})
 	setMutex       sync.RWMutex
@@ -129,9 +123,8 @@ func (fake *FakeSessionStorer) GetReturnsOnCall(i int, result1 interface{}) {
 	}{result1}
 }
 
-func (fake *FakeSessionStorer) Save(arg1 *http.Request, arg2 http.ResponseWriter) error {
+func (fake *FakeSessionStorer) Save(arg1 *http.Request, arg2 http.ResponseWriter) {
 	fake.saveMutex.Lock()
-	ret, specificReturn := fake.saveReturnsOnCall[len(fake.saveArgsForCall)]
 	fake.saveArgsForCall = append(fake.saveArgsForCall, struct {
 		arg1 *http.Request
 		arg2 http.ResponseWriter
@@ -139,13 +132,8 @@ func (fake *FakeSessionStorer) Save(arg1 *http.Request, arg2 http.ResponseWriter
 	fake.recordInvocation("Save", []interface{}{arg1, arg2})
 	fake.saveMutex.Unlock()
 	if fake.SaveStub != nil {
-		return fake.SaveStub(arg1, arg2)
+		fake.SaveStub(arg1, arg2)
 	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.saveReturns
-	return fakeReturns.result1
 }
 
 func (fake *FakeSessionStorer) SaveCallCount() int {
@@ -154,7 +142,7 @@ func (fake *FakeSessionStorer) SaveCallCount() int {
 	return len(fake.saveArgsForCall)
 }
 
-func (fake *FakeSessionStorer) SaveCalls(stub func(*http.Request, http.ResponseWriter) error) {
+func (fake *FakeSessionStorer) SaveCalls(stub func(*http.Request, http.ResponseWriter)) {
 	fake.saveMutex.Lock()
 	defer fake.saveMutex.Unlock()
 	fake.SaveStub = stub
@@ -165,29 +153,6 @@ func (fake *FakeSessionStorer) SaveArgsForCall(i int) (*http.Request, http.Respo
 	defer fake.saveMutex.RUnlock()
 	argsForCall := fake.saveArgsForCall[i]
 	return argsForCall.arg1, argsForCall.arg2
-}
-
-func (fake *FakeSessionStorer) SaveReturns(result1 error) {
-	fake.saveMutex.Lock()
-	defer fake.saveMutex.Unlock()
-	fake.SaveStub = nil
-	fake.saveReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeSessionStorer) SaveReturnsOnCall(i int, result1 error) {
-	fake.saveMutex.Lock()
-	defer fake.saveMutex.Unlock()
-	fake.SaveStub = nil
-	if fake.saveReturnsOnCall == nil {
-		fake.saveReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.saveReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
 }
 
 func (fake *FakeSessionStorer) Set(arg1 interface{}, arg2 interface{}) {

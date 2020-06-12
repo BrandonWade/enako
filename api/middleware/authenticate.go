@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -30,9 +31,19 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 				return
 			}
 
-			// TODO: Inject user account ID from cookie into context
+			session, err := m.store.Get(r, helpers.SessionCookieName)
+			if err != nil {
+				m.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
-			f(w, r)
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
+				return
+			}
+
+			userAccountID := session.Get("user_account_id")
+			ctx := context.WithValue(r.Context(), ContextUserAccountIDKey, userAccountID)
+
+			f(w, r.WithContext(ctx))
 		}
 	}
 }

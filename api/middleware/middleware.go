@@ -15,6 +15,9 @@ const (
 
 	// ContextExpenseKey ...
 	ContextExpenseKey
+
+	// ContextUserAccountIDKey ...
+	ContextUserAccountIDKey
 )
 
 // Middleware ...
