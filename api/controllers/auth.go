@@ -36,7 +36,7 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 
 // CreateAccount creates a new account.
 func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
-	userAccount, ok := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
+	createAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
 	if !ok {
 		a.logger.WithField("method", "AuthController.CreateAccount").Error(helpers.ErrorRetrievingAccount())
 
@@ -45,7 +45,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ID, err := a.service.CreateAccount(userAccount.Username, userAccount.Email, userAccount.Password)
+	ID, err := a.service.CreateAccount(createAccount.Username, createAccount.Email, createAccount.Password)
 	if err != nil {
 		a.logger.WithField("method", "AuthController.CreateAccount").Error(err.Error())
 
@@ -54,12 +54,12 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userAccount.ID = ID
-	userAccount.Password = ""
-	userAccount.ConfirmPassword = ""
+	createAccount.ID = ID
+	createAccount.Password = ""
+	createAccount.ConfirmPassword = ""
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(userAccount)
+	json.NewEncoder(w).Encode(createAccount)
 	return
 }
 

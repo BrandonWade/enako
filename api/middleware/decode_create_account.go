@@ -9,12 +9,12 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 )
 
-// DecodeUserAccount decodes a user account from a request and stores it in the request context.
-func (m *MiddlewareStack) DecodeUserAccount() Middleware {
+// DecodeCreateAccount decodes a create account payload from a request and stores it in the request context.
+func (m *MiddlewareStack) DecodeCreateAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			var userAccount models.UserAccount
-			err := json.NewDecoder(r.Body).Decode(&userAccount)
+			var createAccount models.CreateAccount
+			err := json.NewDecoder(r.Body).Decode(&createAccount)
 			if err != nil {
 				m.logger.WithField("method", "middleware.DecodeUserAccount").Info(err.Error())
 
@@ -23,7 +23,7 @@ func (m *MiddlewareStack) DecodeUserAccount() Middleware {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), ContextUserAccountKey, userAccount)
+			ctx := context.WithValue(r.Context(), ContextCreateAccountKey, createAccount)
 
 			f(w, r.WithContext(ctx))
 		}

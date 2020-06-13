@@ -16,7 +16,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var _ = Describe("ValidateUserAccountMiddleware", func() {
+var _ = Describe("ValidateCreateAccountMiddleware", func() {
 	var (
 		logger    *logrus.Logger
 		store     helpers.CookieStorer
@@ -35,12 +35,12 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 		stack = middleware.NewMiddlewareStack(logger, store)
 
 		decorator = func(w http.ResponseWriter, r *http.Request) {}
-		mw = stack.ValidateUserAccount()
+		mw = stack.ValidateCreateAccount()
 		w = httptest.NewRecorder()
 	})
 
-	Describe("ValidateUserAccount", func() {
-		Context("when validating a UserAccount from an incoming request", func() {
+	Describe("ValidateCreateAccount", func() {
+		Context("when validating a CreateAccount from an incoming request", func() {
 			It("returns an error if an error is encountered retrieving the UserAccount from the request Context", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidAccountPayload())
@@ -54,9 +54,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if a username that is too short is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "user", Email: "test@email.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
+				payload := models.CreateAccount{Username: "user", Email: "test@email.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
 				resBody := `{"errors":["Username: username must be minimum 5 characters"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -68,9 +68,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if a username that is too long is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "thisisareallylongusernamethatistoolongandwillfailvalidation", Email: "test@email.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
+				payload := models.CreateAccount{Username: "thisisareallylongusernamethatistoolongandwillfailvalidation", Email: "test@email.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
 				resBody := `{"errors":["Username: username must be maximum 32 characters"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -82,9 +82,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if a username that contains invalid characters is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "-username-", Email: "test@email.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
+				payload := models.CreateAccount{Username: "-username-", Email: "test@email.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
 				resBody := `{"errors":["Username: username may only contain alphanumeric characters and underscores"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -96,9 +96,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if an invalid email is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "username", Email: "invalid@@invalid.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
+				payload := models.CreateAccount{Username: "username", Email: "invalid@@invalid.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
 				resBody := `{"errors":["Email: invalid email"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -110,9 +110,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if a password that is too short is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "username", Email: "test@email.com", Password: "password", ConfirmPassword: "password1234567890"}
+				payload := models.CreateAccount{Username: "username", Email: "test@email.com", Password: "password", ConfirmPassword: "password1234567890"}
 				resBody := `{"errors":["Password: password must be minimum 15 characters"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -124,9 +124,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if a password that is too long is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "username", Email: "test@email.com", Password: "thisisareallylongpasswordthatistoolongandwillfailvalidation", ConfirmPassword: "thisisareallylongpassword"}
+				payload := models.CreateAccount{Username: "username", Email: "test@email.com", Password: "thisisareallylongpasswordthatistoolongandwillfailvalidation", ConfirmPassword: "thisisareallylongpassword"}
 				resBody := `{"errors":["Password: password must be maximum 50 characters"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -138,9 +138,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if a password that contains invalid characters is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "username", Email: "test@email.com", Password: "_-123testpassword456-_", ConfirmPassword: "123testpassword456"}
+				payload := models.CreateAccount{Username: "username", Email: "test@email.com", Password: "_-123testpassword456-_", ConfirmPassword: "123testpassword456"}
 				resBody := `{"errors":["Password: password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *"]}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)
@@ -152,9 +152,9 @@ var _ = Describe("ValidateUserAccountMiddleware", func() {
 
 			It("returns an error if the passwords do not match", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: "username", Email: "email@test.com", Password: "testpassword123", ConfirmPassword: "testpassword1234"}
+				payload := models.CreateAccount{Username: "username", Email: "email@test.com", Password: "testpassword123", ConfirmPassword: "testpassword1234"}
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorPasswordsDoNotMatch())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)

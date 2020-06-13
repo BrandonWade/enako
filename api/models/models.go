@@ -10,11 +10,10 @@ type Category struct {
 
 // UserAccount a model for working with user accounts.
 type UserAccount struct {
-	ID              int64  `json:"id" db:"id"`
-	Username        string `json:"username" db:"username" validate:"uname"`
-	Email           string `json:"email,omitempty" db:"email" validate:"email"`
-	Password        string `json:"password,omitempty" db:"password" validate:"pword"`
-	ConfirmPassword string `json:"confirm_password,omitempty" validate:"pword"`
+	ID       int64  `json:"id" db:"id"`
+	Username string `json:"username" db:"username" validate:"uname"`
+	Email    string `json:"email,omitempty" db:"email" validate:"email"`
+	Password string `json:"password,omitempty" db:"password" validate:"pword"`
 }
 
 // Expense a model for working with expenses.

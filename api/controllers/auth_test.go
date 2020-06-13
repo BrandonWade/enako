@@ -61,9 +61,9 @@ var _ = Describe("AuthController", func() {
 
 				authService.CreateAccountReturns(accountID, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				payload := models.UserAccount{Username: accountUsername, Email: accountEmail, Password: "testpassword123", ConfirmPassword: "testpassword123"}
+				payload := models.CreateAccount{Username: accountUsername, Email: accountEmail, Password: "testpassword123", ConfirmPassword: "testpassword123"}
 				resBody := `{"id":100,"username":"username","email":"email@test.com"}`
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountKey, payload)
+				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
 				authController.CreateAccount(w, r)

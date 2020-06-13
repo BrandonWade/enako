@@ -18,7 +18,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var _ = Describe("DecodeUserAccountMiddleware", func() {
+var _ = Describe("DecodeCreateAccountMiddleware", func() {
 	var (
 		logger    *logrus.Logger
 		store     helpers.CookieStorer
@@ -37,12 +37,12 @@ var _ = Describe("DecodeUserAccountMiddleware", func() {
 		stack = middleware.NewMiddlewareStack(logger, store)
 
 		decorator = func(w http.ResponseWriter, r *http.Request) {}
-		mw = stack.DecodeUserAccount()
+		mw = stack.DecodeCreateAccount()
 		w = httptest.NewRecorder()
 	})
 
-	Describe("DecodeUserAccount", func() {
-		Context("when decoding a UserAccount from an incoming request", func() {
+	Describe("DecodeCreateAccount", func() {
+		Context("when decoding a CreateAccount from an incoming request", func() {
 			It("returns an error if a malformed payload is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", strings.NewReader("{foo}"))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidAccountPayload())
@@ -60,7 +60,7 @@ var _ = Describe("DecodeUserAccountMiddleware", func() {
 				password := "testpassword123"
 				confirmPassword := "testpassword123"
 
-				payload := models.UserAccount{Username: username, Email: email, Password: password, ConfirmPassword: confirmPassword}
+				payload := models.CreateAccount{Username: username, Email: email, Password: password, ConfirmPassword: confirmPassword}
 				payloadJSON, _ := json.Marshal(payload)
 
 				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
@@ -78,12 +78,12 @@ var _ = Describe("DecodeUserAccountMiddleware", func() {
 				password := "testpassword123"
 				confirmPassword := "testpassword123"
 
-				payload := models.UserAccount{Username: username, Email: email, Password: password, ConfirmPassword: confirmPassword}
+				payload := models.CreateAccount{Username: username, Email: email, Password: password, ConfirmPassword: confirmPassword}
 				payloadJSON, _ := json.Marshal(payload)
 
 				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				decorator = func(w http.ResponseWriter, r *http.Request) {
-					userAccount, ok := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
+					userAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
 
 					Expect(userAccount).To(gstruct.MatchFields(gstruct.IgnoreExtras, gstruct.Fields{
 						"Username":        Equal(username),

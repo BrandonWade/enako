@@ -68,7 +68,7 @@ func main() {
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	// Set up route middleware
-	createAccountHandler := stack.Apply(authController.CreateAccount, []middleware.Middleware{stack.ValidateUserAccount(), stack.DecodeUserAccount()})
+	createAccountHandler := stack.Apply(authController.CreateAccount, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
 	getExpensesHandler := stack.Apply(expenseController.GetExpenses, []middleware.Middleware{stack.Authenticate()})

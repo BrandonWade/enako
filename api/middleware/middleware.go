@@ -10,8 +10,8 @@ import (
 type key int
 
 const (
-	// ContextUserAccountKey a key used to store & retrieve a user account from the request context.
-	ContextUserAccountKey key = iota
+	// ContextCreateAccountKey a key used to store & retrieve a create account model from the request context.
+	ContextCreateAccountKey key = iota
 
 	// ContextExpenseKey a key used to store & retrieve an expense from the request context.
 	ContextExpenseKey
