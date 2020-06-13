@@ -1,3 +1,5 @@
+$selected-calendar-date: rgba(253, 164, 40, 0.35);
+
 .calendar-date {
     height: 100%;
     display: flex;
@@ -7,7 +9,11 @@
     font-size: 1.75rem;
 
     &--selected {
-        background-color: rgba(253, 164, 40, 0.45);
+        background-color: $selected-calendar-date;
+
+        &.rbc-today {
+            background-color: $selected-calendar-date;
+        }
     }
 }
 

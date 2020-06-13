@@ -11,7 +11,7 @@ const calculateTotal = (date, expenses) => {
 
 const CalendarDate = ({ expenses, selectedDate }) => props => {
     const total = calculateTotal(props.value, expenses);
-    const selected = props.value.getTime() === selectedDate.getTime() ? 'calendar-date--selected' : '';
+    const selected = props.value.setHours(0, 0, 0, 0) === selectedDate.setHours(0, 0, 0, 0) ? 'calendar-date--selected' : '';
     const negative = total > 0 ? 'u-negative' : '';
     const className = `${props.children.props.className} calendar-date ${negative} ${selected}`;
 
