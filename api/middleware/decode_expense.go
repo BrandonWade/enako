@@ -9,7 +9,7 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 )
 
-// DecodeExpense ...
+// DecodeExpense decodes an expense from a request and stores it in the request context.
 func (m *MiddlewareStack) DecodeExpense() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {

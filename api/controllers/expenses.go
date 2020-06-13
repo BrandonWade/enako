@@ -13,7 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// ExpenseController the interface for expense related APIs
+// ExpenseController the interface for working with expenses.
 //go:generate counterfeiter -o fakes/fake_expense_controller.go . ExpenseController
 type ExpenseController interface {
 	GetExpenses(w http.ResponseWriter, r *http.Request)
@@ -28,7 +28,7 @@ type expenseController struct {
 	service services.ExpenseService
 }
 
-// NewExpenseController the constructor for a new ExpenseController
+// NewExpenseController returns a new instance of an ExpenseController.
 func NewExpenseController(logger *logrus.Logger, store helpers.CookieStorer, service services.ExpenseService) ExpenseController {
 	return &expenseController{
 		logger,
@@ -37,6 +37,7 @@ func NewExpenseController(logger *logrus.Logger, store helpers.CookieStorer, ser
 	}
 }
 
+// GetExpenses returns the list of expenses.
 func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) {
 	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
 	if !ok {
@@ -64,6 +65,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 	return
 }
 
+// CreateExpense creates a new expense.
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
 	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
 	if !ok {
@@ -107,6 +109,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 	return
 }
 
+// UpdateExpense updates the expense with the given id.
 func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
 	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
 	if !ok {
@@ -178,6 +181,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	return
 }
 
+// DeletesExpense deletes the expense with the submitted id.
 func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
 	if !ok {

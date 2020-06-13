@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// CategoryService an interface for working with categories.
 //go:generate counterfeiter -o fakes/fake_category_service.go . CategoryService
 type CategoryService interface {
 	GetCategories() ([]models.Category, error)
@@ -16,6 +17,7 @@ type categoryService struct {
 	repo   repositories.CategoryRepository
 }
 
+// NewCategoryService returns a new instance of a CategoryService.
 func NewCategoryService(logger *logrus.Logger, repo repositories.CategoryRepository) CategoryService {
 	return &categoryService{
 		logger,
@@ -23,6 +25,7 @@ func NewCategoryService(logger *logrus.Logger, repo repositories.CategoryReposit
 	}
 }
 
+// GetCategories retrieves the list of categories.
 func (c *categoryService) GetCategories() ([]models.Category, error) {
 	return c.repo.GetCategories()
 }

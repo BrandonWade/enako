@@ -9,7 +9,7 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 )
 
-// DecodeUserAccount ...
+// DecodeUserAccount decodes a user account from a request and stores it in the request context.
 func (m *MiddlewareStack) DecodeUserAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {

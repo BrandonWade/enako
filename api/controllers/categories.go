@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// CategoryController a controller for working with categories.
 //go:generate counterfeiter -o fakes/fake_category_controller.go . CategoryController
 type CategoryController interface {
 	GetCategories(w http.ResponseWriter, r *http.Request)
@@ -21,7 +22,7 @@ type categoryController struct {
 	service services.CategoryService
 }
 
-// NewCategoryController ...
+// NewCategoryController returns a new instance of a CategoryController.
 func NewCategoryController(logger *logrus.Logger, store helpers.CookieStorer, service services.CategoryService) CategoryController {
 	return &categoryController{
 		logger,
@@ -30,7 +31,7 @@ func NewCategoryController(logger *logrus.Logger, store helpers.CookieStorer, se
 	}
 }
 
-// GetCategories ...
+// GetCategories returns the list of categories.
 func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Request) {
 	categories, err := c.service.GetCategories()
 	if err != nil {

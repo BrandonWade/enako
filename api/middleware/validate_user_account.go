@@ -9,7 +9,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// ValidateUserAccount ...
+// ValidateUserAccount checks whether a decoded user account in a request is valid.
 func (m *MiddlewareStack) ValidateUserAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {

@@ -16,88 +16,93 @@ const (
 	maxPasswordLength = 50
 )
 
-// InitValidator ...
+// InitValidator registers custom validation rules with the validator.
 func InitValidator() {
-	// Add a username validation rule (alphanumeric plus underscore)
-	validator.SetValidationFunc("uname", func(v interface{}, param string) error {
-		t := reflect.ValueOf(v)
-		if t.Kind() != reflect.String {
-			return helpers.ErrorMustBeString()
-		}
+	validator.SetValidationFunc("uname", ValidateUsername)
+	validator.SetValidationFunc("email", ValidateEmail)
+	validator.SetValidationFunc("pword", ValidatePassword)
+	validator.SetValidationFunc("date", ValidateDate)
+}
 
-		uname := t.String()
-		l := len(uname)
+// ValidateUsername checks that a username is valid (alphanumeric plus underscores).
+func ValidateUsername(v interface{}, param string) error {
+	t := reflect.ValueOf(v)
+	if t.Kind() != reflect.String {
+		return helpers.ErrorMustBeString()
+	}
 
-		if l < minUsernameLength {
-			return helpers.ErrorUsernameTooShort(minUsernameLength)
-		}
+	uname := t.String()
+	l := len(uname)
 
-		if l > maxUsernameLength {
-			return helpers.ErrorUsernameTooLong(maxUsernameLength)
-		}
+	if l < minUsernameLength {
+		return helpers.ErrorUsernameTooShort(minUsernameLength)
+	}
 
-		match, err := regexp.MatchString("^\\w+$", uname)
-		if err != nil || match != true {
-			return helpers.ErrorInvalidUsernameCharacters()
-		}
+	if l > maxUsernameLength {
+		return helpers.ErrorUsernameTooLong(maxUsernameLength)
+	}
 
-		return nil
-	})
+	match, err := regexp.MatchString("^\\w+$", uname)
+	if err != nil || match != true {
+		return helpers.ErrorInvalidUsernameCharacters()
+	}
 
-	// Add a simple email validation rule
-	validator.SetValidationFunc("email", func(v interface{}, param string) error {
-		t := reflect.ValueOf(v)
-		if t.Kind() != reflect.String {
-			return helpers.ErrorMustBeString()
-		}
+	return nil
+}
 
-		match, err := regexp.MatchString("^[^@]+@[^\\.@]+\\..+$", t.String())
-		if err != nil || match != true {
-			return helpers.ErrorInvalidEmail()
-		}
+// ValidateEmail checks that an email is valid.
+func ValidateEmail(v interface{}, param string) error {
+	t := reflect.ValueOf(v)
+	if t.Kind() != reflect.String {
+		return helpers.ErrorMustBeString()
+	}
 
-		return nil
-	})
+	match, err := regexp.MatchString("^[^@]+@[^\\.@]+\\..+$", t.String())
+	if err != nil || match != true {
+		return helpers.ErrorInvalidEmail()
+	}
 
-	// Add a password matching rule (alphanumeric plus symbols)
-	validator.SetValidationFunc("pword", func(v interface{}, param string) error {
-		t := reflect.ValueOf(v)
-		if t.Kind() != reflect.String {
-			return helpers.ErrorMustBeString()
-		}
+	return nil
+}
 
-		pword := t.String()
-		l := len(pword)
+// ValidatePassword checks that a password is valid (alphanumeric plus symbols).
+func ValidatePassword(v interface{}, param string) error {
+	t := reflect.ValueOf(v)
+	if t.Kind() != reflect.String {
+		return helpers.ErrorMustBeString()
+	}
 
-		// Ensure length is compatible with bcrypt requirements
-		if l < minPasswordLength {
-			return helpers.ErrorPasswordTooShort(minPasswordLength)
-		}
+	pword := t.String()
+	l := len(pword)
 
-		if l > maxPasswordLength {
-			return helpers.ErrorPasswordTooLong(maxPasswordLength)
-		}
+	// Ensure length is compatible with bcrypt requirements.
+	if l < minPasswordLength {
+		return helpers.ErrorPasswordTooShort(minPasswordLength)
+	}
 
-		match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\*]+$", pword)
-		if err != nil || match != true {
-			return helpers.ErrorInvalidPasswordCharacters()
-		}
+	if l > maxPasswordLength {
+		return helpers.ErrorPasswordTooLong(maxPasswordLength)
+	}
 
-		return nil
-	})
+	match, err := regexp.MatchString("^[\\w\\!\\@\\#\\$\\%\\^\\*]+$", pword)
+	if err != nil || match != true {
+		return helpers.ErrorInvalidPasswordCharacters()
+	}
 
-	// Add a date matching rule for checking ISO 8601 dates
-	validator.SetValidationFunc("date", func(v interface{}, param string) error {
-		t := reflect.ValueOf(v)
-		if t.Kind() != reflect.String {
-			return helpers.ErrorMustBeString()
-		}
+	return nil
+}
 
-		_, err := time.Parse("2006-01-02", t.String())
-		if err != nil {
-			return helpers.ErrorInvalidDate()
-		}
+// ValidateDate checks that a date is valid (dates are in ISO 8601 format).
+func ValidateDate(v interface{}, param string) error {
+	t := reflect.ValueOf(v)
+	if t.Kind() != reflect.String {
+		return helpers.ErrorMustBeString()
+	}
 
-		return nil
-	})
+	_, err := time.Parse("2006-01-02", t.String())
+	if err != nil {
+		return helpers.ErrorInvalidDate()
+	}
+
+	return nil
 }

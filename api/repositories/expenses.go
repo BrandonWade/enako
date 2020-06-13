@@ -4,9 +4,11 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/jmoiron/sqlx"
 
+	// mysql
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// ExpenseRepository an interface for working with expenses.
 //go:generate counterfeiter -o fakes/fake_expense_repository.go . ExpenseRepository
 type ExpenseRepository interface {
 	GetExpenses(userAccountID int64) ([]models.Expense, error)
@@ -19,12 +21,14 @@ type expenseRepository struct {
 	DB *sqlx.DB
 }
 
+// NewExpenseRepository returns a new instance of an ExpenseRepository.
 func NewExpenseRepository(DB *sqlx.DB) ExpenseRepository {
 	return &expenseRepository{
 		DB,
 	}
 }
 
+// GetExpenses retrieves the expenses belonging to the given user account ID.
 func (e *expenseRepository) GetExpenses(userAccountID int64) ([]models.Expense, error) {
 	expenses := []models.Expense{}
 
@@ -46,6 +50,7 @@ func (e *expenseRepository) GetExpenses(userAccountID int64) ([]models.Expense, 
 	return expenses, nil
 }
 
+// CreateExpense creates an expense belonging to the given user account ID.
 func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.Expense) (int64, error) {
 	result, err := e.DB.Exec(`INSERT
 		INTO expenses(
@@ -80,6 +85,7 @@ func (e *expenseRepository) CreateExpense(userAccountID int64, expense *models.E
 	return ID, nil
 }
 
+// UpdateExpense updates the expense with the given ID belonging to the given user account ID.
 func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *models.Expense) (int64, error) {
 	result, err := e.DB.Exec(`UPDATE expenses
 		SET
@@ -109,6 +115,7 @@ func (e *expenseRepository) UpdateExpense(ID, userAccountID int64, expense *mode
 	return count, nil
 }
 
+// DeleteExpense deletes the expense with the given ID belonging to the given user account ID.
 func (e *expenseRepository) DeleteExpense(ID, userAccountID int64) (int64, error) {
 	result, err := e.DB.Exec(`DELETE
 		FROM expenses

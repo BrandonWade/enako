@@ -5,6 +5,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// PasswordHasher an interface for securely hashing passwords.
 //go:generate counterfeiter -o fakes/fake_password_hasher.go . PasswordHasher
 type PasswordHasher interface {
 	Generate(password string) (string, error)
@@ -15,14 +16,14 @@ type passwordHasher struct {
 	logger *logrus.Logger
 }
 
-// NewPasswordHasher ...
+// NewPasswordHasher returns a new instance of a passwordHasher.
 func NewPasswordHasher(logger *logrus.Logger) PasswordHasher {
 	return &passwordHasher{
 		logger,
 	}
 }
 
-// Generate ...
+// Generate returns a hash for the provided password.
 func (p *passwordHasher) Generate(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -36,7 +37,7 @@ func (p *passwordHasher) Generate(password string) (string, error) {
 	return string(hash), nil
 }
 
-// Compare ...
+// Compare compares a hashed and unhashed password.
 func (p *passwordHasher) Compare(hash, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {

@@ -1,5 +1,6 @@
 package models
 
+// Category a model for working with expense categories.
 type Category struct {
 	ID        int64  `json:"id" db:"id"`
 	Name      string `json:"name,omitempty" db:"name"`
@@ -7,6 +8,7 @@ type Category struct {
 	UpdatedAt string `json:"updated_at,omitempty" db:"updated_at"`
 }
 
+// UserAccount a model for working with user accounts.
 type UserAccount struct {
 	ID              int64  `json:"id" db:"id"`
 	Username        string `json:"username" db:"username" validate:"uname"`
@@ -15,6 +17,7 @@ type UserAccount struct {
 	ConfirmPassword string `json:"confirm_password,omitempty" validate:"pword"`
 }
 
+// Expense a model for working with expenses.
 type Expense struct {
 	ID            int64   `json:"id" db:"id"`
 	UserAccountID int64   `json:"user_account_id,omitempty" db:"user_account_id"`

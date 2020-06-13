@@ -10,7 +10,7 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 )
 
-// Authenticate ...
+// Authenticate checks whether a valid session exists for the request.
 func (m *MiddlewareStack) Authenticate() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {

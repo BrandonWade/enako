@@ -11,6 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// AuthController an interface for wotking with user accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
 	CreateAccount(w http.ResponseWriter, r *http.Request)
@@ -24,7 +25,7 @@ type authController struct {
 	service services.AuthService
 }
 
-// NewAuthController ...
+// NewAuthController returns a new instance of an AuthController.
 func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, service services.AuthService) AuthController {
 	return &authController{
 		logger,
@@ -33,7 +34,7 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 	}
 }
 
-// CreateAccount ...
+// CreateAccount creates a new account.
 func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	userAccount, ok := r.Context().Value(middleware.ContextUserAccountKey).(models.UserAccount)
 	if !ok {
@@ -62,7 +63,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// Login ...
+// Login creates a new session for a user account.
 func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {
@@ -107,7 +108,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// Logout ...
+// Logout deletes the current user account session.
 func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {

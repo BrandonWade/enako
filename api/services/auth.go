@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// AuthService an interface for working with accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_auth_service.go . AuthService
 type AuthService interface {
 	CreateAccount(username, email, password string) (int64, error)
@@ -19,7 +20,7 @@ type authService struct {
 	repo   repositories.AuthRepository
 }
 
-// NewAuthService ...
+// NewAuthService returns a new instance of an AuthService.
 func NewAuthService(logger *logrus.Logger, hasher helpers.PasswordHasher, repo repositories.AuthRepository) AuthService {
 	return &authService{
 		logger,
@@ -28,7 +29,7 @@ func NewAuthService(logger *logrus.Logger, hasher helpers.PasswordHasher, repo r
 	}
 }
 
-// CreateAccount ...
+// CreateAccount creates an account with the given username, email, and password.
 func (a *authService) CreateAccount(username, email, password string) (int64, error) {
 	hash, err := a.hasher.Generate(password)
 	if err != nil {
@@ -42,7 +43,7 @@ func (a *authService) CreateAccount(username, email, password string) (int64, er
 	return a.repo.CreateAccount(username, email, string(hash))
 }
 
-// VerifyAccount ...
+// VerifyAccount checks whether or not an account exists for the given username and password.
 func (a *authService) VerifyAccount(username, password string) (int64, error) {
 	account, err := a.repo.GetAccount(username)
 	if err != nil {

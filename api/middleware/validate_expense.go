@@ -9,7 +9,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// ValidateExpense ...
+// ValidateExpense checks whether a decoded expense in a request is valid.
 func (m *MiddlewareStack) ValidateExpense() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
