@@ -60,8 +60,12 @@ var _ = Describe("ExpenseController", func() {
 	Describe("GetExpenses", func() {
 		Context("when requesting the list of expenses", func() {
 			It("returns an error when the expense service returns an error", func() {
+				accountID := int64(1)
+				r = httptest.NewRequest("GET", "/v1/expenses", nil)
 				expenseService.GetExpensesReturns([]models.Expense{}, errors.New("service error"))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorFetchingExpenses())
+				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				r = r.WithContext(ctx)
 
 				expenseController.GetExpenses(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
@@ -69,8 +73,12 @@ var _ = Describe("ExpenseController", func() {
 			})
 
 			It("returns the list of expenses with no error", func() {
+				accountID := int64(1)
 				expenseService.GetExpensesReturns(expenses, nil)
+				r = httptest.NewRequest("GET", "/v1/expenses", nil)
 				resBody, _ := json.Marshal(expenses)
+				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				r = r.WithContext(ctx)
 
 				expenseController.GetExpenses(w, r)
 				Expect(w.Code).To(Equal(http.StatusOK))
