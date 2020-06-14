@@ -31,13 +31,13 @@ const Register = () => {
     };
 
     return (
-        <div className='register'>
-            <Card className='register__content' heading='Create Account'>
+        <div className='Register'>
+            <Card className='Register-content' heading='Create Account'>
                 <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
                 <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
                 <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
                 <InputField type='password' label='Confirm Password' value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
-                <div className='register__buttons'>
+                <div className='Register-buttons'>
                     <Link to='/login'>
                         <Button text='Cancel' />
                     </Link>

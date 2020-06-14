@@ -26,7 +26,7 @@ const Calendar = ({ setSelectedDate }) => {
     const selectedDate = useContext(SelectedDateContext);
 
     return (
-        <div className='calendar'>
+        <div className='Calendar'>
             <BigCalendar
                 localizer={localizer}
                 events={[]}

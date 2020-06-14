@@ -1,11 +1,11 @@
-.card {
+.Card {
     padding: 1rem;
     border: var(--line);
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
     background-color: #fff;
 
-    &__heading {
+    &-heading {
         text-align: center;
         margin-bottom: 1rem;
     }

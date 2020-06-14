@@ -5,8 +5,8 @@ import './Home.scss';
 
 const Home = props => {
     return (
-        <div className='home'>
-            <div className='home__content'>
+        <div className='Home'>
+            <div className='Home-content'>
                 <Calendar setSelectedDate={props.setSelectedDate} />
                 <Details selectedDate={props.selectedDate} />
             </div>

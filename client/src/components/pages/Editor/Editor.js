@@ -38,7 +38,7 @@ const Editor = props => {
     const renderDeleteButton = () => {
         return expenseID ? (
             <Link to='/' onClick={onExpenseDelete}>
-                <Button color='red' text='Delete' className='editor__delete' />
+                <Button color='red' text='Delete' className='Editor-delete' />
             </Link>
         ) : null;
     };
@@ -80,8 +80,8 @@ const Editor = props => {
     return (
         <>
             {notFoundRedirect()}
-            <div className='editor'>
-                <div className='editor__content'>
+            <div className='Editor'>
+                <div className='Editor-content'>
                     <Card heading={renderHeadingText()}>
                         <SelectField
                             name='category'
@@ -114,7 +114,7 @@ const Editor = props => {
                             description='Enter the cost of this expense'
                             onChange={e => setAmount(e.target.value)}
                         />
-                        <div className='editor__buttons'>
+                        <div className='Editor-buttons'>
                             <Link to='/'>
                                 <Button text='Cancel' />
                             </Link>

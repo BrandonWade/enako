@@ -10,7 +10,7 @@ const DetailList = ({ expenses }) => {
     const renderPaymentsSection = () => {
         return expenses.length > 0 ? (
             <>
-                <h4 className='detail-list__section-heading'>Expenses</h4>
+                <h4 className='DetailList-sectionHeading'>Expenses</h4>
                 <table>
                     <tbody>
                         {expenses.map(e => (
@@ -20,13 +20,13 @@ const DetailList = ({ expenses }) => {
                 </table>
             </>
         ) : (
-            <p className='detail-list__message'>No expenses to display.</p>
+            <p className='DetailList-message'>No expenses to display.</p>
         );
     };
 
     const renderTotalsSection = () => {
         return total > 0 ? (
-            <div className='detail-list__total-section'>
+            <div className='DetailList-totalSection'>
                 <div>Total</div>
                 <div>${total.toFixed(2)}</div>
             </div>
@@ -37,7 +37,7 @@ const DetailList = ({ expenses }) => {
         <div>
             {renderPaymentsSection()}
             {renderTotalsSection()}
-            <div className='detail-list__add-container'>
+            <div className='DetailList-addContainer'>
                 <Link to='/expenses'>
                     <Button color='orange' text='Add' />
                 </Link>

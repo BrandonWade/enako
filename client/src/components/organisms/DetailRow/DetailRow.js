@@ -14,8 +14,8 @@ const DetailRow = ({ expense }) => {
             <td>
                 <Category id={expense.category_id} />
             </td>
-            <td className='detail-row__description'>{expense.description}</td>
-            <td className='detail-row__amount'>${expense.amount.toFixed(2)}</td>
+            <td className='DetailRow-description'>{expense.description}</td>
+            <td className='DetailRow-amount'>${expense.amount.toFixed(2)}</td>
         </tr>
     );
 };

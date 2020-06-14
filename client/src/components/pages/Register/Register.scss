@@ -1,15 +1,15 @@
-.register {
+.Register {
     height: 100%;
     display: grid;
     justify-content: center;
     align-items: start;
 
-    &__content {
+    &-content {
         width: 30vw;
         margin-top: 15rem;
     }
 
-    &__buttons {
+    &-buttons {
         display: flex;
         justify-content: space-between;
     }

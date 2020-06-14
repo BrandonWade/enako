@@ -44,12 +44,12 @@ const Login = props => {
     };
 
     return (
-        <div className='login'>
-            <Card heading='Enako' className='login__content'>
+        <div className='Login'>
+            <Card heading='Enako' className='Login-content'>
                 <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
                 <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
                 <Button full color='orange' text='Login' onClick={() => onLogin()} />
-                <div className='login__separator'>or</div>
+                <div className='Login-separator'>or</div>
                 <Link to='/register'>
                     <Button full color='blue' text='Create Account' />
                 </Link>

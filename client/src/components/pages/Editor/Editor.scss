@@ -1,18 +1,18 @@
-.editor {
+.Editor {
     display: flex;
     justify-content: center;
 
-    &__content {
+    &-content {
         width: 40vw;
         margin-top: 10rem;
     }
 
-    &__buttons {
+    &-buttons {
         display: flex;
         justify-content: space-between;
     }
 
-    &__delete {
+    &-delete {
         margin-right: 1rem;
     }
 }

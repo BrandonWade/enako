@@ -1,19 +1,19 @@
-.detail-list {
-    &__section-heading {
+.DetailList {
+    &-sectionHeading {
         margin: 0;
     }
 
-    &__message {
+    &-message {
         margin: 2rem 0;
         font-size: 1.4rem;
     }
 
-    &__add-container {
+    &-addContainer {
         display: flex;
         justify-content: flex-end;
     }
 
-    &__total-section {
+    &-totalSection {
         margin-top: 1rem;
         padding-top: 1rem;
         margin-bottom: 2.5rem;

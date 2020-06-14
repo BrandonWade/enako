@@ -1,14 +1,14 @@
-.detail-row {
-    &__description {
+.DetailRow {
+    &-description {
         width: 100%;
     }
 
-    &__amount {
+    &-amount {
         text-align: right;
     }
 
-    &__description,
-    &__amount {
+    &-description,
+    &-amount {
         font-size: 1.2rem;
     }
 }
