@@ -16,23 +16,23 @@ import './Editor.scss';
 
 const Editor = props => {
     const history = useHistory();
-    const selectedDate = useContext(SelectedDateContext);
     const categories = useContext(CategoryContext);
     const expenses = useContext(ExpenseContext);
     const expenseID = parseInt(props.computedMatch.params.id);
     const expense = expenses.find(e => e.id === expenseID) || {};
 
+    const [expenseDate, setExpenseDate] = useState(useContext(SelectedDateContext));
     const [categoryID, setCategoryID] = useState(expense.category_id || 0);
     const [description, setDescription] = useState(expense.description || '');
     const [amount, setAmount] = useState(expense.amount || 0);
+    const formattedDate = format(expenseDate, 'yyyy-MM-dd');
 
     const notFoundRedirect = () => {
         return expenseID && !expense.id ? <AuthenticatedRedirect /> : null;
     };
 
     const renderHeadingText = () => {
-        const formattedDate = format(selectedDate, 'MMMM do yyyy');
-        return expenseID ? `Editing an expense on ${formattedDate}` : `Creating a new expense on ${formattedDate}`;
+        return expenseID ? 'Editing Expense' : 'New Expense';
     };
 
     const renderDeleteButton = () => {
@@ -57,14 +57,14 @@ const Editor = props => {
             return;
         }
 
-        history.push('/');
+        props.setSelectedDate(expenseDate);
 
         const id = expenseID || 0;
         const data = {
             category_id: parseInt(categoryID),
             description,
             amount: amount * 100,
-            expense_date: format(selectedDate, 'yyyy-MM-dd'),
+            expense_date: formattedDate,
         };
 
         if (id) {
@@ -75,6 +75,8 @@ const Editor = props => {
             const expense = await createExpense(data);
             props.setExpenses([...expenses, expense]);
         }
+
+        history.push('/');
     };
 
     return (
@@ -83,6 +85,13 @@ const Editor = props => {
             <div className='Editor'>
                 <div className='Editor-content'>
                     <Card heading={renderHeadingText()}>
+                        <InputField
+                            type='date'
+                            label='Date'
+                            value={formattedDate}
+                            description='Select the date that the expense occurred'
+                            onChange={e => setExpenseDate(new Date(`${e.target.value} 00:00:00`))}
+                        />
                         <SelectField
                             name='category'
                             label='Category'

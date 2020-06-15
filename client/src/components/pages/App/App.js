@@ -41,7 +41,7 @@ const App = () => {
             setExpenses(expenses);
         };
         Boot();
-    }, []);
+    }, [authenticated]);
 
     return (
         <AuthenticatedContext.Provider value={authenticated}>
@@ -58,8 +58,19 @@ const App = () => {
                                 />
                                 <Route path='/register' component={Register} />
                                 <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-                                <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} />
-                                <AuthenticatedRoute path='/expenses/:id' component={Editor} setExpenses={setExpenses} />
+                                <AuthenticatedRoute
+                                    path='/expenses'
+                                    exact
+                                    component={Editor}
+                                    setExpenses={setExpenses}
+                                    setSelectedDate={setSelectedDate}
+                                />
+                                <AuthenticatedRoute
+                                    path='/expenses/:id'
+                                    component={Editor}
+                                    setExpenses={setExpenses}
+                                    setSelectedDate={setSelectedDate}
+                                />
                                 <AuthenticatedRedirect />
                             </Switch>
                         </BrowserRouter>
