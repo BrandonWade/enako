@@ -31,6 +31,7 @@ services:
             - DB_PASSWORD=root
             - DB_DATABASE=enako
             - COOKIE_SECRET=super-secret-key
+            - CSRF_SECRET=another-super-secret-key
     nginx:
         restart: always
         build:

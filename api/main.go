@@ -13,6 +13,7 @@ import (
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/BrandonWade/enako/api/validation"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 
@@ -26,6 +27,7 @@ var (
 	logger *logrus.Logger
 
 	cookieSecret string
+	csrfSecret   string
 )
 
 func init() {
@@ -43,6 +45,7 @@ func init() {
 	}
 
 	cookieSecret = os.Getenv("COOKIE_SECRET")
+	csrfSecret = os.Getenv("CSRF_SECRET")
 
 	logger = logrus.New()
 
@@ -50,6 +53,7 @@ func init() {
 }
 
 func main() {
+	csrfMiddleware := csrf.Protect([]byte(csrfSecret))
 	hasher := helpers.NewPasswordHasher(logger)
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
@@ -69,6 +73,7 @@ func main() {
 
 	// Set up route middleware
 	createAccountHandler := stack.Apply(authController.CreateAccount, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
+
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
 	getExpensesHandler := stack.Apply(expenseController.GetExpenses, []middleware.Middleware{stack.Authenticate()})
@@ -85,13 +90,17 @@ func main() {
 	api.HandleFunc("/logout", authController.Logout).Methods("GET")
 
 	// Categories
-	api.HandleFunc("/categories", getCategoriesHandler).Methods("GET")
+	categoryAPI := api.PathPrefix("/categories").Subrouter()
+	categoryAPI.Use(csrfMiddleware)
+	categoryAPI.HandleFunc("/categories", getCategoriesHandler).Methods("GET")
 
 	// Expenses
-	api.HandleFunc("/expenses", getExpensesHandler).Methods("GET")
-	api.HandleFunc("/expenses", createExpenseHandler).Methods("POST")
-	api.HandleFunc("/expenses/{id}", updateExpenseHandler).Methods("PUT")
-	api.HandleFunc("/expenses/{id}", deleteExpenseHandler).Methods("DELETE")
+	expenseAPI := api.PathPrefix("/expenses").Subrouter()
+	expenseAPI.Use(csrfMiddleware)
+	expenseAPI.HandleFunc("", getExpensesHandler).Methods("GET")
+	expenseAPI.HandleFunc("", createExpenseHandler).Methods("POST")
+	expenseAPI.HandleFunc("/{id}", updateExpenseHandler).Methods("PUT")
+	expenseAPI.HandleFunc("/{id}", deleteExpenseHandler).Methods("DELETE")
 
 	http.ListenAndServe(":8000", r)
 }

@@ -103,6 +103,8 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	userAccount.ID = ID
 	userAccount.Password = ""
 
+	// w.Header().Set("X-CSRF-Token", csrf.Token(r))
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(userAccount)
 	return
