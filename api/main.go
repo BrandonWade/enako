@@ -93,7 +93,7 @@ func main() {
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()
-	categoryAPI.Use(csrfMiddleware)
+	// categoryAPI.Use(csrfMiddleware)
 	categoryAPI.HandleFunc("", getCategoriesHandler).Methods("GET")
 
 	// Expenses

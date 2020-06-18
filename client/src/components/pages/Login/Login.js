@@ -26,20 +26,6 @@ const Login = props => {
         }
 
         props.setAuthenticated(true);
-
-        const categories = await fetchCategories();
-        const expenses = await fetchExpenses();
-
-        // TODO: Implement proper error handling
-        if (categories.errors || expenses.errors) {
-            console.error(categories);
-            console.error(expenses);
-            return;
-        }
-
-        props.setCategories(categories);
-        props.setExpenses(expenses);
-
         history.push('/');
     };
 
@@ -48,7 +34,7 @@ const Login = props => {
             <Card heading='Enako' className='Login-content'>
                 <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
                 <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
-                <Button full color='orange' text='Login' onClick={() => onLogin()} />
+                <Button full color='orange' text='Login' onClick={onLogin} />
                 <div className='Login-separator'>or</div>
                 <Link to='/register'>
                     <Button full color='blue' text='Create Account' />
