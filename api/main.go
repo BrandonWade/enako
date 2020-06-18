@@ -85,14 +85,16 @@ func main() {
 	api := r.PathPrefix("/v1").Subrouter()
 
 	// Auth
-	api.HandleFunc("/accounts", createAccountHandler).Methods("POST")
-	api.HandleFunc("/login", authController.Login).Methods("POST")
-	api.HandleFunc("/logout", authController.Logout).Methods("GET")
+	authAPI := api.PathPrefix("").Subrouter()
+	// authAPI.Use(csrfMiddleware)
+	authAPI.HandleFunc("/accounts", createAccountHandler).Methods("POST")
+	authAPI.HandleFunc("/login", authController.Login).Methods("POST")
+	authAPI.HandleFunc("/logout", authController.Logout).Methods("GET")
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()
 	categoryAPI.Use(csrfMiddleware)
-	categoryAPI.HandleFunc("/categories", getCategoriesHandler).Methods("GET")
+	categoryAPI.HandleFunc("", getCategoriesHandler).Methods("GET")
 
 	// Expenses
 	expenseAPI := api.PathPrefix("/expenses").Subrouter()
