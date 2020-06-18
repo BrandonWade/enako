@@ -8,12 +8,14 @@ import (
 	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
+	"github.com/gorilla/csrf"
 	"github.com/sirupsen/logrus"
 )
 
 // AuthController an interface for wotking with user accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
+	CSRF(w http.ResponseWriter, r *http.Request)
 	CreateAccount(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
@@ -32,6 +34,13 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 		store,
 		service,
 	}
+}
+
+// CSRF returns a new anti-CSRF token for our SPA frontend.
+func (a *authController) CSRF(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("X-CSRF-Token", csrf.Token(r))
+	w.WriteHeader(http.StatusOK)
+	return
 }
 
 // CreateAccount creates a new account.
@@ -102,8 +111,6 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 
 	userAccount.ID = ID
 	userAccount.Password = ""
-
-	// w.Header().Set("X-CSRF-Token", csrf.Token(r))
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(userAccount)

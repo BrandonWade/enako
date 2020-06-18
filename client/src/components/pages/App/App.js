@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import retrieveCSRFToken from '../../../effects/retrieveCSRFToken';
 import fetchCategories from '../../../effects/fetchCategories';
 import fetchExpenses from '../../../effects/fetchExpenses';
 import AuthenticatedContext from '../../../contexts/AuthenticatedContext';
@@ -23,6 +24,10 @@ const App = () => {
 
     useEffect(() => {
         const Boot = async () => {
+            // TODO: Try and figure out how to make this run only once (different useEffect? check context value?)
+            // TODO: Save CSRF token from header to Context
+            await retrieveCSRFToken();
+
             if (!authenticated) {
                 return;
             }

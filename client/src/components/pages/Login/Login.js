@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import loginToAccount from '../../../effects/loginToAccount';
-import fetchCategories from '../../../effects/fetchCategories';
-import fetchExpenses from '../../../effects/fetchExpenses';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import Button from '../../atoms/Button';
@@ -10,8 +8,8 @@ import './Login.scss';
 
 const Login = props => {
     const history = useHistory();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('foobar');
+    const [password, setPassword] = useState('testpassword123');
 
     const onLogin = async () => {
         const data = {

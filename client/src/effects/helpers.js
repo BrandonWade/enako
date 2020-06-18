@@ -1,3 +1,9 @@
+export const headToServer = async url => {
+    await fetch(url, {
+        method: 'HEAD',
+    });
+};
+
 export const fetchFromServer = async url => {
     const response = await fetch(url);
     return await response.json();

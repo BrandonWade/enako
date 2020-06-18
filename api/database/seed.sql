@@ -18,3 +18,7 @@ VALUES
 (5, 1, 5, 'bought new headphones', 50000, '2020-06-23 15:20:08', '2020-05-23 15:20:08', '2020-05-23 15:20:08'),
 (6, 1, 2, 'went to a movie', 2758, '2020-06-23 15:20:08', '2020-05-23 15:20:08', '2020-05-23 15:20:08'),
 (7, 1, 5, 'paid phone bill for 2 months', 12065, '2020-06-25 15:20:08', '2020-05-25 15:20:08', '2020-05-25 15:20:08');
+
+INSERT INTO user_accounts
+VALUES
+(1, 'foobar', 'foo@bar.net', '$2a$10$qVGU07cZd4AvKo32Ef6ruuxqzVeTqwxXHBSfpj/PZe5feUZJUKX/2');
