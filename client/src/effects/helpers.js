@@ -1,7 +1,8 @@
 export const headToServer = async url => {
-    await fetch(url, {
+    const response = await fetch(url, {
         method: 'HEAD',
     });
+    return response;
 };
 
 export const fetchFromServer = async url => {
