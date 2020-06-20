@@ -1,21 +1,33 @@
-export const headToServer = async url => {
+import retrieveCSRFToken from './retrieveCSRFToken';
+
+export const headToServer = async (url, headers = {}) => {
     const response = await fetch(url, {
         method: 'HEAD',
+        headers: {
+            ...headers,
+        },
     });
     return response;
 };
 
-export const fetchFromServer = async url => {
-    const response = await fetch(url);
+export const fetchFromServer = async (url, headers = {}) => {
+    const response = await fetch(url, {
+        headers: {
+            ...headers,
+        },
+    });
     return await response.json();
 };
 
-export const postToServer = async (url, data) => {
+export const postToServer = async (url, data, headers = {}) => {
+    const csrfToken = sessionStorage.getItem('csrfToken') || '';
     const response = await fetch(url, {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
+            ...headers,
             'Content-Type': 'application/json',
+            'X-Csrf-Token': csrfToken,
         },
         body: JSON.stringify(data),
     });
@@ -23,12 +35,15 @@ export const postToServer = async (url, data) => {
     return await response.json();
 };
 
-export const putToServer = async (url, data) => {
+export const putToServer = async (url, data, headers = {}) => {
+    const csrfToken = sessionStorage.getItem('csrfToken') || '';
     const response = await fetch(url, {
         method: 'PUT',
         credentials: 'same-origin',
         headers: {
+            ...headers,
             'Content-Type': 'application/json',
+            'X-Csrf-Token': csrfToken,
         },
         body: JSON.stringify(data),
     });
@@ -36,12 +51,15 @@ export const putToServer = async (url, data) => {
     return await response.json();
 };
 
-export const deleteFromServer = async url => {
+export const deleteFromServer = async (url, headers = {}) => {
+    const csrfToken = sessionStorage.getItem('csrfToken') || '';
     const response = await fetch(url, {
         method: 'DELETE',
         credentials: 'same-origin',
         headers: {
+            ...headers,
             'Content-Type': 'application/json',
+            'X-Csrf-Token': csrfToken,
         },
     });
 

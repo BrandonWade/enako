@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import retrieveCSRFToken from '../../../effects/retrieveCSRFToken';
 import fetchCategories from '../../../effects/fetchCategories';
 import fetchExpenses from '../../../effects/fetchExpenses';
-import CSRFContext from '../../../contexts/CSRFContext';
 import AuthenticatedContext from '../../../contexts/AuthenticatedContext';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import CategoryContext from '../../../contexts/CategoryContext';
@@ -17,7 +16,6 @@ import Editor from '../Editor';
 import './App.scss';
 
 const App = () => {
-    const [csrfToken, setCSRFToken] = useState('');
     const [authenticated, setAuthenticated] = useState(document.cookie.includes('enako-session'));
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -34,7 +32,7 @@ const App = () => {
                 return;
             }
 
-            setCSRFToken(csrfToken.token);
+            sessionStorage.setItem('csrfToken', csrfToken.token);
         };
         fetchCSRF();
     }, []);
@@ -62,48 +60,40 @@ const App = () => {
     }, [authenticated]);
 
     return (
-        <CSRFContext.Provider value={csrfToken}>
-            <AuthenticatedContext.Provider value={authenticated}>
-                <SelectedDateContext.Provider value={selectedDate}>
-                    <CategoryContext.Provider value={categories}>
-                        <ExpenseContext.Provider value={expenses}>
-                            <BrowserRouter>
-                                <Switch>
-                                    <Route
-                                        path='/login'
-                                        render={() => (
-                                            <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />
-                                        )}
-                                    />
-                                    <Route path='/register' component={Register} />
-                                    <AuthenticatedRoute
-                                        path='/'
-                                        exact
-                                        component={Home}
-                                        selectedDate={selectedDate}
-                                        setSelectedDate={setSelectedDate}
-                                    />
-                                    <AuthenticatedRoute
-                                        path='/expenses'
-                                        exact
-                                        component={Editor}
-                                        setExpenses={setExpenses}
-                                        setSelectedDate={setSelectedDate}
-                                    />
-                                    <AuthenticatedRoute
-                                        path='/expenses/:id'
-                                        component={Editor}
-                                        setExpenses={setExpenses}
-                                        setSelectedDate={setSelectedDate}
-                                    />
-                                    <AuthenticatedRedirect />
-                                </Switch>
-                            </BrowserRouter>
-                        </ExpenseContext.Provider>
-                    </CategoryContext.Provider>
-                </SelectedDateContext.Provider>
-            </AuthenticatedContext.Provider>
-        </CSRFContext.Provider>
+        <AuthenticatedContext.Provider value={authenticated}>
+            <SelectedDateContext.Provider value={selectedDate}>
+                <CategoryContext.Provider value={categories}>
+                    <ExpenseContext.Provider value={expenses}>
+                        <BrowserRouter>
+                            <Switch>
+                                <Route
+                                    path='/login'
+                                    render={() => (
+                                        <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />
+                                    )}
+                                />
+                                <Route path='/register' component={Register} />
+                                <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                                <AuthenticatedRoute
+                                    path='/expenses'
+                                    exact
+                                    component={Editor}
+                                    setExpenses={setExpenses}
+                                    setSelectedDate={setSelectedDate}
+                                />
+                                <AuthenticatedRoute
+                                    path='/expenses/:id'
+                                    component={Editor}
+                                    setExpenses={setExpenses}
+                                    setSelectedDate={setSelectedDate}
+                                />
+                                <AuthenticatedRedirect />
+                            </Switch>
+                        </BrowserRouter>
+                    </ExpenseContext.Provider>
+                </CategoryContext.Provider>
+            </SelectedDateContext.Provider>
+        </AuthenticatedContext.Provider>
     );
 };
 
