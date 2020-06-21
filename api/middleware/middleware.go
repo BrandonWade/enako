@@ -16,8 +16,8 @@ const (
 	// ContextExpenseKey a key used to store & retrieve an expense from the request context.
 	ContextExpenseKey
 
-	// ContextUserAccountIDKey a key used to store & retrieve an account id from the request context.
-	ContextUserAccountIDKey
+	// ContextAccountIDKey a key used to store & retrieve an account id from the request context.
+	ContextAccountIDKey
 )
 
 // Middleware is a type alias for working with middleware.

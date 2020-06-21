@@ -40,8 +40,8 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 				return
 			}
 
-			userAccountID := session.Get("user_account_id")
-			ctx := context.WithValue(r.Context(), ContextUserAccountIDKey, userAccountID)
+			accountID := session.Get("account_id")
+			ctx := context.WithValue(r.Context(), ContextAccountIDKey, accountID)
 
 			f(w, r.WithContext(ctx))
 		}

@@ -24,17 +24,17 @@ type FakeAuthRepository struct {
 		result1 int64
 		result2 error
 	}
-	GetAccountStub        func(string) (*models.UserAccount, error)
+	GetAccountStub        func(string) (*models.Account, error)
 	getAccountMutex       sync.RWMutex
 	getAccountArgsForCall []struct {
 		arg1 string
 	}
 	getAccountReturns struct {
-		result1 *models.UserAccount
+		result1 *models.Account
 		result2 error
 	}
 	getAccountReturnsOnCall map[int]struct {
-		result1 *models.UserAccount
+		result1 *models.Account
 		result2 error
 	}
 	invocations      map[string][][]interface{}
@@ -106,7 +106,7 @@ func (fake *FakeAuthRepository) CreateAccountReturnsOnCall(i int, result1 int64,
 	}{result1, result2}
 }
 
-func (fake *FakeAuthRepository) GetAccount(arg1 string) (*models.UserAccount, error) {
+func (fake *FakeAuthRepository) GetAccount(arg1 string) (*models.Account, error) {
 	fake.getAccountMutex.Lock()
 	ret, specificReturn := fake.getAccountReturnsOnCall[len(fake.getAccountArgsForCall)]
 	fake.getAccountArgsForCall = append(fake.getAccountArgsForCall, struct {
@@ -130,7 +130,7 @@ func (fake *FakeAuthRepository) GetAccountCallCount() int {
 	return len(fake.getAccountArgsForCall)
 }
 
-func (fake *FakeAuthRepository) GetAccountCalls(stub func(string) (*models.UserAccount, error)) {
+func (fake *FakeAuthRepository) GetAccountCalls(stub func(string) (*models.Account, error)) {
 	fake.getAccountMutex.Lock()
 	defer fake.getAccountMutex.Unlock()
 	fake.GetAccountStub = stub
@@ -143,28 +143,28 @@ func (fake *FakeAuthRepository) GetAccountArgsForCall(i int) string {
 	return argsForCall.arg1
 }
 
-func (fake *FakeAuthRepository) GetAccountReturns(result1 *models.UserAccount, result2 error) {
+func (fake *FakeAuthRepository) GetAccountReturns(result1 *models.Account, result2 error) {
 	fake.getAccountMutex.Lock()
 	defer fake.getAccountMutex.Unlock()
 	fake.GetAccountStub = nil
 	fake.getAccountReturns = struct {
-		result1 *models.UserAccount
+		result1 *models.Account
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeAuthRepository) GetAccountReturnsOnCall(i int, result1 *models.UserAccount, result2 error) {
+func (fake *FakeAuthRepository) GetAccountReturnsOnCall(i int, result1 *models.Account, result2 error) {
 	fake.getAccountMutex.Lock()
 	defer fake.getAccountMutex.Unlock()
 	fake.GetAccountStub = nil
 	if fake.getAccountReturnsOnCall == nil {
 		fake.getAccountReturnsOnCall = make(map[int]struct {
-			result1 *models.UserAccount
+			result1 *models.Account
 			result2 error
 		})
 	}
 	fake.getAccountReturnsOnCall[i] = struct {
-		result1 *models.UserAccount
+		result1 *models.Account
 		result2 error
 	}{result1, result2}
 }

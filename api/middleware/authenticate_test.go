@@ -78,7 +78,7 @@ var _ = Describe("AuthenticateMiddleware", func() {
 				store.GetReturns(session, nil)
 				store.IsAuthenticatedReturns(true, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				handler := mw(decorator)

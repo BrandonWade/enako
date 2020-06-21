@@ -49,9 +49,9 @@ var _ = Describe("ExpenseController", func() {
 		expenseController = controllers.NewExpenseController(logger, store, expenseService)
 
 		expenses = []models.Expense{
-			models.Expense{ID: 1, UserAccountID: 100, Category: "category 1", CategoryID: 4444, Description: "test description", Amount: 100, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
-			models.Expense{ID: 2, UserAccountID: 200, Category: "category 2", CategoryID: 5555, Description: "test description", Amount: 200, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
-			models.Expense{ID: 3, UserAccountID: 300, Category: "category 3", CategoryID: 6666, Description: "test description", Amount: 300, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
+			models.Expense{ID: 1, AccountID: 100, Category: "category 1", CategoryID: 4444, Description: "test description", Amount: 100, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
+			models.Expense{ID: 2, AccountID: 200, Category: "category 2", CategoryID: 5555, Description: "test description", Amount: 200, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
+			models.Expense{ID: 3, AccountID: 300, Category: "category 3", CategoryID: 6666, Description: "test description", Amount: 300, ExpenseDate: "2019-01-01", CreatedAt: "2019-01-01 00:00:00", UpdatedAt: "2019-01-01 00:00:00"},
 		}
 
 		w = httptest.NewRecorder()
@@ -64,7 +64,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("GET", "/v1/expenses", nil)
 				expenseService.GetExpensesReturns([]models.Expense{}, errors.New("service error"))
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorFetchingExpenses())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.GetExpenses(w, r)
@@ -77,7 +77,7 @@ var _ = Describe("ExpenseController", func() {
 				expenseService.GetExpensesReturns(expenses, nil)
 				r = httptest.NewRequest("GET", "/v1/expenses", nil)
 				resBody, _ := json.Marshal(expenses)
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.GetExpenses(w, r)
@@ -95,7 +95,7 @@ var _ = Describe("ExpenseController", func() {
 				store.GetReturns(session, nil)
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingExpense())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.CreateExpense(w, r)
@@ -111,7 +111,7 @@ var _ = Describe("ExpenseController", func() {
 				expenseService.CreateExpenseReturns(0, errors.New("service error"))
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingExpense())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				ctx = context.WithValue(ctx, middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -129,7 +129,7 @@ var _ = Describe("ExpenseController", func() {
 
 				expenseService.CreateExpenseReturns(expenseID, nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				ctx = context.WithValue(ctx, middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -152,7 +152,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorUpdatingExpense())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.UpdateExpense(w, r)
@@ -168,7 +168,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "foo"})
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidExpenseID())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				ctx = context.WithValue(ctx, middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -187,7 +187,7 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				ctx = context.WithValue(ctx, middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorUpdatingExpense())
@@ -207,7 +207,7 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				ctx = context.WithValue(ctx, middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorNoExpensesUpdated())
@@ -233,7 +233,7 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("PUT", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": strconv.FormatInt(expenseID, 10)})
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				ctx = context.WithValue(ctx, middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -256,7 +256,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", nil)
 				r = mux.SetURLVars(r, map[string]string{"id": "foo"})
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidExpenseID())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.DeleteExpense(w, r)
@@ -275,7 +275,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorDeletingExpense())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.DeleteExpense(w, r)
@@ -294,7 +294,7 @@ var _ = Describe("ExpenseController", func() {
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorNoExpensesDeleted())
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.DeleteExpense(w, r)
@@ -312,7 +312,7 @@ var _ = Describe("ExpenseController", func() {
 
 				r = httptest.NewRequest("DELETE", "/v1/expenses/id", bytes.NewBuffer(payloadJSON))
 				r = mux.SetURLVars(r, map[string]string{"id": "123"})
-				ctx := context.WithValue(r.Context(), middleware.ContextUserAccountIDKey, accountID)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
 
 				expenseController.DeleteExpense(w, r)

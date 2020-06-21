@@ -11,7 +11,7 @@ import (
 // AuthRepository an interface for working with accounts.
 //go:generate counterfeiter -o fakes/fake_auth_repository.go . AuthRepository
 type AuthRepository interface {
-	GetAccount(username string) (*models.UserAccount, error)
+	GetAccount(username string) (*models.Account, error)
 	CreateAccount(username, email, password string) (int64, error)
 }
 
@@ -27,18 +27,18 @@ func NewAuthRepository(DB *sqlx.DB) AuthRepository {
 }
 
 // GetAccount returns an account with the given username.
-func (a *authRepository) GetAccount(username string) (*models.UserAccount, error) {
-	account := models.UserAccount{}
+func (a *authRepository) GetAccount(username string) (*models.Account, error) {
+	account := models.Account{}
 
 	err := a.DB.Get(&account, `SELECT
 		*
-		FROM user_accounts u
-		WHERE u.username = ?
+		FROM accounts a
+		WHERE a.username = ?
 	`,
 		username,
 	)
 	if err != nil {
-		return &models.UserAccount{}, err
+		return &models.Account{}, err
 	}
 
 	return &account, nil
@@ -47,7 +47,7 @@ func (a *authRepository) GetAccount(username string) (*models.UserAccount, error
 // CreateAccount creates an account with the given username, email, and password.
 func (a *authRepository) CreateAccount(username, email, password string) (int64, error) {
 	result, err := a.DB.Exec(`INSERT
-		INTO user_accounts(
+		INTO accounts(
 			username,
 			email,
 			password

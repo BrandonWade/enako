@@ -39,20 +39,20 @@ func NewExpenseController(logger *logrus.Logger, store helpers.CookieStorer, ser
 
 // GetExpenses returns the list of expenses.
 func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) {
-	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	accountID, ok := r.Context().Value(middleware.ContextAccountIDKey).(int64)
 	if !ok {
-		e.logger.WithField("method", "ExpenseController.GetExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+		e.logger.WithField("method", "ExpenseController.GetExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
 		return
 	}
 
-	expenses, err := e.service.GetExpenses(userAccountID)
+	expenses, err := e.service.GetExpenses(accountID)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.GetExpenses",
-			"account ID": userAccountID,
+			"account ID": accountID,
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -67,9 +67,9 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 
 // CreateExpense creates a new expense.
 func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request) {
-	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	accountID, ok := r.Context().Value(middleware.ContextAccountIDKey).(int64)
 	if !ok {
-		e.logger.WithField("method", "ExpenseController.CreateExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+		e.logger.WithField("method", "ExpenseController.CreateExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
@@ -80,7 +80,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 	if !ok {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.CreateExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 		}).Error(helpers.ErrorRetrievingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -88,11 +88,11 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	ID, err := e.service.CreateExpense(userAccountID, &expense)
+	ID, err := e.service.CreateExpense(accountID, &expense)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.CreateExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Error(err.Error())
 
@@ -111,9 +111,9 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 
 // UpdateExpense updates the expense with the given id.
 func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request) {
-	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	accountID, ok := r.Context().Value(middleware.ContextAccountIDKey).(int64)
 	if !ok {
-		e.logger.WithField("method", "ExpenseController.UpdateExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+		e.logger.WithField("method", "ExpenseController.UpdateExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
@@ -126,7 +126,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         params["id"],
 		}).Error(err.Error())
 
@@ -139,7 +139,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	if !ok {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Error(helpers.ErrorRetrievingExpense())
 
@@ -148,11 +148,11 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	count, err := e.service.UpdateExpense(ID, userAccountID, &expense)
+	count, err := e.service.UpdateExpense(ID, accountID, &expense)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Error(err.Error())
 
@@ -164,7 +164,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	if count == 0 {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.UpdateExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Warn(helpers.ErrorNoExpensesUpdated())
 
@@ -183,9 +183,9 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 
 // DeletesExpense deletes the expense with the submitted id.
 func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request) {
-	userAccountID, ok := r.Context().Value(middleware.ContextUserAccountIDKey).(int64)
+	accountID, ok := r.Context().Value(middleware.ContextAccountIDKey).(int64)
 	if !ok {
-		e.logger.WithField("method", "ExpenseController.DeleteExpenses").Error(helpers.ErrorRetrievingUserAccountID())
+		e.logger.WithField("method", "ExpenseController.DeleteExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
@@ -198,7 +198,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.DeleteExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Error(err.Error())
 
@@ -207,11 +207,11 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	count, err := e.service.DeleteExpense(ID, userAccountID)
+	count, err := e.service.DeleteExpense(ID, accountID)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.DeleteExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Error(err.Error())
 
@@ -223,7 +223,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 	if count == 0 {
 		e.logger.WithFields(logrus.Fields{
 			"method":     "ExpenseController.DeleteExpense",
-			"account ID": userAccountID,
+			"account ID": accountID,
 			"id":         ID,
 		}).Warn(helpers.ErrorNoExpensesDeleted())
 

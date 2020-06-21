@@ -72,7 +72,7 @@ var _ = Describe("DecodeCreateAccountMiddleware", func() {
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEmpty())
 			})
 
-			It("stores the UserAccount in the request context", func() {
+			It("stores the decoded CreateAccount payload in the request context", func() {
 				username := "test"
 				email := "test@example.com"
 				password := "testpassword123"
@@ -83,9 +83,9 @@ var _ = Describe("DecodeCreateAccountMiddleware", func() {
 
 				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
 				decorator = func(w http.ResponseWriter, r *http.Request) {
-					userAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
+					createAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
 
-					Expect(userAccount).To(gstruct.MatchFields(gstruct.IgnoreExtras, gstruct.Fields{
+					Expect(createAccount).To(gstruct.MatchFields(gstruct.IgnoreExtras, gstruct.Fields{
 						"Username":        Equal(username),
 						"Email":           Equal(email),
 						"Password":        Equal(password),

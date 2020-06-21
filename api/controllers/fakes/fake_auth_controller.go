@@ -9,6 +9,12 @@ import (
 )
 
 type FakeAuthController struct {
+	CSRFStub        func(http.ResponseWriter, *http.Request)
+	cSRFMutex       sync.RWMutex
+	cSRFArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
 	CreateAccountStub        func(http.ResponseWriter, *http.Request)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
@@ -29,6 +35,38 @@ type FakeAuthController struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeAuthController) CSRF(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.cSRFMutex.Lock()
+	fake.cSRFArgsForCall = append(fake.cSRFArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("CSRF", []interface{}{arg1, arg2})
+	fake.cSRFMutex.Unlock()
+	if fake.CSRFStub != nil {
+		fake.CSRFStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAuthController) CSRFCallCount() int {
+	fake.cSRFMutex.RLock()
+	defer fake.cSRFMutex.RUnlock()
+	return len(fake.cSRFArgsForCall)
+}
+
+func (fake *FakeAuthController) CSRFCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.cSRFMutex.Lock()
+	defer fake.cSRFMutex.Unlock()
+	fake.CSRFStub = stub
+}
+
+func (fake *FakeAuthController) CSRFArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.cSRFMutex.RLock()
+	defer fake.cSRFMutex.RUnlock()
+	argsForCall := fake.cSRFArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeAuthController) CreateAccount(arg1 http.ResponseWriter, arg2 *http.Request) {
@@ -130,6 +168,8 @@ func (fake *FakeAuthController) LogoutArgsForCall(i int) (http.ResponseWriter, *
 func (fake *FakeAuthController) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.cSRFMutex.RLock()
+	defer fake.cSRFMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
 	fake.loginMutex.RLock()

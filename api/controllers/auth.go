@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// AuthController an interface for wotking with user accounts and sessions.
+// AuthController an interface for wotking with accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
 	CSRF(w http.ResponseWriter, r *http.Request)
@@ -72,7 +72,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// Login creates a new session for a user account.
+// Login creates a new session for an account.
 func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {
@@ -83,8 +83,8 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var userAccount models.UserAccount
-	err = json.NewDecoder(r.Body).Decode(&userAccount)
+	var account models.Account
+	err = json.NewDecoder(r.Body).Decode(&account)
 	if err != nil {
 		a.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
@@ -93,11 +93,11 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ID, err := a.service.VerifyAccount(userAccount.Username, userAccount.Password)
+	ID, err := a.service.VerifyAccount(account.Username, account.Password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":   "AuthController.Login",
-			"username": userAccount.Username,
+			"username": account.Username,
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusUnauthorized)
@@ -106,18 +106,18 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session.Set("authenticated", true)
-	session.Set("user_account_id", ID)
+	session.Set("account_id", ID)
 	session.Save(r, w)
 
-	userAccount.ID = ID
-	userAccount.Password = ""
+	account.ID = ID
+	account.Password = ""
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(userAccount)
+	json.NewEncoder(w).Encode(account)
 	return
 }
 
-// Logout deletes the current user account session.
+// Logout deletes the current account session.
 func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 	session, err := a.store.Get(r, helpers.SessionCookieName)
 	if err != nil {

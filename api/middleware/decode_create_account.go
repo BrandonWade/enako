@@ -16,7 +16,7 @@ func (m *MiddlewareStack) DecodeCreateAccount() Middleware {
 			var createAccount models.CreateAccount
 			err := json.NewDecoder(r.Body).Decode(&createAccount)
 			if err != nil {
-				m.logger.WithField("method", "middleware.DecodeUserAccount").Info(err.Error())
+				m.logger.WithField("method", "middleware.DecodeCreateAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))

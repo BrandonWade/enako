@@ -32,6 +32,8 @@ services:
             - DB_DATABASE=enako
             - COOKIE_SECRET=super-secret-key
             - CSRF_SECRET=another-super-secret-key
+            - MAIL_HOST=enako-mail
+            - MAIL_PORT=1025
     nginx:
         restart: always
         build:
@@ -50,3 +52,9 @@ services:
             - ./client:/app
         environment:
             - CI=true
+    mailhog:
+        image: schickling/mailcatcher:latest
+        container_name: enako-mail
+        ports:
+            # - 1025:1025
+            - 1080:1080

@@ -135,7 +135,12 @@ func ErrorInvalidDate() error {
 	return errors.New("invalid date")
 }
 
-// ErrorRetrievingUserAccountID returned when an error occurs when attempting to retrieve the user account ID from the session.
-func ErrorRetrievingUserAccountID() error {
+// ErrorRetrievingAccountID returned when an error occurs when attempting to retrieve the account ID from the session.
+func ErrorRetrievingAccountID() error {
 	return errors.New("error retrieving user account id")
+}
+
+// ErrorAccountNotActivated returnd when a attempting to log into an account that has not yet been activated
+func ErrorAccountNotActivated() error {
+	return errors.New("account not activated")
 }

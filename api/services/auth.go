@@ -63,5 +63,13 @@ func (a *authService) VerifyAccount(username, password string) (int64, error) {
 		return 0, err
 	}
 
+	if !account.IsActivated {
+		a.logger.WithFields(logrus.Fields{
+			"method":   "AuthService.VerifyAccount",
+			"username": username,
+		}).Info(helpers.ErrorAccountNotActivated())
+		return 0, helpers.ErrorAccountNotActivated()
+	}
+
 	return account.ID, nil
 }

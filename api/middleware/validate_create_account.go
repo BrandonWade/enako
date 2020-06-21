@@ -9,7 +9,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// ValidateCreateAccount checks whether a decoded user account in a request is valid.
+// ValidateCreateAccount checks whether a decoded CreateAccount payload in a request is valid.
 func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
