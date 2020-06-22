@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/middleware"
@@ -17,6 +20,7 @@ import (
 type AuthController interface {
 	CSRF(w http.ResponseWriter, r *http.Request)
 	CreateAccount(w http.ResponseWriter, r *http.Request)
+	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 }
@@ -54,7 +58,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ID, err := a.service.CreateAccount(createAccount.Username, createAccount.Email, createAccount.Password)
+	id, token, err := a.service.CreateAccount(createAccount.Username, createAccount.Email, createAccount.Password)
 	if err != nil {
 		a.logger.WithField("method", "AuthController.CreateAccount").Error(err.Error())
 
@@ -63,12 +67,40 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createAccount.ID = ID
+	createAccount.ID = id
 	createAccount.Password = ""
 	createAccount.ConfirmPassword = ""
+	createAccount.ActivationLink = fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(createAccount)
+	return
+}
+
+// ActivateAccount activates a newly created account.
+func (a *authController) ActivateAccount(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("t")
+	if len(token) != services.ActivationTokenLength {
+		a.logger.WithField("method", "AuthController.ActivateAccount").Error(helpers.ErrorInvalidActivationToken())
+
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
+		return
+	}
+
+	success, err := a.service.ActivateAccount(token)
+	if !success {
+		if err != nil {
+			a.logger.WithField("method", "AuthController.ActivateAccount").Error(err.Error())
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
+		return
+	}
+
+	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
+	http.Redirect(w, r, login, http.StatusSeeOther)
 	return
 }
 
@@ -100,8 +132,13 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 			"username": account.Username,
 		}).Error(err.Error())
 
+		errMsg := helpers.ErrorInvalidUsernameOrPassword()
+		if errors.Is(err, helpers.ErrorAccountNotActivated()) {
+			errMsg = helpers.ErrorAccountNotActivated()
+		}
+
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidUsernameOrPassword()))
+		json.NewEncoder(w).Encode(models.NewAPIError(errMsg))
 		return
 	}
 

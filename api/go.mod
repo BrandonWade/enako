@@ -3,6 +3,7 @@ module github.com/BrandonWade/enako/api
 go 1.12
 
 require (
+	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gorilla/csrf v1.7.0
 	github.com/gorilla/mux v1.7.4

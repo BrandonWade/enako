@@ -73,6 +73,7 @@ func main() {
 
 	// Set up route middleware
 	createAccountHandler := stack.Apply(authController.CreateAccount, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
+	activateAccountHandler := stack.Apply(authController.ActivateAccount, []middleware.Middleware{})
 
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
@@ -89,6 +90,7 @@ func main() {
 	authAPI.Use(csrfMiddleware)
 	authAPI.HandleFunc("/csrf", authController.CSRF).Methods("HEAD")
 	authAPI.HandleFunc("/accounts", createAccountHandler).Methods("POST")
+	authAPI.HandleFunc("/accounts/activate", activateAccountHandler).Methods("GET")
 	authAPI.HandleFunc("/login", authController.Login).Methods("POST")
 	authAPI.HandleFunc("/logout", authController.Logout).Methods("GET")
 

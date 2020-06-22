@@ -12,13 +12,13 @@ CREATE TABLE accounts (
   UNIQUE KEY U_email (email)
 );
 
-DROP TABLE IF EXISTS account_activation_links;
-CREATE TABLE account_activation_links (
+DROP TABLE IF EXISTS account_activation_tokens;
+CREATE TABLE account_activation_tokens (
   id int unsigned NOT NULL AUTO_INCREMENT,
   account_id int unsigned NOT NULL DEFAULT 0,
-  activation_token varchar(32) NOT NULL DEFAULT '',
+  activation_token char(64) NOT NULL DEFAULT '',
   is_used tinyint(1) NOT NULL DEFAULT 0,
-  valid_until datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_sent_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),

@@ -9,6 +9,12 @@ import (
 )
 
 type FakeAuthController struct {
+	ActivateAccountStub        func(http.ResponseWriter, *http.Request)
+	activateAccountMutex       sync.RWMutex
+	activateAccountArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
 	CSRFStub        func(http.ResponseWriter, *http.Request)
 	cSRFMutex       sync.RWMutex
 	cSRFArgsForCall []struct {
@@ -35,6 +41,38 @@ type FakeAuthController struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeAuthController) ActivateAccount(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.activateAccountMutex.Lock()
+	fake.activateAccountArgsForCall = append(fake.activateAccountArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("ActivateAccount", []interface{}{arg1, arg2})
+	fake.activateAccountMutex.Unlock()
+	if fake.ActivateAccountStub != nil {
+		fake.ActivateAccountStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAuthController) ActivateAccountCallCount() int {
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
+	return len(fake.activateAccountArgsForCall)
+}
+
+func (fake *FakeAuthController) ActivateAccountCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = stub
+}
+
+func (fake *FakeAuthController) ActivateAccountArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
+	argsForCall := fake.activateAccountArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeAuthController) CSRF(arg1 http.ResponseWriter, arg2 *http.Request) {
@@ -168,6 +206,8 @@ func (fake *FakeAuthController) LogoutArgsForCall(i int) (http.ResponseWriter, *
 func (fake *FakeAuthController) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
 	fake.cSRFMutex.RLock()
 	defer fake.cSRFMutex.RUnlock()
 	fake.createAccountMutex.RLock()

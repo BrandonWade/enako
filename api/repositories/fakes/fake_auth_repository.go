@@ -9,6 +9,19 @@ import (
 )
 
 type FakeAuthRepository struct {
+	ActivateAccountStub        func(string) (bool, error)
+	activateAccountMutex       sync.RWMutex
+	activateAccountArgsForCall []struct {
+		arg1 string
+	}
+	activateAccountReturns struct {
+		result1 bool
+		result2 error
+	}
+	activateAccountReturnsOnCall map[int]struct {
+		result1 bool
+		result2 error
+	}
 	CreateAccountStub        func(string, string, string) (int64, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
@@ -21,6 +34,20 @@ type FakeAuthRepository struct {
 		result2 error
 	}
 	createAccountReturnsOnCall map[int]struct {
+		result1 int64
+		result2 error
+	}
+	CreateActivationTokenStub        func(int64, string) (int64, error)
+	createActivationTokenMutex       sync.RWMutex
+	createActivationTokenArgsForCall []struct {
+		arg1 int64
+		arg2 string
+	}
+	createActivationTokenReturns struct {
+		result1 int64
+		result2 error
+	}
+	createActivationTokenReturnsOnCall map[int]struct {
 		result1 int64
 		result2 error
 	}
@@ -39,6 +66,69 @@ type FakeAuthRepository struct {
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
+}
+
+func (fake *FakeAuthRepository) ActivateAccount(arg1 string) (bool, error) {
+	fake.activateAccountMutex.Lock()
+	ret, specificReturn := fake.activateAccountReturnsOnCall[len(fake.activateAccountArgsForCall)]
+	fake.activateAccountArgsForCall = append(fake.activateAccountArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("ActivateAccount", []interface{}{arg1})
+	fake.activateAccountMutex.Unlock()
+	if fake.ActivateAccountStub != nil {
+		return fake.ActivateAccountStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.activateAccountReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAuthRepository) ActivateAccountCallCount() int {
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
+	return len(fake.activateAccountArgsForCall)
+}
+
+func (fake *FakeAuthRepository) ActivateAccountCalls(stub func(string) (bool, error)) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = stub
+}
+
+func (fake *FakeAuthRepository) ActivateAccountArgsForCall(i int) string {
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
+	argsForCall := fake.activateAccountArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeAuthRepository) ActivateAccountReturns(result1 bool, result2 error) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = nil
+	fake.activateAccountReturns = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthRepository) ActivateAccountReturnsOnCall(i int, result1 bool, result2 error) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = nil
+	if fake.activateAccountReturnsOnCall == nil {
+		fake.activateAccountReturnsOnCall = make(map[int]struct {
+			result1 bool
+			result2 error
+		})
+	}
+	fake.activateAccountReturnsOnCall[i] = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
 }
 
 func (fake *FakeAuthRepository) CreateAccount(arg1 string, arg2 string, arg3 string) (int64, error) {
@@ -101,6 +191,70 @@ func (fake *FakeAuthRepository) CreateAccountReturnsOnCall(i int, result1 int64,
 		})
 	}
 	fake.createAccountReturnsOnCall[i] = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthRepository) CreateActivationToken(arg1 int64, arg2 string) (int64, error) {
+	fake.createActivationTokenMutex.Lock()
+	ret, specificReturn := fake.createActivationTokenReturnsOnCall[len(fake.createActivationTokenArgsForCall)]
+	fake.createActivationTokenArgsForCall = append(fake.createActivationTokenArgsForCall, struct {
+		arg1 int64
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("CreateActivationToken", []interface{}{arg1, arg2})
+	fake.createActivationTokenMutex.Unlock()
+	if fake.CreateActivationTokenStub != nil {
+		return fake.CreateActivationTokenStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.createActivationTokenReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAuthRepository) CreateActivationTokenCallCount() int {
+	fake.createActivationTokenMutex.RLock()
+	defer fake.createActivationTokenMutex.RUnlock()
+	return len(fake.createActivationTokenArgsForCall)
+}
+
+func (fake *FakeAuthRepository) CreateActivationTokenCalls(stub func(int64, string) (int64, error)) {
+	fake.createActivationTokenMutex.Lock()
+	defer fake.createActivationTokenMutex.Unlock()
+	fake.CreateActivationTokenStub = stub
+}
+
+func (fake *FakeAuthRepository) CreateActivationTokenArgsForCall(i int) (int64, string) {
+	fake.createActivationTokenMutex.RLock()
+	defer fake.createActivationTokenMutex.RUnlock()
+	argsForCall := fake.createActivationTokenArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeAuthRepository) CreateActivationTokenReturns(result1 int64, result2 error) {
+	fake.createActivationTokenMutex.Lock()
+	defer fake.createActivationTokenMutex.Unlock()
+	fake.CreateActivationTokenStub = nil
+	fake.createActivationTokenReturns = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthRepository) CreateActivationTokenReturnsOnCall(i int, result1 int64, result2 error) {
+	fake.createActivationTokenMutex.Lock()
+	defer fake.createActivationTokenMutex.Unlock()
+	fake.CreateActivationTokenStub = nil
+	if fake.createActivationTokenReturnsOnCall == nil {
+		fake.createActivationTokenReturnsOnCall = make(map[int]struct {
+			result1 int64
+			result2 error
+		})
+	}
+	fake.createActivationTokenReturnsOnCall[i] = struct {
 		result1 int64
 		result2 error
 	}{result1, result2}
@@ -172,8 +326,12 @@ func (fake *FakeAuthRepository) GetAccountReturnsOnCall(i int, result1 *models.A
 func (fake *FakeAuthRepository) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
+	fake.createActivationTokenMutex.RLock()
+	defer fake.createActivationTokenMutex.RUnlock()
 	fake.getAccountMutex.RLock()
 	defer fake.getAccountMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

@@ -1,5 +1,3 @@
-import retrieveCSRFToken from './retrieveCSRFToken';
-
 export const headToServer = async (url, headers = {}) => {
     const response = await fetch(url, {
         method: 'HEAD',

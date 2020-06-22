@@ -42,7 +42,7 @@ var _ = Describe("AuthService", func() {
 			It("returns an error when a hasher error is encountered", func() {
 				hasher.GenerateReturns("", errors.New("hasher error"))
 
-				id, err := authService.CreateAccount(username, email, password)
+				id, _, err := authService.CreateAccount(username, email, password)
 				Expect(hasher.GenerateCallCount()).To(Equal(1))
 				Expect(id).To(Equal(int64(0)))
 				Expect(err).To(HaveOccurred())
@@ -52,7 +52,7 @@ var _ = Describe("AuthService", func() {
 				hasher.GenerateReturns("hashedtestpassword", nil)
 				authRepo.CreateAccountReturns(0, errors.New("repo error"))
 
-				id, err := authService.CreateAccount(username, email, password)
+				id, _, err := authService.CreateAccount(username, email, password)
 				Expect(authRepo.CreateAccountCallCount()).To(Equal(1))
 				Expect(id).To(Equal(int64(0)))
 				Expect(err).To(HaveOccurred())
@@ -62,7 +62,7 @@ var _ = Describe("AuthService", func() {
 				hasher.GenerateReturns("hashedtestpassword", nil)
 				authRepo.CreateAccountReturns(accountID, nil)
 
-				id, err := authService.CreateAccount(username, email, password)
+				id, _, err := authService.CreateAccount(username, email, password)
 				Expect(authRepo.CreateAccountCallCount()).To(Equal(1))
 				Expect(id).To(Equal(accountID))
 				Expect(err).NotTo(HaveOccurred())

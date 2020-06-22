@@ -13,6 +13,8 @@ import (
 type AuthRepository interface {
 	GetAccount(username string) (*models.Account, error)
 	CreateAccount(username, email, password string) (int64, error)
+	CreateActivationToken(accountID int64, activationToken string) (int64, error)
+	ActivateAccount(token string) (bool, error)
 }
 
 type authRepository struct {
@@ -71,4 +73,36 @@ func (a *authRepository) CreateAccount(username, email, password string) (int64,
 	}
 
 	return ID, nil
+}
+
+// CreateActivationToken creates an activation token for the given account ID.
+func (a *authRepository) CreateActivationToken(accountID int64, activationToken string) (int64, error) {
+	result, err := a.DB.Exec(`INSERT
+		INTO account_activation_tokens(
+			account_id,
+			activation_token
+		) VALUES (
+			?,
+			?
+		);
+	`,
+		accountID,
+		activationToken,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	ID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return ID, nil
+}
+
+// ActivateAccount marks the account with the given token as active and expires the token.
+func (a *authRepository) ActivateAccount(token string) (bool, error) {
+	// TODO: Use DB transaction to update account and token rows
+	return true, nil
 }

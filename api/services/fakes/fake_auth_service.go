@@ -8,7 +8,20 @@ import (
 )
 
 type FakeAuthService struct {
-	CreateAccountStub        func(string, string, string) (int64, error)
+	ActivateAccountStub        func(string) (bool, error)
+	activateAccountMutex       sync.RWMutex
+	activateAccountArgsForCall []struct {
+		arg1 string
+	}
+	activateAccountReturns struct {
+		result1 bool
+		result2 error
+	}
+	activateAccountReturnsOnCall map[int]struct {
+		result1 bool
+		result2 error
+	}
+	CreateAccountStub        func(string, string, string) (int64, string, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
 		arg1 string
@@ -17,11 +30,13 @@ type FakeAuthService struct {
 	}
 	createAccountReturns struct {
 		result1 int64
-		result2 error
+		result2 string
+		result3 error
 	}
 	createAccountReturnsOnCall map[int]struct {
 		result1 int64
-		result2 error
+		result2 string
+		result3 error
 	}
 	VerifyAccountStub        func(string, string) (int64, error)
 	verifyAccountMutex       sync.RWMutex
@@ -41,7 +56,70 @@ type FakeAuthService struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeAuthService) CreateAccount(arg1 string, arg2 string, arg3 string) (int64, error) {
+func (fake *FakeAuthService) ActivateAccount(arg1 string) (bool, error) {
+	fake.activateAccountMutex.Lock()
+	ret, specificReturn := fake.activateAccountReturnsOnCall[len(fake.activateAccountArgsForCall)]
+	fake.activateAccountArgsForCall = append(fake.activateAccountArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("ActivateAccount", []interface{}{arg1})
+	fake.activateAccountMutex.Unlock()
+	if fake.ActivateAccountStub != nil {
+		return fake.ActivateAccountStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.activateAccountReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAuthService) ActivateAccountCallCount() int {
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
+	return len(fake.activateAccountArgsForCall)
+}
+
+func (fake *FakeAuthService) ActivateAccountCalls(stub func(string) (bool, error)) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = stub
+}
+
+func (fake *FakeAuthService) ActivateAccountArgsForCall(i int) string {
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
+	argsForCall := fake.activateAccountArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeAuthService) ActivateAccountReturns(result1 bool, result2 error) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = nil
+	fake.activateAccountReturns = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthService) ActivateAccountReturnsOnCall(i int, result1 bool, result2 error) {
+	fake.activateAccountMutex.Lock()
+	defer fake.activateAccountMutex.Unlock()
+	fake.ActivateAccountStub = nil
+	if fake.activateAccountReturnsOnCall == nil {
+		fake.activateAccountReturnsOnCall = make(map[int]struct {
+			result1 bool
+			result2 error
+		})
+	}
+	fake.activateAccountReturnsOnCall[i] = struct {
+		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAuthService) CreateAccount(arg1 string, arg2 string, arg3 string) (int64, string, error) {
 	fake.createAccountMutex.Lock()
 	ret, specificReturn := fake.createAccountReturnsOnCall[len(fake.createAccountArgsForCall)]
 	fake.createAccountArgsForCall = append(fake.createAccountArgsForCall, struct {
@@ -55,10 +133,10 @@ func (fake *FakeAuthService) CreateAccount(arg1 string, arg2 string, arg3 string
 		return fake.CreateAccountStub(arg1, arg2, arg3)
 	}
 	if specificReturn {
-		return ret.result1, ret.result2
+		return ret.result1, ret.result2, ret.result3
 	}
 	fakeReturns := fake.createAccountReturns
-	return fakeReturns.result1, fakeReturns.result2
+	return fakeReturns.result1, fakeReturns.result2, fakeReturns.result3
 }
 
 func (fake *FakeAuthService) CreateAccountCallCount() int {
@@ -67,7 +145,7 @@ func (fake *FakeAuthService) CreateAccountCallCount() int {
 	return len(fake.createAccountArgsForCall)
 }
 
-func (fake *FakeAuthService) CreateAccountCalls(stub func(string, string, string) (int64, error)) {
+func (fake *FakeAuthService) CreateAccountCalls(stub func(string, string, string) (int64, string, error)) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = stub
@@ -80,30 +158,33 @@ func (fake *FakeAuthService) CreateAccountArgsForCall(i int) (string, string, st
 	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
 }
 
-func (fake *FakeAuthService) CreateAccountReturns(result1 int64, result2 error) {
+func (fake *FakeAuthService) CreateAccountReturns(result1 int64, result2 string, result3 error) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = nil
 	fake.createAccountReturns = struct {
 		result1 int64
-		result2 error
-	}{result1, result2}
+		result2 string
+		result3 error
+	}{result1, result2, result3}
 }
 
-func (fake *FakeAuthService) CreateAccountReturnsOnCall(i int, result1 int64, result2 error) {
+func (fake *FakeAuthService) CreateAccountReturnsOnCall(i int, result1 int64, result2 string, result3 error) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = nil
 	if fake.createAccountReturnsOnCall == nil {
 		fake.createAccountReturnsOnCall = make(map[int]struct {
 			result1 int64
-			result2 error
+			result2 string
+			result3 error
 		})
 	}
 	fake.createAccountReturnsOnCall[i] = struct {
 		result1 int64
-		result2 error
-	}{result1, result2}
+		result2 string
+		result3 error
+	}{result1, result2, result3}
 }
 
 func (fake *FakeAuthService) VerifyAccount(arg1 string, arg2 string) (int64, error) {
@@ -173,6 +254,8 @@ func (fake *FakeAuthService) VerifyAccountReturnsOnCall(i int, result1 int64, re
 func (fake *FakeAuthService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
+	fake.activateAccountMutex.RLock()
+	defer fake.activateAccountMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
 	fake.verifyAccountMutex.RLock()
