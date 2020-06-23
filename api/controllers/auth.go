@@ -70,7 +70,7 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	createAccount.ID = id
 	createAccount.Password = ""
 	createAccount.ConfirmPassword = ""
-	createAccount.ActivationLink = fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
+	createAccount.ActivationLink = fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token) // TODO: Remove this; the link should be sent to the provided email
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(createAccount)

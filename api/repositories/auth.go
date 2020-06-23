@@ -35,7 +35,7 @@ func (a *authRepository) GetAccount(username string) (*models.Account, error) {
 	err := a.DB.Get(&account, `SELECT
 		*
 		FROM accounts a
-		WHERE a.username = ?
+		WHERE a.username = ?;
 	`,
 		username,
 	)
@@ -103,6 +103,47 @@ func (a *authRepository) CreateActivationToken(accountID int64, activationToken 
 
 // ActivateAccount marks the account with the given token as active and expires the token.
 func (a *authRepository) ActivateAccount(token string) (bool, error) {
-	// TODO: Use DB transaction to update account and token rows
+	var accountID int64
+	err := a.DB.Get(&accountID, `SELECT
+		a.id
+		FROM accounts a
+		INNER JOIN account_activation_tokens t ON a.id = t.account_id
+		WHERE t.activation_token = ?
+		AND t.is_used = 0;
+	`,
+		token,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	tx, err := a.DB.Begin()
+	_, err = tx.Exec(`UPDATE account_activation_tokens
+		SET is_used = 1
+		WHERE account_id = ?
+		AND activation_token = ?;
+	`,
+		accountID,
+		token,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = tx.Exec(`UPDATE accounts
+		SET is_activated = 1
+		WHERE id = ?;
+	`,
+		accountID,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return false, err
+	}
+
 	return true, nil
 }
