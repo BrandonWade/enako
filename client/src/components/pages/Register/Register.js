@@ -8,10 +8,10 @@ import './Register.scss';
 
 const Register = () => {
     const history = useHistory();
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [username, setUsername] = useState('foobar');
+    const [email, setEmail] = useState('foo@bar.net');
+    const [password, setPassword] = useState('testpassword123');
+    const [confirmPassword, setConfirmPassword] = useState('testpassword123');
 
     const onCreateAccount = async () => {
         const data = {

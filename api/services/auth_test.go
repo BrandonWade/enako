@@ -7,6 +7,7 @@ import (
 	helpers "github.com/BrandonWade/enako/api/helpers/fakes"
 	"github.com/BrandonWade/enako/api/repositories/fakes"
 	"github.com/BrandonWade/enako/api/services"
+	servicefakes "github.com/BrandonWade/enako/api/services/fakes"
 	"github.com/sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
@@ -15,10 +16,11 @@ import (
 
 var _ = Describe("AuthService", func() {
 	var (
-		logger      *logrus.Logger
-		hasher      *helpers.FakePasswordHasher
-		authRepo    *fakes.FakeAuthRepository
-		authService services.AuthService
+		logger       *logrus.Logger
+		hasher       *helpers.FakePasswordHasher
+		emailService *servicefakes.FakeEmailService
+		authRepo     *fakes.FakeAuthRepository
+		authService  services.AuthService
 	)
 
 	BeforeEach(func() {
@@ -26,8 +28,9 @@ var _ = Describe("AuthService", func() {
 		logger.Out = ioutil.Discard
 
 		hasher = &helpers.FakePasswordHasher{}
+		emailService = &servicefakes.FakeEmailService{}
 		authRepo = &fakes.FakeAuthRepository{}
-		authService = services.NewAuthService(logger, hasher, authRepo)
+		authService = services.NewAuthService(logger, hasher, emailService, authRepo)
 	})
 
 	Describe("CreateAccount", func() {
@@ -42,7 +45,7 @@ var _ = Describe("AuthService", func() {
 			It("returns an error when a hasher error is encountered", func() {
 				hasher.GenerateReturns("", errors.New("hasher error"))
 
-				id, _, err := authService.CreateAccount(username, email, password)
+				id, err := authService.CreateAccount(username, email, password)
 				Expect(hasher.GenerateCallCount()).To(Equal(1))
 				Expect(id).To(Equal(int64(0)))
 				Expect(err).To(HaveOccurred())
@@ -52,7 +55,7 @@ var _ = Describe("AuthService", func() {
 				hasher.GenerateReturns("hashedtestpassword", nil)
 				authRepo.CreateAccountReturns(0, errors.New("repo error"))
 
-				id, _, err := authService.CreateAccount(username, email, password)
+				id, err := authService.CreateAccount(username, email, password)
 				Expect(authRepo.CreateAccountCallCount()).To(Equal(1))
 				Expect(id).To(Equal(int64(0)))
 				Expect(err).To(HaveOccurred())
@@ -62,7 +65,7 @@ var _ = Describe("AuthService", func() {
 				hasher.GenerateReturns("hashedtestpassword", nil)
 				authRepo.CreateAccountReturns(accountID, nil)
 
-				id, _, err := authService.CreateAccount(username, email, password)
+				id, err := authService.CreateAccount(username, email, password)
 				Expect(authRepo.CreateAccountCallCount()).To(Equal(1))
 				Expect(id).To(Equal(accountID))
 				Expect(err).NotTo(HaveOccurred())

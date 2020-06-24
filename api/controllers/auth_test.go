@@ -42,14 +42,14 @@ var _ = Describe("AuthController", func() {
 		w = httptest.NewRecorder()
 	})
 
-	Describe("CreateAccount", func() {
-		Context("when creating a new account", func() {
+	Describe("RegisterUser", func() {
+		Context("when registering a new account", func() {
 			It("returns an error if one was encountered while communicating with the service", func() {
-				authService.CreateAccountReturns(0, "", errors.New("service error"))
+				authService.RegisterUserReturns(0, errors.New("service error"))
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingAccount())
 
-				authController.CreateAccount(w, r)
+				authController.RegisterUser(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
@@ -59,14 +59,14 @@ var _ = Describe("AuthController", func() {
 				accountUsername := "username"
 				accountEmail := "email@test.com"
 
-				authService.CreateAccountReturns(accountID, "", nil)
+				authService.RegisterUserReturns(accountID, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Username: accountUsername, Email: accountEmail, Password: "testpassword123", ConfirmPassword: "testpassword123"}
-				resBody := `{"id":100,"username":"username","email":"email@test.com","activation_link":"/api/v1/accounts/activate?t="}`
+				resBody := `{"id":100,"username":"username","email":"email@test.com"}`
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
-				authController.CreateAccount(w, r)
+				authController.RegisterUser(w, r)
 				Expect(w.Code).To(Equal(http.StatusCreated))
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})

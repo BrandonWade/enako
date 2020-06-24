@@ -19,7 +19,7 @@ import (
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
 	CSRF(w http.ResponseWriter, r *http.Request)
-	CreateAccount(w http.ResponseWriter, r *http.Request)
+	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
@@ -40,27 +40,27 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 	}
 }
 
-// CSRF returns a new anti-CSRF token for our SPA frontend.
+// CSRF returns a new anti-CSRF token for the SPA frontend.
 func (a *authController) CSRF(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-CSRF-Token", csrf.Token(r))
 	w.WriteHeader(http.StatusOK)
 	return
 }
 
-// CreateAccount creates a new account.
-func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
+// RegisterUser creates an account, generates an activation token, and sends an activation email.
+func (a *authController) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	createAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
 	if !ok {
-		a.logger.WithField("method", "AuthController.CreateAccount").Error(helpers.ErrorRetrievingAccount())
+		a.logger.WithField("method", "AuthController.RegisterUser").Error(helpers.ErrorRetrievingAccount())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
 		return
 	}
 
-	id, token, err := a.service.CreateAccount(createAccount.Username, createAccount.Email, createAccount.Password)
+	id, err := a.service.RegisterUser(createAccount.Username, createAccount.Email, createAccount.Password)
 	if err != nil {
-		a.logger.WithField("method", "AuthController.CreateAccount").Error(err.Error())
+		a.logger.WithField("method", "AuthController.RegisterUser").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
@@ -70,7 +70,6 @@ func (a *authController) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	createAccount.ID = id
 	createAccount.Password = ""
 	createAccount.ConfirmPassword = ""
-	createAccount.ActivationLink = fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token) // TODO: Remove this; the link should be sent to the provided email
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(createAccount)
