@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/BrandonWade/enako/api/clients"
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/middleware"
@@ -18,6 +19,8 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/sirupsen/logrus"
+
+	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
 var (
@@ -25,6 +28,8 @@ var (
 	DB *sqlx.DB
 
 	logger *logrus.Logger
+
+	mjClient *mailjet.Client
 
 	cookieSecret string
 	csrfSecret   string
@@ -44,10 +49,14 @@ func init() {
 		log.Fatalf("error connecting to db: %s\n", err.Error())
 	}
 
+	logger = logrus.New()
+
+	mjPublicKey := os.Getenv("MAILJET_PUBLIC_KEY")
+	mjPrivateKey := os.Getenv("MAILJET_PRIVATE_KEY")
+	mjClient = mailjet.NewMailjetClient(mjPublicKey, mjPrivateKey)
+
 	cookieSecret = os.Getenv("COOKIE_SECRET")
 	csrfSecret = os.Getenv("CSRF_SECRET")
-
-	logger = logrus.New()
 
 	validation.InitValidator()
 }
@@ -59,7 +68,9 @@ func main() {
 
 	stack := middleware.NewMiddlewareStack(logger, store)
 
-	emailService := services.NewEmailService(logger)
+	mailjetClient := clients.NewMailjetClient(logger, mjClient)
+
+	emailService := services.NewEmailService(logger, mailjetClient)
 
 	authRepository := repositories.NewAuthRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)

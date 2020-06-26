@@ -33,8 +33,8 @@ services:
             - DB_USERNAME=root
             - DB_PASSWORD=root
             - DB_DATABASE=enako
-            - MAIL_HOST=enako-mail
-            - MAIL_PORT=1025
+            - MAILJET_PUBLIC_KEY=mailjet-public-api-key
+            - MAILJET_PRIVATE_KEY=mailjet-private-api-key
     nginx:
         restart: always
         build:
