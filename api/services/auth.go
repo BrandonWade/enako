@@ -63,6 +63,7 @@ func (a *authService) CreateAccount(username, email, password string) (int64, er
 	return id, nil
 }
 
+// CreateActivationToken registers an activation token for the account with the given id.
 func (a *authService) CreateActivationToken(accountID int64, token string) (int64, error) {
 	id, err := a.repo.CreateActivationToken(accountID, token)
 	if err != nil {

@@ -53,9 +53,3 @@ services:
             - ./client:/app
         environment:
             - CI=true
-    mailhog:
-        image: schickling/mailcatcher:latest
-        container_name: enako-mail
-        ports:
-            # - 1025:1025
-            - 1080:1080

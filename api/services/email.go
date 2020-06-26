@@ -1,6 +1,9 @@
 package services
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -23,26 +26,10 @@ func NewEmailService(logger *logrus.Logger) EmailService {
 
 // SendActivateAccountEmail sends an email with an activation link to the provided email.
 func (e *emailService) SendActivateAccountEmail(email, token string) error {
+	link := fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
+
 	// TODO: Implement
-
-	// link := fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
-
-	// auth := smtp.PlainAuth("", "register@enako.ca", "password", "mail.example.com")
-	// to := []string{email}
-	// msg := []byte("To: recipient@example.net\r\n" +
-	// 	"Subject: Complete Account Registration\r\n" +
-	// 	"\r\n" +
-	// 	"Activation link: " + link)
-
-	// err := smtp.SendMail("mail.example.com:25", auth, "register@enako.ca", to, msg)
-	// if err != nil {
-	// 	e.logger.WithFields(logrus.Fields{
-	// 		"method": "EmailService.SendActivateAccountEmail",
-	// 		"email":  email,
-	// 		"token":  token,
-	// 	}).Error(err.Error())
-	// 	return err
-	// }
+	fmt.Println(link)
 
 	return nil
 }
