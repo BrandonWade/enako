@@ -70,7 +70,8 @@ func main() {
 
 	mailjetClient := clients.NewMailjetClient(logger, mjClient)
 
-	emailService := services.NewEmailService(logger, mailjetClient)
+	templateService := services.NewTemplateService(logger)
+	emailService := services.NewEmailService(logger, templateService, mailjetClient)
 
 	authRepository := repositories.NewAuthRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)

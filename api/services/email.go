@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/BrandonWade/enako/api/clients"
 	"github.com/sirupsen/logrus"
@@ -12,46 +13,60 @@ import (
 // EmailService an interface for sending emails.
 //go:generate counterfeiter -o fakes/fake_email_service.go . EmailService
 type EmailService interface {
-	SendActivateAccountEmail(token, email string) error
+	SendAccountActivationEmail(token, email string) error
 }
 
 type emailService struct {
-	logger *logrus.Logger
-	client clients.MailjetClient
+	logger          *logrus.Logger
+	templateService TemplateService
+	emailClient     clients.MailjetClient
 }
 
 // NewEmailService returns a new instance of an EmailService.
-func NewEmailService(logger *logrus.Logger, client clients.MailjetClient) EmailService {
+func NewEmailService(logger *logrus.Logger, templateService TemplateService, emailClient clients.MailjetClient) EmailService {
 	return &emailService{
 		logger,
-		client,
+		templateService,
+		emailClient,
 	}
 }
 
-// SendActivateAccountEmail sends an email with an activation link to the provided email.
-func (e *emailService) SendActivateAccountEmail(email, token string) error {
-	// link := fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
+// SendAccountActivationEmail sends an email with an activation link to the provided email.
+func (e *emailService) SendAccountActivationEmail(email, token string) error {
+	link := fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
+
+	template, err := e.templateService.GenerateAccountActivationEmail(link)
+	if err != nil {
+		e.logger.WithFields(logrus.Fields{
+			"method": "EmailService.SendAccountActivationEmail",
+			"email":  email,
+			"token":  token,
+		}).Error(err.Error())
+		return err
+	}
 
 	message := mailjet.InfoMessagesV31{
 		From: &mailjet.RecipientV31{
-			Email: "",
-			Name:  "",
+			Email: fmt.Sprintf("register@%s", os.Getenv("ENAKO_DOMAIN")),
+			Name:  "Enako",
 		},
 		To: &mailjet.RecipientsV31{
 			mailjet.RecipientV31{
-				Email: "",
-				Name:  "",
+				Email: email,
 			},
 		},
-		Subject:  "Sample Email 123",
-		TextPart: "My first Mailjet email",
-		HTMLPart: "<h3>Dear passenger 1, welcome to <a href='https://www.mailjet.com/'>Mailjet</a>!</h3><br />May the delivery force be with you!",
-		CustomID: "AppGettingStartedTest",
+		Subject:  "Complete Registration",
+		HTMLPart: template,
+		CustomID: "EnakoAccountActivationEmail",
 	}
 
-	err := e.client.Send(message)
+	err = e.emailClient.Send(message)
 	if err != nil {
-		fmt.Printf("ERR SENDING ACTIVATE EMAIL: %s", err.Error())
+		e.logger.WithFields(logrus.Fields{
+			"method": "EmailService.SendAccountActivationEmail",
+			"email":  email,
+			"token":  token,
+		}).Error(err.Error())
 		return err
 	}
 

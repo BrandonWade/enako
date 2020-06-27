@@ -101,7 +101,7 @@ func (a *authService) RegisterUser(username, email, password string) (int64, err
 		return 0, err
 	}
 
-	err = a.emailService.SendActivateAccountEmail(email, token)
+	err = a.emailService.SendAccountActivationEmail(email, token)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":    "AuthService.RegisterUser",

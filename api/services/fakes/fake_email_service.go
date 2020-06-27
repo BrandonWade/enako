@@ -8,79 +8,79 @@ import (
 )
 
 type FakeEmailService struct {
-	SendActivateAccountEmailStub        func(string, string) error
-	sendActivateAccountEmailMutex       sync.RWMutex
-	sendActivateAccountEmailArgsForCall []struct {
+	SendAccountActivationEmailStub        func(string, string) error
+	sendAccountActivationEmailMutex       sync.RWMutex
+	sendAccountActivationEmailArgsForCall []struct {
 		arg1 string
 		arg2 string
 	}
-	sendActivateAccountEmailReturns struct {
+	sendAccountActivationEmailReturns struct {
 		result1 error
 	}
-	sendActivateAccountEmailReturnsOnCall map[int]struct {
+	sendAccountActivationEmailReturnsOnCall map[int]struct {
 		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeEmailService) SendActivateAccountEmail(arg1 string, arg2 string) error {
-	fake.sendActivateAccountEmailMutex.Lock()
-	ret, specificReturn := fake.sendActivateAccountEmailReturnsOnCall[len(fake.sendActivateAccountEmailArgsForCall)]
-	fake.sendActivateAccountEmailArgsForCall = append(fake.sendActivateAccountEmailArgsForCall, struct {
+func (fake *FakeEmailService) SendAccountActivationEmail(arg1 string, arg2 string) error {
+	fake.sendAccountActivationEmailMutex.Lock()
+	ret, specificReturn := fake.sendAccountActivationEmailReturnsOnCall[len(fake.sendAccountActivationEmailArgsForCall)]
+	fake.sendAccountActivationEmailArgsForCall = append(fake.sendAccountActivationEmailArgsForCall, struct {
 		arg1 string
 		arg2 string
 	}{arg1, arg2})
-	fake.recordInvocation("SendActivateAccountEmail", []interface{}{arg1, arg2})
-	fake.sendActivateAccountEmailMutex.Unlock()
-	if fake.SendActivateAccountEmailStub != nil {
-		return fake.SendActivateAccountEmailStub(arg1, arg2)
+	fake.recordInvocation("SendAccountActivationEmail", []interface{}{arg1, arg2})
+	fake.sendAccountActivationEmailMutex.Unlock()
+	if fake.SendAccountActivationEmailStub != nil {
+		return fake.SendAccountActivationEmailStub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1
 	}
-	fakeReturns := fake.sendActivateAccountEmailReturns
+	fakeReturns := fake.sendAccountActivationEmailReturns
 	return fakeReturns.result1
 }
 
-func (fake *FakeEmailService) SendActivateAccountEmailCallCount() int {
-	fake.sendActivateAccountEmailMutex.RLock()
-	defer fake.sendActivateAccountEmailMutex.RUnlock()
-	return len(fake.sendActivateAccountEmailArgsForCall)
+func (fake *FakeEmailService) SendAccountActivationEmailCallCount() int {
+	fake.sendAccountActivationEmailMutex.RLock()
+	defer fake.sendAccountActivationEmailMutex.RUnlock()
+	return len(fake.sendAccountActivationEmailArgsForCall)
 }
 
-func (fake *FakeEmailService) SendActivateAccountEmailCalls(stub func(string, string) error) {
-	fake.sendActivateAccountEmailMutex.Lock()
-	defer fake.sendActivateAccountEmailMutex.Unlock()
-	fake.SendActivateAccountEmailStub = stub
+func (fake *FakeEmailService) SendAccountActivationEmailCalls(stub func(string, string) error) {
+	fake.sendAccountActivationEmailMutex.Lock()
+	defer fake.sendAccountActivationEmailMutex.Unlock()
+	fake.SendAccountActivationEmailStub = stub
 }
 
-func (fake *FakeEmailService) SendActivateAccountEmailArgsForCall(i int) (string, string) {
-	fake.sendActivateAccountEmailMutex.RLock()
-	defer fake.sendActivateAccountEmailMutex.RUnlock()
-	argsForCall := fake.sendActivateAccountEmailArgsForCall[i]
+func (fake *FakeEmailService) SendAccountActivationEmailArgsForCall(i int) (string, string) {
+	fake.sendAccountActivationEmailMutex.RLock()
+	defer fake.sendAccountActivationEmailMutex.RUnlock()
+	argsForCall := fake.sendAccountActivationEmailArgsForCall[i]
 	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeEmailService) SendActivateAccountEmailReturns(result1 error) {
-	fake.sendActivateAccountEmailMutex.Lock()
-	defer fake.sendActivateAccountEmailMutex.Unlock()
-	fake.SendActivateAccountEmailStub = nil
-	fake.sendActivateAccountEmailReturns = struct {
+func (fake *FakeEmailService) SendAccountActivationEmailReturns(result1 error) {
+	fake.sendAccountActivationEmailMutex.Lock()
+	defer fake.sendAccountActivationEmailMutex.Unlock()
+	fake.SendAccountActivationEmailStub = nil
+	fake.sendAccountActivationEmailReturns = struct {
 		result1 error
 	}{result1}
 }
 
-func (fake *FakeEmailService) SendActivateAccountEmailReturnsOnCall(i int, result1 error) {
-	fake.sendActivateAccountEmailMutex.Lock()
-	defer fake.sendActivateAccountEmailMutex.Unlock()
-	fake.SendActivateAccountEmailStub = nil
-	if fake.sendActivateAccountEmailReturnsOnCall == nil {
-		fake.sendActivateAccountEmailReturnsOnCall = make(map[int]struct {
+func (fake *FakeEmailService) SendAccountActivationEmailReturnsOnCall(i int, result1 error) {
+	fake.sendAccountActivationEmailMutex.Lock()
+	defer fake.sendAccountActivationEmailMutex.Unlock()
+	fake.SendAccountActivationEmailStub = nil
+	if fake.sendAccountActivationEmailReturnsOnCall == nil {
+		fake.sendAccountActivationEmailReturnsOnCall = make(map[int]struct {
 			result1 error
 		})
 	}
-	fake.sendActivateAccountEmailReturnsOnCall[i] = struct {
+	fake.sendAccountActivationEmailReturnsOnCall[i] = struct {
 		result1 error
 	}{result1}
 }
@@ -88,8 +88,8 @@ func (fake *FakeEmailService) SendActivateAccountEmailReturnsOnCall(i int, resul
 func (fake *FakeEmailService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.sendActivateAccountEmailMutex.RLock()
-	defer fake.sendActivateAccountEmailMutex.RUnlock()
+	fake.sendAccountActivationEmailMutex.RLock()
+	defer fake.sendAccountActivationEmailMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

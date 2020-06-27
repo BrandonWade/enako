@@ -35,6 +35,7 @@ services:
             - DB_DATABASE=enako
             - MAILJET_PUBLIC_KEY=mailjet-public-api-key
             - MAILJET_PRIVATE_KEY=mailjet-private-api-key
+            - ENAKO_DOMAIN=foo.bar
     nginx:
         restart: always
         build:
