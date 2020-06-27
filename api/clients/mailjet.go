@@ -1,8 +1,6 @@
 package clients
 
 import (
-	"fmt"
-
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 	"github.com/sirupsen/logrus"
 )
@@ -28,21 +26,26 @@ func NewMailjetClient(logger *logrus.Logger, client *mailjet.Client) MailjetClie
 
 // Send sends the provided message.
 func (c *mailjetClient) Send(message mailjet.InfoMessagesV31) error {
+	recipient := (*message.To)[0].Email
 	messages := mailjet.MessagesV31{
 		Info: []mailjet.InfoMessagesV31{message},
 	}
 
-	res, err := c.client.SendMailV31(&messages)
+	_, err := c.client.SendMailV31(&messages)
 	if err != nil {
 		c.logger.WithFields(logrus.Fields{
 			"method":    "MailjetClient.Send",
-			"recipient": message.To,
+			"recipient": recipient,
 			"emailID":   message.CustomID,
 		}).Error(err.Error())
 		return err
 	}
 
-	fmt.Printf("%+v\n", res)
+	c.logger.WithFields(logrus.Fields{
+		"method":    "MailjetClient.Send",
+		"recipient": recipient,
+		"emailID":   message.CustomID,
+	}).Info("email successfully sent")
 
 	return nil
 }
