@@ -9,12 +9,6 @@ import (
 )
 
 type FakeAuthController struct {
-	ActivateAccountStub        func(http.ResponseWriter, *http.Request)
-	activateAccountMutex       sync.RWMutex
-	activateAccountArgsForCall []struct {
-		arg1 http.ResponseWriter
-		arg2 *http.Request
-	}
 	CSRFStub        func(http.ResponseWriter, *http.Request)
 	cSRFMutex       sync.RWMutex
 	cSRFArgsForCall []struct {
@@ -33,46 +27,8 @@ type FakeAuthController struct {
 		arg1 http.ResponseWriter
 		arg2 *http.Request
 	}
-	RegisterUserStub        func(http.ResponseWriter, *http.Request)
-	registerUserMutex       sync.RWMutex
-	registerUserArgsForCall []struct {
-		arg1 http.ResponseWriter
-		arg2 *http.Request
-	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
-}
-
-func (fake *FakeAuthController) ActivateAccount(arg1 http.ResponseWriter, arg2 *http.Request) {
-	fake.activateAccountMutex.Lock()
-	fake.activateAccountArgsForCall = append(fake.activateAccountArgsForCall, struct {
-		arg1 http.ResponseWriter
-		arg2 *http.Request
-	}{arg1, arg2})
-	fake.recordInvocation("ActivateAccount", []interface{}{arg1, arg2})
-	fake.activateAccountMutex.Unlock()
-	if fake.ActivateAccountStub != nil {
-		fake.ActivateAccountStub(arg1, arg2)
-	}
-}
-
-func (fake *FakeAuthController) ActivateAccountCallCount() int {
-	fake.activateAccountMutex.RLock()
-	defer fake.activateAccountMutex.RUnlock()
-	return len(fake.activateAccountArgsForCall)
-}
-
-func (fake *FakeAuthController) ActivateAccountCalls(stub func(http.ResponseWriter, *http.Request)) {
-	fake.activateAccountMutex.Lock()
-	defer fake.activateAccountMutex.Unlock()
-	fake.ActivateAccountStub = stub
-}
-
-func (fake *FakeAuthController) ActivateAccountArgsForCall(i int) (http.ResponseWriter, *http.Request) {
-	fake.activateAccountMutex.RLock()
-	defer fake.activateAccountMutex.RUnlock()
-	argsForCall := fake.activateAccountArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeAuthController) CSRF(arg1 http.ResponseWriter, arg2 *http.Request) {
@@ -171,51 +127,15 @@ func (fake *FakeAuthController) LogoutArgsForCall(i int) (http.ResponseWriter, *
 	return argsForCall.arg1, argsForCall.arg2
 }
 
-func (fake *FakeAuthController) RegisterUser(arg1 http.ResponseWriter, arg2 *http.Request) {
-	fake.registerUserMutex.Lock()
-	fake.registerUserArgsForCall = append(fake.registerUserArgsForCall, struct {
-		arg1 http.ResponseWriter
-		arg2 *http.Request
-	}{arg1, arg2})
-	fake.recordInvocation("RegisterUser", []interface{}{arg1, arg2})
-	fake.registerUserMutex.Unlock()
-	if fake.RegisterUserStub != nil {
-		fake.RegisterUserStub(arg1, arg2)
-	}
-}
-
-func (fake *FakeAuthController) RegisterUserCallCount() int {
-	fake.registerUserMutex.RLock()
-	defer fake.registerUserMutex.RUnlock()
-	return len(fake.registerUserArgsForCall)
-}
-
-func (fake *FakeAuthController) RegisterUserCalls(stub func(http.ResponseWriter, *http.Request)) {
-	fake.registerUserMutex.Lock()
-	defer fake.registerUserMutex.Unlock()
-	fake.RegisterUserStub = stub
-}
-
-func (fake *FakeAuthController) RegisterUserArgsForCall(i int) (http.ResponseWriter, *http.Request) {
-	fake.registerUserMutex.RLock()
-	defer fake.registerUserMutex.RUnlock()
-	argsForCall := fake.registerUserArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
-}
-
 func (fake *FakeAuthController) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
-	fake.activateAccountMutex.RLock()
-	defer fake.activateAccountMutex.RUnlock()
 	fake.cSRFMutex.RLock()
 	defer fake.cSRFMutex.RUnlock()
 	fake.loginMutex.RLock()
 	defer fake.loginMutex.RUnlock()
 	fake.logoutMutex.RLock()
 	defer fake.logoutMutex.RUnlock()
-	fake.registerUserMutex.RLock()
-	defer fake.registerUserMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

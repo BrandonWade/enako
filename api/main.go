@@ -82,12 +82,12 @@ func main() {
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 
 	authController := controllers.NewAuthController(logger, store, authService)
+	accountController := controllers.NewAccountController(logger, authService)
 	categoryController := controllers.NewCategoryController(logger, store, categoryService)
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	// Set up route middleware
-	registerAccountHandler := stack.Apply(authController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
-	activateAccountHandler := stack.Apply(authController.ActivateAccount, []middleware.Middleware{})
+	registerUserHandler := stack.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
@@ -103,10 +103,14 @@ func main() {
 	authAPI := api.PathPrefix("").Subrouter()
 	authAPI.Use(csrfMiddleware)
 	authAPI.HandleFunc("/csrf", authController.CSRF).Methods("HEAD")
-	authAPI.HandleFunc("/accounts", registerAccountHandler).Methods("POST")
-	authAPI.HandleFunc("/accounts/activate", activateAccountHandler).Methods("GET")
 	authAPI.HandleFunc("/login", authController.Login).Methods("POST")
 	authAPI.HandleFunc("/logout", authController.Logout).Methods("GET")
+
+	// Accounts
+	accountAPI := api.PathPrefix("/accounts").Subrouter()
+	accountAPI.Use(csrfMiddleware)
+	accountAPI.HandleFunc("", registerUserHandler).Methods("POST")
+	accountAPI.HandleFunc("/activate", accountController.ActivateAccount).Methods("GET")
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()

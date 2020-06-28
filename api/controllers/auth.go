@@ -3,12 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/BrandonWade/enako/api/helpers"
-	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/csrf"
@@ -19,8 +16,6 @@ import (
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
 	CSRF(w http.ResponseWriter, r *http.Request)
-	RegisterUser(w http.ResponseWriter, r *http.Request)
-	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	Login(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 }
@@ -44,62 +39,6 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 func (a *authController) CSRF(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-CSRF-Token", csrf.Token(r))
 	w.WriteHeader(http.StatusOK)
-	return
-}
-
-// RegisterUser creates an account, generates an activation token, and sends an activation email.
-func (a *authController) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	createAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
-	if !ok {
-		a.logger.WithField("method", "AuthController.RegisterUser").Error(helpers.ErrorRetrievingAccount())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
-		return
-	}
-
-	id, err := a.service.RegisterUser(createAccount.Username, createAccount.Email, createAccount.Password)
-	if err != nil {
-		a.logger.WithField("method", "AuthController.RegisterUser").Error(err.Error())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
-		return
-	}
-
-	createAccount.ID = id
-	createAccount.Password = ""
-	createAccount.ConfirmPassword = ""
-
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(createAccount)
-	return
-}
-
-// ActivateAccount activates a newly created account.
-func (a *authController) ActivateAccount(w http.ResponseWriter, r *http.Request) {
-	token := r.URL.Query().Get("t")
-	if len(token) != services.ActivationTokenLength {
-		a.logger.WithField("method", "AuthController.ActivateAccount").Error(helpers.ErrorInvalidActivationToken())
-
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
-		return
-	}
-
-	success, err := a.service.ActivateAccount(token)
-	if !success {
-		if err != nil {
-			a.logger.WithField("method", "AuthController.ActivateAccount").Error(err.Error())
-		}
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
-		return
-	}
-
-	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
-	http.Redirect(w, r, login, http.StatusSeeOther)
 	return
 }
 

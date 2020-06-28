@@ -11,7 +11,6 @@ import (
 
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/helpers"
-	helperfakes "github.com/BrandonWade/enako/api/helpers/fakes"
 	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
@@ -20,24 +19,21 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var _ = Describe("AuthController", func() {
+var _ = Describe("AccountController", func() {
 	var (
-		logger         *logrus.Logger
-		store          *helperfakes.FakeCookieStorer
-		authService    *fakes.FakeAuthService
-		authController controllers.AuthController
-		w              *httptest.ResponseRecorder
-		r              *http.Request
+		logger            *logrus.Logger
+		authService       *fakes.FakeAuthService
+		accountController controllers.AccountController
+		w                 *httptest.ResponseRecorder
+		r                 *http.Request
 	)
 
 	BeforeEach(func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
-		store = &helperfakes.FakeCookieStorer{}
-
 		authService = &fakes.FakeAuthService{}
-		authController = controllers.NewAuthController(logger, store, authService)
+		accountController = controllers.NewAccountController(logger, authService)
 
 		w = httptest.NewRecorder()
 	})
@@ -49,7 +45,7 @@ var _ = Describe("AuthController", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingAccount())
 
-				authController.RegisterUser(w, r)
+				accountController.RegisterUser(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
@@ -66,7 +62,7 @@ var _ = Describe("AuthController", func() {
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
-				authController.RegisterUser(w, r)
+				accountController.RegisterUser(w, r)
 				Expect(w.Code).To(Equal(http.StatusCreated))
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
