@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import createAccount from '../../../effects/createAccount';
+import Logo from '../../atoms/Logo';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import Button from '../../atoms/Button';
@@ -32,18 +33,21 @@ const Register = () => {
 
     return (
         <div className='Register'>
-            <Card className='Register-content' heading='Create Account'>
-                <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
-                <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
-                <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
-                <InputField type='password' label='Confirm Password' value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
-                <div className='Register-buttons'>
-                    <Link to='/login'>
-                        <Button text='Cancel' />
-                    </Link>
-                    <Button color='orange' text='Create' onClick={onCreateAccount} />
-                </div>
-            </Card>
+            <div className='Register-content'>
+                <Logo />
+                <Card className='Register-form'>
+                    <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
+                    <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
+                    <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
+                    <InputField type='password' label='Confirm Password' value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                    <div className='Register-buttons'>
+                        <Link to='/login'>
+                            <Button text='Cancel' />
+                        </Link>
+                        <Button color='orange' text='Create' onClick={onCreateAccount} />
+                    </div>
+                </Card>
+            </div>
         </div>
     );
 };

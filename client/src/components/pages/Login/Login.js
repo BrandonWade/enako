@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import loginToAccount from '../../../effects/loginToAccount';
+import Logo from '../../atoms/Logo';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import Button from '../../atoms/Button';
@@ -29,15 +30,23 @@ const Login = props => {
 
     return (
         <div className='Login'>
-            <Card heading='Enako' className='Login-content'>
-                <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
-                <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
-                <Button full color='orange' text='Login' onClick={onLogin} />
-                <div className='Login-separator'>or</div>
-                <Link to='/register'>
-                    <Button full color='blue' text='Create Account' />
-                </Link>
-            </Card>
+            <div className='Login-content'>
+                <Logo />
+                <Card className='Login-form'>
+                    <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
+                    <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
+                    <div className='Login-forgotPassword'>
+                        <a href='#'>Forgot your password?</a>
+                    </div>
+                    <Button full color='orange' className='Login-button' text='Login' onClick={onLogin} />
+                    <div className='Login-createAccount'>
+                        Don't have an account yet?
+                        <Link to='/register'>
+                            <span className='Login-createAccountLink'>Sign up!</span>
+                        </Link>
+                    </div>
+                </Card>
+            </div>
         </div>
     );
 };

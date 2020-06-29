@@ -2,15 +2,17 @@
     height: 100%;
     display: grid;
     justify-content: center;
-    align-items: start;
+    align-items: center;
+    margin-top: -10rem;
 
-    &-content {
-        width: 30vw;
-        margin-top: 15rem;
+    &-form {
+        width: 25vw;
+        padding: 2.5rem;
     }
 
     &-buttons {
         display: flex;
         justify-content: space-between;
+        margin-top: 3rem;
     }
 }
