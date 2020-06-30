@@ -1,0 +1,26 @@
+.ValidationRow {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+
+    &:first-of-type {
+        margin-top: 0.75rem;
+    }
+}
+
+.ValidationRow-message {
+    margin-left: 0.5rem;
+}
+
+.ValidationRow--default {
+    color: grey;
+}
+
+.ValidationRow--valid {
+    color: green;
+}
+
+.ValidationRow--invalid {
+    color: red;
+}

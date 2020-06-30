@@ -24,7 +24,7 @@ func InitValidator() {
 	validator.SetValidationFunc("date", ValidateDate)
 }
 
-// ValidateUsername checks that a username is valid (alphanumeric plus underscores).
+// ValidateUsername checks that a username is valid (alphanumeric).
 func ValidateUsername(v interface{}, param string) error {
 	t := reflect.ValueOf(v)
 	if t.Kind() != reflect.String {
@@ -42,7 +42,7 @@ func ValidateUsername(v interface{}, param string) error {
 		return helpers.ErrorUsernameTooLong(maxUsernameLength)
 	}
 
-	match, err := regexp.MatchString("^\\w+$", uname)
+	match, err := regexp.MatchString("^[^\\W_]+$", uname)
 	if err != nil || match != true {
 		return helpers.ErrorInvalidUsernameCharacters()
 	}

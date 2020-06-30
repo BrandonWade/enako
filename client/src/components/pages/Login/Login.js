@@ -38,7 +38,7 @@ const Login = props => {
                     <div className='Login-forgotPassword'>
                         <a href='#'>Forgot your password?</a>
                     </div>
-                    <Button full color='orange' className='Login-button' text='Login' onClick={onLogin} />
+                    <Button full color='orange' text='Login' onClick={onLogin} />
                     <div className='Login-createAccount'>
                         Don't have an account yet?
                         <Link to='/register'>
