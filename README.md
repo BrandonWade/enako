@@ -16,3 +16,7 @@ Tests are run automatically in CircleCI when pushing commits to master.
 
 -   To generate or update test fakes, run `cd api && go generate ./...`
 -   To run the backend test suite, run `ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2 --untilItFails`
+
+## Credit
+
+Icons are from the [Entypo+ icon set](http://entypo.com/) by Daniel Bruce.

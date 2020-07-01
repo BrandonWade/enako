@@ -1,30 +1,15 @@
 import React from 'react';
+import { CheckIcon, CrossIcon } from '../Icons';
 import './ValidationRow.scss';
 
-const ValidationRow = ({ validator, value, description }) => {
-    const isValid = validator(value);
-
-    const getValidationStyle = () => {
-        if (!value.length) {
-            return 'ValidationRow--default';
-        }
-
-        return isValid ? 'ValidationRow--valid' : 'ValidationRow--invalid';
-    };
-
-    // TODO: Find icons
-    const renderIcon = () => {
-        if (!value.length) {
-            return '?';
-        }
-
-        return isValid ? 'v' : 'x';
-    };
+const ValidationRow = ({ valid, description }) => {
+    const validClass = valid ? 'u-valid' : 'u-invalid';
+    const renderIcon = valid ? <CheckIcon className={validClass} /> : <CrossIcon className={validClass} />;
 
     return (
         <div className='ValidationRow'>
-            <div className={`ValidationRow-icon ${getValidationStyle()}`}>{renderIcon(validator, value)}</div>
-            <div className={`ValidationRow-message ${getValidationStyle()}`}>{description}</div>
+            <div className={`ValidationRow-icon ${validClass}`}>{renderIcon}</div>
+            <div className={`ValidationRow-message ${validClass}`}>{description}</div>
         </div>
     );
 };

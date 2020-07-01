@@ -7,6 +7,9 @@ import InputField from '../../molecules/InputField';
 import ValidationRow from '../../atoms/ValidationRow';
 import Button from '../../atoms/Button';
 import './Register.scss';
+import { ValidateUsernameLength, ValidateUsernameCharacters } from '../../../validators/username';
+import { ValidateEmailFormat } from '../../../validators/email';
+import { ValidatePasswordLength, ValidatePasswordCharacters, ValidatePasswordsMatch } from '../../../validators/password';
 
 const Register = () => {
     const history = useHistory();
@@ -39,42 +42,24 @@ const Register = () => {
                 <Card className='Register-form'>
                     <div className='Register-formGrid'>
                         <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
-                        <div>
-                            <ValidationRow
-                                validator={uname => uname.length >= 5 && uname.length <= 32}
-                                value={username}
-                                description={'Username is between 5 and 32 characters'}
-                            />
-                            <ValidationRow
-                                validator={uname => /^[^\W_]+$/.test(uname)}
-                                value={username}
-                                description={'Username contains only numbers and letters'}
-                            />
+                        <div className='Register-validatorRules'>
+                            <ValidationRow valid={ValidateUsernameLength(username)} description='Username is between 5 and 32 characters' />
+                            <ValidationRow valid={ValidateUsernameCharacters(username)} description='Username contains only numbers and letters' />
                         </div>
                         <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
-                        <div>
-                            <ValidationRow
-                                validator={email => /^[^@]+@[^\.@]+\..{2,}$/.test(email)}
-                                value={email}
-                                description={'Email is well formatted'}
-                            />
+                        <div className='Register-validatorRules'>
+                            <ValidationRow valid={ValidateEmailFormat(email)} description='Email is well formatted' />
                         </div>
                         <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
-                        <div className='Register-passwordRules'>
+                        <div className='Register-validatorRules Register-passwordRules'>
+                            <ValidationRow valid={ValidatePasswordLength(password)} description='Password is between 15 and 50 characters' />
                             <ValidationRow
-                                validator={pword => pword.length >= 15 && pword.length <= 50}
-                                value={password}
-                                description={'Password is between 15 and 50 characters'}
+                                valid={ValidatePasswordCharacters(password)}
+                                description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
                             />
                             <ValidationRow
-                                validator={pword => /^[\w!@#$%^*]+$/.test(pword)}
-                                value={password}
-                                description={'Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'}
-                            />
-                            <ValidationRow
-                                validator={pword => pword === confirmPassword}
-                                value={password}
-                                description={'Password and Confirm Password match'}
+                                valid={ValidatePasswordsMatch(password, confirmPassword)}
+                                description='Password and Confirm Password match'
                             />
                         </div>
                         <InputField

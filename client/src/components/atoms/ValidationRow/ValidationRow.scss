@@ -3,6 +3,7 @@
     margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
+    position: relative;
 
     &:first-of-type {
         margin-top: 0.75rem;
@@ -10,17 +11,6 @@
 }
 
 .ValidationRow-message {
-    margin-left: 0.5rem;
-}
-
-.ValidationRow--default {
-    color: grey;
-}
-
-.ValidationRow--valid {
-    color: green;
-}
-
-.ValidationRow--invalid {
-    color: red;
+    left: 2rem;
+    position: absolute;
 }

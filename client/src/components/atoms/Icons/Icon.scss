@@ -1,0 +1,25 @@
+.Icon {
+    width: 2rem;
+    height: 2rem;
+    position: relative;
+}
+
+.Icon > svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.Icon--check {
+    display: flex;
+    align-items: center;
+}
+
+.Icon--check > svg {
+    width: 85%;
+    height: 85%;
+}
+
+.Icon--cross {
+    display: flex;
+}
