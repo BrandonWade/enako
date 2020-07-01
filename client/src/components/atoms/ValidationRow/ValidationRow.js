@@ -4,11 +4,11 @@ import './ValidationRow.scss';
 
 const ValidationRow = ({ valid, description }) => {
     const validClass = valid ? 'u-valid' : 'u-invalid';
-    const renderIcon = valid ? <CheckIcon className={validClass} /> : <CrossIcon className={validClass} />;
+    const validIcon = valid ? <CheckIcon className={validClass} /> : <CrossIcon className={validClass} />;
 
     return (
         <div className='ValidationRow'>
-            <div className={`ValidationRow-icon ${validClass}`}>{renderIcon}</div>
+            <div className={`ValidationRow-icon ${validClass}`}>{validIcon}</div>
             <div className={`ValidationRow-message ${validClass}`}>{description}</div>
         </div>
     );

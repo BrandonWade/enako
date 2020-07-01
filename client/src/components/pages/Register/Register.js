@@ -18,6 +18,15 @@ const Register = () => {
     const [password, setPassword] = useState('testpassword123');
     const [confirmPassword, setConfirmPassword] = useState('testpassword123');
 
+    const validUsernameLength = ValidateUsernameLength(username);
+    const validUsernameCharacters = ValidateUsernameCharacters(username);
+    const validEmailFormat = ValidateEmailFormat(email);
+    const validPasswordLength = ValidatePasswordLength(password);
+    const validPasswordCharacters = ValidatePasswordCharacters(password);
+    const validPasswordsMatch = ValidatePasswordsMatch(password, confirmPassword);
+
+    const isEnabled = validUsernameLength && validUsernameCharacters && validEmailFormat && validPasswordLength && validPasswordCharacters && validPasswordsMatch;
+
     const onCreateAccount = async () => {
         const data = {
             username,
@@ -43,37 +52,26 @@ const Register = () => {
                     <div className='Register-formGrid'>
                         <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
                         <div className='Register-validatorRules'>
-                            <ValidationRow valid={ValidateUsernameLength(username)} description='Username is between 5 and 32 characters' />
-                            <ValidationRow valid={ValidateUsernameCharacters(username)} description='Username contains only numbers and letters' />
+                            <ValidationRow valid={validUsernameLength} description='Username is between 5 and 32 characters' />
+                            <ValidationRow valid={validUsernameCharacters} description='Username contains only numbers and letters' />
                         </div>
                         <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
                         <div className='Register-validatorRules'>
-                            <ValidationRow valid={ValidateEmailFormat(email)} description='Email is well formatted' />
+                            <ValidationRow valid={validEmailFormat} description='Email is well formatted' />
                         </div>
                         <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
                         <div className='Register-validatorRules Register-passwordRules'>
-                            <ValidationRow valid={ValidatePasswordLength(password)} description='Password is between 15 and 50 characters' />
-                            <ValidationRow
-                                valid={ValidatePasswordCharacters(password)}
-                                description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
-                            />
-                            <ValidationRow
-                                valid={ValidatePasswordsMatch(password, confirmPassword)}
-                                description='Password and Confirm Password match'
-                            />
+                            <ValidationRow valid={validPasswordLength} description='Password is between 15 and 50 characters' />
+                            <ValidationRow valid={validPasswordCharacters} description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _' />
+                            <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
                         </div>
-                        <InputField
-                            type='password'
-                            label='Confirm Password'
-                            value={confirmPassword}
-                            onChange={e => setConfirmPassword(e.target.value)}
-                        />
+                        <InputField type='password' label='Confirm Password' value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
                     </div>
                     <div className='Register-buttons'>
                         <Link to='/login'>
                             <Button text='Cancel' />
                         </Link>
-                        <Button color='orange' text='Create' onClick={onCreateAccount} />
+                        <Button color='orange' text='Create' onClick={onCreateAccount} disabled={!isEnabled} />
                     </div>
                 </Card>
             </div>

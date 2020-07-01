@@ -6,23 +6,27 @@
     background-color: #f2f1f0;
     transition: all 0.2s;
 
-    &:hover {
+    &:hover:enabled {
         background-color: #f7f7f7;
     }
 
-    &:active {
+    &:active:enabled {
         background-color: #d9d8d7;
+    }
+
+    &:disabled {
+        opacity: 35%;
     }
 
     &--orange {
         background-color: orange;
         color: #ffffff;
 
-        &:hover {
+        &:hover:enabled {
             background-color: #ffbf1a;
         }
 
-        &:active {
+        &:active:enabled {
             background-color: #e68c00;
         }
     }
@@ -31,11 +35,11 @@
         background-color: crimson;
         color: #ffffff;
 
-        &:hover {
+        &:hover:enabled {
             background-color: #e84061;
         }
 
-        &:active {
+        &:active:enabled {
             background-color: #ad1433;
         }
     }
@@ -44,11 +48,11 @@
         background-color: #0a84ff;
         color: #ffffff;
 
-        &:hover {
+        &:hover:enabled {
             background-color: #3b9cff;
         }
 
-        &:active {
+        &:active:enabled {
             background-color: #0069d4;
         }
     }
