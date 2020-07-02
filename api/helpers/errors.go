@@ -6,32 +6,36 @@ import (
 )
 
 var (
-	errInvalidAccountPayload     = errors.New("invalid account payload")
-	errRetrievingAccount         = errors.New("error retrieving account from context")
-	errCreatingAccount           = errors.New("error creating account")
-	errPasswordsDoNotMatch       = errors.New("passwords do not match")
-	errUserNotAuthenticated      = errors.New("user not authenticated")
-	errInvalidExpensePayload     = errors.New("invalid expense payload")
-	errRetrievingExpense         = errors.New("error retrieving expense from context")
-	errCreatingExpense           = errors.New("error creating expense")
-	errUpdatingExpense           = errors.New("error updating expense")
-	errFetchingExpenses          = errors.New("error fetching expense list")
-	errInvalidExpenseID          = errors.New("invalid expense id")
-	errNoExpensesUpdated         = errors.New("no expenses were updated")
-	errDeletingExpense           = errors.New("error deleting expense")
-	errNoExpensesDeleted         = errors.New("no expenses were deleted")
-	errFetchingCategories        = errors.New("error fetching categories")
-	errFetchingSession           = errors.New("error fetching session")
-	errInvalidUsernameOrPassword = errors.New("invalid username or password")
-	errMustBeString              = errors.New("must be string")
-	errInvalidUsernameCharacters = errors.New("username may only contain alphanumeric characters and underscores")
-	errInvalidEmail              = errors.New("invalid email")
-	errInvalidPasswordCharacters = errors.New("password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *")
-	errInvalidDate               = errors.New("invalid date")
-	errRetrievingAccountID       = errors.New("error retrieving user account id")
-	errAccountNotActivated       = errors.New("account not activated")
-	errInvalidActivationToken    = errors.New("invalid account activation token")
-	errActivatingAccount         = errors.New("error activating account")
+	errInvalidAccountPayload              = errors.New("invalid account payload")
+	errRetrievingAccount                  = errors.New("error retrieving account from context")
+	errCreatingAccount                    = errors.New("error creating account")
+	errPasswordsDoNotMatch                = errors.New("passwords do not match")
+	errUserNotAuthenticated               = errors.New("user not authenticated")
+	errInvalidExpensePayload              = errors.New("invalid expense payload")
+	errRetrievingExpense                  = errors.New("error retrieving expense from context")
+	errCreatingExpense                    = errors.New("error creating expense")
+	errUpdatingExpense                    = errors.New("error updating expense")
+	errFetchingExpenses                   = errors.New("error fetching expense list")
+	errInvalidExpenseID                   = errors.New("invalid expense id")
+	errNoExpensesUpdated                  = errors.New("no expenses were updated")
+	errDeletingExpense                    = errors.New("error deleting expense")
+	errNoExpensesDeleted                  = errors.New("no expenses were deleted")
+	errFetchingCategories                 = errors.New("error fetching categories")
+	errFetchingSession                    = errors.New("error fetching session")
+	errInvalidUsernameOrPassword          = errors.New("invalid username or password")
+	errMustBeString                       = errors.New("must be string")
+	errInvalidUsernameCharacters          = errors.New("username may only contain alphanumeric characters and underscores")
+	errInvalidEmail                       = errors.New("invalid email")
+	errInvalidPasswordCharacters          = errors.New("password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *")
+	errInvalidDate                        = errors.New("invalid date")
+	errRetrievingAccountID                = errors.New("error retrieving user account id")
+	errAccountNotActivated                = errors.New("account not activated")
+	errInvalidActivationToken             = errors.New("invalid account activation token")
+	errActivatingAccount                  = errors.New("error activating account")
+	errInvalidRequestPasswordResetPayload = errors.New("invalid request password reset payload")
+	errRetrievingRequestPasswordReset     = errors.New("error retrieving request password reset from context")
+	errRequestingPasswordReset            = errors.New("error requesting password reset")
+	errAccountNotFound                    = errors.New("error account not found")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -39,7 +43,7 @@ func ErrorInvalidAccountPayload() error {
 	return errInvalidAccountPayload
 }
 
-// ErrorRetrievingAccount returned when an error occurs when attempting to retrieve the account from the request.
+// ErrorRetrievingAccount returned when an error occurs when attempting to retrieve the account model from the request.
 func ErrorRetrievingAccount() error {
 	return errRetrievingAccount
 }
@@ -64,7 +68,7 @@ func ErrorInvalidExpensePayload() error {
 	return errInvalidExpensePayload
 }
 
-// ErrorRetrievingExpense returned when an error occurs when attempting to retrieve the expense from the request.
+// ErrorRetrievingExpense returned when an error occurs when attempting to retrieve the expense model from the request.
 func ErrorRetrievingExpense() error {
 	return errRetrievingExpense
 }
@@ -169,7 +173,7 @@ func ErrorRetrievingAccountID() error {
 	return errRetrievingAccountID
 }
 
-// ErrorAccountNotActivated returned when a attempting to log into an account that has not yet been activated
+// ErrorAccountNotActivated returned when attempting to log into an account that has not yet been activated.
 func ErrorAccountNotActivated() error {
 	return errAccountNotActivated
 }
@@ -182,4 +186,24 @@ func ErrorInvalidActivationToken() error {
 // ErrorActivatingAccount returned when a problem occurs when attempting to activate an account.
 func ErrorActivatingAccount() error {
 	return errActivatingAccount
+}
+
+// ErrorInvalidRequestPasswordResetPayload returned when an error occurs when a submitted request password reset password request is malformed.
+func ErrorInvalidRequestPasswordResetPayload() error {
+	return errInvalidRequestPasswordResetPayload
+}
+
+// ErrorRetrievingRequestPasswordReset returned when an error occurs when attempting to retrieve the request password reset model from the request.
+func ErrorRetrievingRequestPasswordReset() error {
+	return errRetrievingRequestPasswordReset
+}
+
+// ErrorRequestingPasswordReset returned when an error occurs when attempting to request a password reset.
+func ErrorRequestingPasswordReset() error {
+	return errRequestingPasswordReset
+}
+
+// ErrorAccountNotFound returned when an account is not found in the database.
+func ErrorAccountNotFound() error {
+	return errAccountNotFound
 }

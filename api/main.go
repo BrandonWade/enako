@@ -73,21 +73,22 @@ func main() {
 	templateService := services.NewTemplateService(logger)
 	emailService := services.NewEmailService(logger, templateService, mailjetClient)
 
-	authRepository := repositories.NewAuthRepository(DB)
+	accountRepository := repositories.NewAccountRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
-	authService := services.NewAuthService(logger, hasher, emailService, authRepository)
+	accountService := services.NewAccountService(logger, hasher, emailService, accountRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 
-	authController := controllers.NewAuthController(logger, store, authService)
-	accountController := controllers.NewAccountController(logger, authService)
+	authController := controllers.NewAuthController(logger, store, accountService)
+	accountController := controllers.NewAccountController(logger, accountService)
 	categoryController := controllers.NewCategoryController(logger, store, categoryService)
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	// Set up route middleware
 	registerUserHandler := stack.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
+	requestPasswordResetHander := stack.Apply(accountController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
 
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
@@ -111,6 +112,7 @@ func main() {
 	accountAPI.Use(csrfMiddleware)
 	accountAPI.HandleFunc("", registerUserHandler).Methods("POST")
 	accountAPI.HandleFunc("/activate", accountController.ActivateAccount).Methods("GET")
+	accountAPI.HandleFunc("/password", requestPasswordResetHander).Methods("POST")
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()

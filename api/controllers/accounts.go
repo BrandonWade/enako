@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -18,15 +19,16 @@ import (
 type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
+	RequestPasswordReset(w http.ResponseWriter, r *http.Request)
 }
 
 type accountController struct {
 	logger  *logrus.Logger
-	service services.AuthService
+	service services.AccountService
 }
 
 // NewAccountController returns a new instance of an AccountController.
-func NewAccountController(logger *logrus.Logger, service services.AuthService) AccountController {
+func NewAccountController(logger *logrus.Logger, service services.AccountService) AccountController {
 	return &accountController{
 		logger,
 		service,
@@ -86,5 +88,45 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 
 	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
 	http.Redirect(w, r, login, http.StatusSeeOther)
+	return
+}
+
+func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.Request) {
+	resetPassword, ok := r.Context().Value(middleware.ContextRequestPasswordResetKey).(models.RequestPasswordReset)
+	if !ok {
+		a.logger.WithField("method", "AccountController.RequestPasswordReset").Error(helpers.ErrorRetrievingRequestPasswordReset())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRequestingPasswordReset()))
+		return
+	}
+
+	email, err := a.service.RequestPasswordReset(resetPassword.Username)
+	if err != nil {
+		if errors.Is(err, helpers.ErrorAccountNotFound()) {
+			a.logger.WithFields(logrus.Fields{
+				"method":   "AccountController.RequestPasswordReset",
+				"username": resetPassword.Username,
+			}).Info(helpers.ErrorAccountNotFound())
+
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithUsernameNotFound(resetPassword.Username)))
+			return
+		}
+
+		a.logger.WithFields(logrus.Fields{
+			"method":   "AccountController.RequestPasswordReset",
+			"username": resetPassword.Username,
+		}).Error(err.Error())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRequestingPasswordReset()))
+		return
+	}
+
+	// TODO: Obfuscate email
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageResetPasswordEmailSent(email)))
 	return
 }

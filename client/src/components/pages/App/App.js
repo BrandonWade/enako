@@ -12,6 +12,7 @@ import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
 import Home from '../Home';
 import Register from '../Register';
 import Login from '../Login';
+import ForgotPassword from '../ForgotPassword';
 import Editor from '../Editor';
 import './App.scss';
 
@@ -66,27 +67,12 @@ const App = () => {
                     <ExpenseContext.Provider value={expenses}>
                         <BrowserRouter>
                             <Switch>
-                                <Route
-                                    path='/login'
-                                    render={() => (
-                                        <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />
-                                    )}
-                                />
+                                <Route path='/login' render={() => <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />} />
+                                <Route path='/password' component={ForgotPassword} />
                                 <Route path='/register' component={Register} />
                                 <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-                                <AuthenticatedRoute
-                                    path='/expenses'
-                                    exact
-                                    component={Editor}
-                                    setExpenses={setExpenses}
-                                    setSelectedDate={setSelectedDate}
-                                />
-                                <AuthenticatedRoute
-                                    path='/expenses/:id'
-                                    component={Editor}
-                                    setExpenses={setExpenses}
-                                    setSelectedDate={setSelectedDate}
-                                />
+                                <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} setSelectedDate={setSelectedDate} />
+                                <AuthenticatedRoute path='/expenses/:id' component={Editor} setExpenses={setExpenses} setSelectedDate={setSelectedDate} />
                                 <AuthenticatedRedirect />
                             </Switch>
                         </BrowserRouter>

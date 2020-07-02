@@ -36,15 +36,17 @@ const Login = props => {
                     <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
                     <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
                     <div className='Login-forgotPassword'>
-                        <a href='#'>Forgot your password?</a>
+                        <Link to='/password'>
+                            <span>Forgot your password?</span>
+                        </Link>
                     </div>
                     <Button full color='orange' text='Login' onClick={onLogin} />
-                    <div className='Login-createAccount'>
+                    <p className='Login-createAccount'>
                         Don't have an account yet?
                         <Link to='/register'>
                             <span className='Login-createAccountLink'>Sign up!</span>
                         </Link>
-                    </div>
+                    </p>
                 </Card>
             </div>
         </div>

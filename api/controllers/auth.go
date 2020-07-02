@@ -23,11 +23,11 @@ type AuthController interface {
 type authController struct {
 	logger  *logrus.Logger
 	store   helpers.CookieStorer
-	service services.AuthService
+	service services.AccountService
 }
 
 // NewAuthController returns a new instance of an AuthController.
-func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, service services.AuthService) AuthController {
+func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, service services.AccountService) AuthController {
 	return &authController{
 		logger,
 		store,

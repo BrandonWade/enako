@@ -6,10 +6,10 @@ import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import ValidationRow from '../../atoms/ValidationRow';
 import Button from '../../atoms/Button';
-import './Register.scss';
 import { ValidateUsernameLength, ValidateUsernameCharacters } from '../../../validators/username';
 import { ValidateEmailFormat } from '../../../validators/email';
 import { ValidatePasswordLength, ValidatePasswordCharacters, ValidatePasswordsMatch } from '../../../validators/password';
+import './Register.scss';
 
 const Register = () => {
     const history = useHistory();

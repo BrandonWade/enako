@@ -13,11 +13,17 @@ const (
 	// ContextCreateAccountKey a key used to store & retrieve a create account model from the request context.
 	ContextCreateAccountKey key = iota
 
-	// ContextExpenseKey a key used to store & retrieve an expense from the request context.
+	// ContextExpenseKey a key used to store & retrieve an expense model from the request context.
 	ContextExpenseKey
 
 	// ContextAccountIDKey a key used to store & retrieve an account id from the request context.
 	ContextAccountIDKey
+
+	// ContextRequestPasswordResetKey a key used to store & retrieve a request password reset model from the request context.
+	ContextRequestPasswordResetKey
+
+	// ContextChangePasswordKey a key used to store & retrieve a change password model from the request context.
+	ContextChangePasswordKey
 )
 
 // Middleware is a type alias for working with middleware.

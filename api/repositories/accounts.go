@@ -8,28 +8,29 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// AuthRepository an interface for working with accounts.
-//go:generate counterfeiter -o fakes/fake_auth_repository.go . AuthRepository
-type AuthRepository interface {
+// AccountRepository an interface for working with accounts.
+//go:generate counterfeiter -o fakes/fake_account_repository.go . AccountRepository
+type AccountRepository interface {
 	GetAccount(username string) (*models.Account, error)
 	CreateAccount(username, email, password string) (int64, error)
 	CreateActivationToken(accountID int64, activationToken string) (int64, error)
 	ActivateAccount(token string) (bool, error)
+	GetAccountByUsername(username string) (*models.Account, error)
 }
 
-type authRepository struct {
+type accountRepository struct {
 	DB *sqlx.DB
 }
 
-// NewAuthRepository returns a new instance of an AuthRepository.
-func NewAuthRepository(DB *sqlx.DB) AuthRepository {
-	return &authRepository{
+// NewAccountRepository returns a new instance of an AccountRepository.
+func NewAccountRepository(DB *sqlx.DB) AccountRepository {
+	return &accountRepository{
 		DB,
 	}
 }
 
 // GetAccount returns an account with the given username.
-func (a *authRepository) GetAccount(username string) (*models.Account, error) {
+func (a *accountRepository) GetAccount(username string) (*models.Account, error) {
 	account := models.Account{}
 
 	err := a.DB.Get(&account, `SELECT
@@ -47,7 +48,7 @@ func (a *authRepository) GetAccount(username string) (*models.Account, error) {
 }
 
 // CreateAccount creates an account with the given username, email, and password.
-func (a *authRepository) CreateAccount(username, email, password string) (int64, error) {
+func (a *accountRepository) CreateAccount(username, email, password string) (int64, error) {
 	result, err := a.DB.Exec(`INSERT
 		INTO accounts(
 			username,
@@ -76,7 +77,7 @@ func (a *authRepository) CreateAccount(username, email, password string) (int64,
 }
 
 // CreateActivationToken creates an activation token for the given account ID.
-func (a *authRepository) CreateActivationToken(accountID int64, activationToken string) (int64, error) {
+func (a *accountRepository) CreateActivationToken(accountID int64, activationToken string) (int64, error) {
 	result, err := a.DB.Exec(`INSERT
 		INTO account_activation_tokens(
 			account_id,
@@ -102,7 +103,7 @@ func (a *authRepository) CreateActivationToken(accountID int64, activationToken 
 }
 
 // ActivateAccount marks the account with the given token as active and expires the token.
-func (a *authRepository) ActivateAccount(token string) (bool, error) {
+func (a *accountRepository) ActivateAccount(token string) (bool, error) {
 	var accountID int64
 	err := a.DB.Get(&accountID, `SELECT
 		a.id
@@ -146,4 +147,22 @@ func (a *authRepository) ActivateAccount(token string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// GetAccountByUsername returns the account with the given username.
+func (a *accountRepository) GetAccountByUsername(username string) (*models.Account, error) {
+	var account models.Account
+
+	err := a.DB.Get(&account, `SELECT
+		*
+		FROM accounts a
+		WHERE a.username = ?;
+	`,
+		username,
+	)
+	if err != nil {
+		return &models.Account{}, err
+	}
+
+	return &account, nil
 }

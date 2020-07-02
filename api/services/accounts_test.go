@@ -14,13 +14,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("AuthService", func() {
+var _ = Describe("AccountService", func() {
 	var (
-		logger       *logrus.Logger
-		hasher       *helpers.FakePasswordHasher
-		emailService *servicefakes.FakeEmailService
-		authRepo     *fakes.FakeAuthRepository
-		authService  services.AuthService
+		logger         *logrus.Logger
+		hasher         *helpers.FakePasswordHasher
+		emailService   *servicefakes.FakeEmailService
+		accountRepo    *fakes.FakeAccountRepository
+		accountService services.AccountService
 	)
 
 	BeforeEach(func() {
@@ -29,8 +29,8 @@ var _ = Describe("AuthService", func() {
 
 		hasher = &helpers.FakePasswordHasher{}
 		emailService = &servicefakes.FakeEmailService{}
-		authRepo = &fakes.FakeAuthRepository{}
-		authService = services.NewAuthService(logger, hasher, emailService, authRepo)
+		accountRepo = &fakes.FakeAccountRepository{}
+		accountService = services.NewAccountService(logger, hasher, emailService, accountRepo)
 	})
 
 	Describe("CreateAccount", func() {
@@ -45,7 +45,7 @@ var _ = Describe("AuthService", func() {
 			It("returns an error when a hasher error is encountered", func() {
 				hasher.GenerateReturns("", errors.New("hasher error"))
 
-				id, err := authService.CreateAccount(username, email, password)
+				id, err := accountService.CreateAccount(username, email, password)
 				Expect(hasher.GenerateCallCount()).To(Equal(1))
 				Expect(id).To(Equal(int64(0)))
 				Expect(err).To(HaveOccurred())
@@ -53,20 +53,20 @@ var _ = Describe("AuthService", func() {
 
 			It("returns an error when a repo error is encountered", func() {
 				hasher.GenerateReturns("hashedtestpassword", nil)
-				authRepo.CreateAccountReturns(0, errors.New("repo error"))
+				accountRepo.CreateAccountReturns(0, errors.New("repo error"))
 
-				id, err := authService.CreateAccount(username, email, password)
-				Expect(authRepo.CreateAccountCallCount()).To(Equal(1))
+				id, err := accountService.CreateAccount(username, email, password)
+				Expect(accountRepo.CreateAccountCallCount()).To(Equal(1))
 				Expect(id).To(Equal(int64(0)))
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("returns the id of the new account row and no error", func() {
 				hasher.GenerateReturns("hashedtestpassword", nil)
-				authRepo.CreateAccountReturns(accountID, nil)
+				accountRepo.CreateAccountReturns(accountID, nil)
 
-				id, err := authService.CreateAccount(username, email, password)
-				Expect(authRepo.CreateAccountCallCount()).To(Equal(1))
+				id, err := accountService.CreateAccount(username, email, password)
+				Expect(accountRepo.CreateAccountCallCount()).To(Equal(1))
 				Expect(id).To(Equal(accountID))
 				Expect(err).NotTo(HaveOccurred())
 			})

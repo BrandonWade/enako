@@ -22,7 +22,7 @@ import (
 var _ = Describe("AccountController", func() {
 	var (
 		logger            *logrus.Logger
-		authService       *fakes.FakeAuthService
+		accountService    *fakes.FakeAccountService
 		accountController controllers.AccountController
 		w                 *httptest.ResponseRecorder
 		r                 *http.Request
@@ -32,8 +32,8 @@ var _ = Describe("AccountController", func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
-		authService = &fakes.FakeAuthService{}
-		accountController = controllers.NewAccountController(logger, authService)
+		accountService = &fakes.FakeAccountService{}
+		accountController = controllers.NewAccountController(logger, accountService)
 
 		w = httptest.NewRecorder()
 	})
@@ -41,7 +41,7 @@ var _ = Describe("AccountController", func() {
 	Describe("RegisterUser", func() {
 		Context("when registering a new account", func() {
 			It("returns an error if one was encountered while communicating with the service", func() {
-				authService.RegisterUserReturns(0, errors.New("service error"))
+				accountService.RegisterUserReturns(0, errors.New("service error"))
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingAccount())
 
@@ -55,7 +55,7 @@ var _ = Describe("AccountController", func() {
 				accountUsername := "username"
 				accountEmail := "email@test.com"
 
-				authService.RegisterUserReturns(accountID, nil)
+				accountService.RegisterUserReturns(accountID, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Username: accountUsername, Email: accountEmail, Password: "testpassword123", ConfirmPassword: "testpassword123"}
 				resBody := `{"id":100,"username":"username","email":"email@test.com"}`
