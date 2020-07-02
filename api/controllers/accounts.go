@@ -124,8 +124,6 @@ func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.
 		return
 	}
 
-	// TODO: Obfuscate email
-
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageResetPasswordEmailSent(email)))
 	return

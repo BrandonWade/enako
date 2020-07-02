@@ -26,7 +26,7 @@ func NewMailjetClient(logger *logrus.Logger, client *mailjet.Client) MailjetClie
 
 // Send sends the provided message.
 func (c *mailjetClient) Send(message mailjet.InfoMessagesV31) error {
-	recipient := (*message.To)[0].Email
+	recipient := (*message.To)[0].Email // TODO: Clean this up
 	messages := mailjet.MessagesV31{
 		Info: []mailjet.InfoMessagesV31{message},
 	}

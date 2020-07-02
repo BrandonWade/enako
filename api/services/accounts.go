@@ -33,15 +33,17 @@ type AccountService interface {
 type accountService struct {
 	logger       *logrus.Logger
 	hasher       helpers.PasswordHasher
+	obfuscator   helpers.EmailObfuscator
 	emailService EmailService
 	repo         repositories.AccountRepository
 }
 
 // NewAccountService returns a new instance of an AccountService.
-func NewAccountService(logger *logrus.Logger, hasher helpers.PasswordHasher, emailService EmailService, repo repositories.AccountRepository) AccountService {
+func NewAccountService(logger *logrus.Logger, hasher helpers.PasswordHasher, obfuscator helpers.EmailObfuscator, emailService EmailService, repo repositories.AccountRepository) AccountService {
 	return &accountService{
 		logger,
 		hasher,
+		obfuscator,
 		emailService,
 		repo,
 	}
@@ -187,5 +189,16 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 	// TODO: Send email
 	fmt.Printf("%+v", *account)
 
-	return account.Email, nil
+	email, err := a.obfuscator.Obfuscate(account.Email)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":   "AccountService.RequestPasswordReset",
+			"username": username,
+			"email":    account.Email,
+		}).Error(err.Error())
+
+		return "", helpers.ErrorRequestingPasswordReset()
+	}
+
+	return email, nil
 }
