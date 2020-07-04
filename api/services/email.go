@@ -48,7 +48,7 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 
 	message := mailjet.InfoMessagesV31{
 		From: &mailjet.RecipientV31{
-			Email: fmt.Sprintf("accounts@%s", os.Getenv("ENAKO_DOMAIN")),
+			Email: fmt.Sprintf("register@%s", os.Getenv("ENAKO_DOMAIN")),
 			Name:  "Enako",
 		},
 		To: &mailjet.RecipientsV31{

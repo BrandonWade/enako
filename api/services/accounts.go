@@ -177,7 +177,7 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	err = a.emailService.SendAccountActivationEmail(account.Email, token)
+	err = a.emailService.SendPasswordResetEmail(account.Email, token)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":   "AccountService.RequestPasswordReset",

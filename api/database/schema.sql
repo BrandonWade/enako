@@ -25,6 +25,19 @@ CREATE TABLE account_activation_tokens (
   UNIQUE KEY U_activation_token (activation_token)
 );
 
+DROP TABLE IF EXISTS password_reset_tokens;
+CREATE TABLE password_reset_tokens (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  account_id int unsigned NOT NULL DEFAULT 0,
+  reset_token char(64) NOT NULL DEFAULT '',
+  is_used tinyint(1) NOT NULL DEFAULT 0,
+  expires_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY U_reset_token (reset_token)
+);
+
 DROP TABLE IF EXISTS categories;
 CREATE TABLE categories (
   id int unsigned NOT NULL AUTO_INCREMENT,
