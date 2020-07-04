@@ -20,6 +20,7 @@ type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	RequestPasswordReset(w http.ResponseWriter, r *http.Request)
+	PasswordReset(w http.ResponseWriter, r *http.Request)
 }
 
 type accountController struct {
@@ -92,7 +93,7 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 }
 
 func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.Request) {
-	resetPassword, ok := r.Context().Value(middleware.ContextRequestPasswordResetKey).(models.RequestPasswordReset)
+	resetRequest, ok := r.Context().Value(middleware.ContextRequestPasswordResetKey).(models.RequestPasswordReset)
 	if !ok {
 		a.logger.WithField("method", "AccountController.RequestPasswordReset").Error(helpers.ErrorRetrievingRequestPasswordReset())
 
@@ -101,22 +102,22 @@ func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.
 		return
 	}
 
-	email, err := a.service.RequestPasswordReset(resetPassword.Username)
+	email, err := a.service.RequestPasswordReset(resetRequest.Username)
 	if err != nil {
 		if errors.Is(err, helpers.ErrorAccountNotFound()) {
 			a.logger.WithFields(logrus.Fields{
 				"method":   "AccountController.RequestPasswordReset",
-				"username": resetPassword.Username,
+				"username": resetRequest.Username,
 			}).Info(helpers.ErrorAccountNotFound())
 
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithUsernameNotFound(resetPassword.Username)))
+			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithUsernameNotFound(resetRequest.Username)))
 			return
 		}
 
 		a.logger.WithFields(logrus.Fields{
 			"method":   "AccountController.RequestPasswordReset",
-			"username": resetPassword.Username,
+			"username": resetRequest.Username,
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -126,5 +127,23 @@ func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageResetPasswordEmailSent(email)))
+	return
+}
+
+func (a *accountController) PasswordReset(w http.ResponseWriter, r *http.Request) {
+	reset, ok := r.Context().Value(middleware.ContextPasswordResetKey).(models.PasswordReset)
+	if !ok {
+		a.logger.WithField("method", "AccountController.PasswordReset").Error(helpers.ErrorRetrievingPasswordReset())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
+		return
+	}
+
+	// TODO: Redirect to password reset form
+	fmt.Printf("%+v", reset)
+
+	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
+	http.Redirect(w, r, login, http.StatusSeeOther)
 	return
 }

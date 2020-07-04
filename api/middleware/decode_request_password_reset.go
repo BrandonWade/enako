@@ -9,12 +9,12 @@ import (
 	"github.com/BrandonWade/enako/api/models"
 )
 
-// DecodeRequestPasswordReset decodes a reset password request and stores it in the request context.
+// DecodeRequestPasswordReset decodes a requested password reset from a request and stores it in the request context.
 func (m *MiddlewareStack) DecodeRequestPasswordReset() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			var requestPasswordReset models.RequestPasswordReset
-			err := json.NewDecoder(r.Body).Decode(&requestPasswordReset)
+			var resetRequest models.RequestPasswordReset
+			err := json.NewDecoder(r.Body).Decode(&resetRequest)
 			if err != nil {
 				m.logger.WithField("method", "middleware.DecodeRequestPasswordReset").Info(err.Error())
 
@@ -23,7 +23,7 @@ func (m *MiddlewareStack) DecodeRequestPasswordReset() Middleware {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), ContextRequestPasswordResetKey, requestPasswordReset)
+			ctx := context.WithValue(r.Context(), ContextRequestPasswordResetKey, resetRequest)
 
 			f(w, r.WithContext(ctx))
 		}

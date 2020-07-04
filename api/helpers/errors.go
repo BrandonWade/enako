@@ -37,6 +37,8 @@ var (
 	errRequestingPasswordReset            = errors.New("error requesting password reset")
 	errAccountNotFound                    = errors.New("error account not found")
 	errObfuscatingEmail                   = errors.New("error obfuscating email")
+	errRetrievingPasswordReset            = errors.New("error retrieving password reset from context")
+	errInvalidPasswordResetPayload        = errors.New("invalid password reset payload")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -189,7 +191,7 @@ func ErrorActivatingAccount() error {
 	return errActivatingAccount
 }
 
-// ErrorInvalidRequestPasswordResetPayload returned when an error occurs when a submitted request password reset password request is malformed.
+// ErrorInvalidRequestPasswordResetPayload returned when an error occurs when a submitted request password reset request is malformed.
 func ErrorInvalidRequestPasswordResetPayload() error {
 	return errInvalidRequestPasswordResetPayload
 }
@@ -212,4 +214,14 @@ func ErrorAccountNotFound() error {
 // ErrorObfuscatingEmail returned when an error occurs when attempting to obfuscate an email.
 func ErrorObfuscatingEmail() error {
 	return errObfuscatingEmail
+}
+
+// ErrorInvalidPasswordResetPayload returned when an error occurs when a submitted password reset is malformed.
+func ErrorInvalidPasswordResetPayload() error {
+	return errInvalidPasswordResetPayload
+}
+
+// ErrorRetrievingPasswordReset returned when an error occurs when attempting to retrieve the password reset model from the request.
+func ErrorRetrievingPasswordReset() error {
+	return errRetrievingPasswordReset
 }

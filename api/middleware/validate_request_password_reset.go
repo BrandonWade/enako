@@ -9,7 +9,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// ValidateRequestPasswordReset checks whether a decoded ResetPasswordRequest payload in a request is valid.
+// ValidateRequestPasswordReset checks whether a decoded RequestPasswordReset payload in a request is valid.
 func (m *MiddlewareStack) ValidateRequestPasswordReset() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
