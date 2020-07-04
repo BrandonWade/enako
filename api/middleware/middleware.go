@@ -22,8 +22,8 @@ const (
 	// ContextRequestPasswordResetKey a key used to store & retrieve a request password reset model from the request context.
 	ContextRequestPasswordResetKey
 
-	// ContextChangePasswordKey a key used to store & retrieve a change password model from the request context.
-	ContextChangePasswordKey
+	// ContextPasswordResetKey a key used to store & retrieve a password reset model from the request context.
+	ContextPasswordResetKey
 )
 
 // Middleware is a type alias for working with middleware.

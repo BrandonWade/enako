@@ -21,6 +21,19 @@ type FakeTemplateService struct {
 		result1 string
 		result2 error
 	}
+	GeneratePasswordResetEmailStub        func(string) (string, error)
+	generatePasswordResetEmailMutex       sync.RWMutex
+	generatePasswordResetEmailArgsForCall []struct {
+		arg1 string
+	}
+	generatePasswordResetEmailReturns struct {
+		result1 string
+		result2 error
+	}
+	generatePasswordResetEmailReturnsOnCall map[int]struct {
+		result1 string
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -88,11 +101,76 @@ func (fake *FakeTemplateService) GenerateAccountActivationEmailReturnsOnCall(i i
 	}{result1, result2}
 }
 
+func (fake *FakeTemplateService) GeneratePasswordResetEmail(arg1 string) (string, error) {
+	fake.generatePasswordResetEmailMutex.Lock()
+	ret, specificReturn := fake.generatePasswordResetEmailReturnsOnCall[len(fake.generatePasswordResetEmailArgsForCall)]
+	fake.generatePasswordResetEmailArgsForCall = append(fake.generatePasswordResetEmailArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("GeneratePasswordResetEmail", []interface{}{arg1})
+	fake.generatePasswordResetEmailMutex.Unlock()
+	if fake.GeneratePasswordResetEmailStub != nil {
+		return fake.GeneratePasswordResetEmailStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.generatePasswordResetEmailReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeTemplateService) GeneratePasswordResetEmailCallCount() int {
+	fake.generatePasswordResetEmailMutex.RLock()
+	defer fake.generatePasswordResetEmailMutex.RUnlock()
+	return len(fake.generatePasswordResetEmailArgsForCall)
+}
+
+func (fake *FakeTemplateService) GeneratePasswordResetEmailCalls(stub func(string) (string, error)) {
+	fake.generatePasswordResetEmailMutex.Lock()
+	defer fake.generatePasswordResetEmailMutex.Unlock()
+	fake.GeneratePasswordResetEmailStub = stub
+}
+
+func (fake *FakeTemplateService) GeneratePasswordResetEmailArgsForCall(i int) string {
+	fake.generatePasswordResetEmailMutex.RLock()
+	defer fake.generatePasswordResetEmailMutex.RUnlock()
+	argsForCall := fake.generatePasswordResetEmailArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeTemplateService) GeneratePasswordResetEmailReturns(result1 string, result2 error) {
+	fake.generatePasswordResetEmailMutex.Lock()
+	defer fake.generatePasswordResetEmailMutex.Unlock()
+	fake.GeneratePasswordResetEmailStub = nil
+	fake.generatePasswordResetEmailReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeTemplateService) GeneratePasswordResetEmailReturnsOnCall(i int, result1 string, result2 error) {
+	fake.generatePasswordResetEmailMutex.Lock()
+	defer fake.generatePasswordResetEmailMutex.Unlock()
+	fake.GeneratePasswordResetEmailStub = nil
+	if fake.generatePasswordResetEmailReturnsOnCall == nil {
+		fake.generatePasswordResetEmailReturnsOnCall = make(map[int]struct {
+			result1 string
+			result2 error
+		})
+	}
+	fake.generatePasswordResetEmailReturnsOnCall[i] = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeTemplateService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.generateAccountActivationEmailMutex.RLock()
 	defer fake.generateAccountActivationEmailMutex.RUnlock()
+	fake.generatePasswordResetEmailMutex.RLock()
+	defer fake.generatePasswordResetEmailMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

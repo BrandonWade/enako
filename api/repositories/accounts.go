@@ -16,6 +16,7 @@ type AccountRepository interface {
 	CreateActivationToken(accountID int64, activationToken string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 	GetAccountByUsername(username string) (*models.Account, error)
+	CreatePasswordResetToken(accountID int64, resetToken string) (int64, error)
 }
 
 type accountRepository struct {
@@ -165,4 +166,30 @@ func (a *accountRepository) GetAccountByUsername(username string) (*models.Accou
 	}
 
 	return &account, nil
+}
+
+// CreatePasswordResetToken creates an activation token for the given account ID.
+func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken string) (int64, error) {
+	result, err := a.DB.Exec(`INSERT
+		INTO password_reset_tokens(
+			account_id,
+			reset_token
+		) VALUES (
+			?,
+			?
+		);
+	`,
+		accountID,
+		resetToken,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	ID, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return ID, nil
 }

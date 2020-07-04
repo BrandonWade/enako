@@ -5,9 +5,8 @@ type RequestPasswordReset struct {
 	Username string `json:"username" validate:"uname"`
 }
 
-// ChangePassword a model for ChangePassword requests.
-type ChangePassword struct {
-	Token           int64  `json:"token,omitempty"`
+// PasswordReset a model for PasswordReset requests.
+type PasswordReset struct {
 	Password        string `json:"password,omitempty" validate:"pword"`
 	ConfirmPassword string `json:"confirm_password,omitempty" validate:"pword"`
 }

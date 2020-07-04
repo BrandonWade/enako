@@ -3,7 +3,6 @@ package services
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/models"
@@ -16,6 +15,9 @@ import (
 const (
 	// ActivationTokenLength the length of an account activation token.
 	ActivationTokenLength = 64
+
+	// PasswordResetTokenLength the length of a password reset token.
+	PasswordResetTokenLength = 64
 )
 
 // AccountService an interface for working with accounts and sessions.
@@ -27,6 +29,7 @@ type AccountService interface {
 	VerifyAccount(username, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 	GetAccountByUsername(username string) (*models.Account, error)
+	CreatePasswordResetToken(accountID int64, token string) (int64, error)
 	RequestPasswordReset(username string) (string, error)
 }
 
@@ -165,6 +168,21 @@ func (a *accountService) GetAccountByUsername(username string) (*models.Account,
 	return a.repo.GetAccountByUsername(username)
 }
 
+// CreatePasswordResetToken registers a password reset token for the account with the given id.
+func (a *accountService) CreatePasswordResetToken(accountID int64, token string) (int64, error) {
+	id, err := a.repo.CreatePasswordResetToken(accountID, token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.CreatePasswordResetToken",
+			"accountID": accountID,
+			"token":     token,
+		}).Error(err.Error())
+		return 0, err
+	}
+
+	return id, nil
+}
+
 // RequestPasswordReset requests a password reset for the account with the given username.
 func (a *accountService) RequestPasswordReset(username string) (string, error) {
 	account, err := a.GetAccountByUsername(username)
@@ -186,8 +204,27 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	// TODO: Send email
-	fmt.Printf("%+v", *account)
+	token := uniuri.NewLen(PasswordResetTokenLength)
+	_, err = a.CreatePasswordResetToken(account.ID, token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.RequestPasswordReset",
+			"accountID": account.ID,
+			"token":     token,
+		}).Error(err.Error())
+		return "", helpers.ErrorRequestingPasswordReset()
+	}
+
+	err = a.emailService.SendAccountActivationEmail(account.Email, token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":   "AccountService.RequestPasswordReset",
+			"username": username,
+			"email":    account.Email,
+			"token":    token,
+		}).Error(err.Error())
+		return "", helpers.ErrorRequestingPasswordReset()
+	}
 
 	email, err := a.obfuscator.Obfuscate(account.Email)
 	if err != nil {

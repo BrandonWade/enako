@@ -51,6 +51,20 @@ type FakeAccountService struct {
 		result1 int64
 		result2 error
 	}
+	CreatePasswordResetTokenStub        func(int64, string) (int64, error)
+	createPasswordResetTokenMutex       sync.RWMutex
+	createPasswordResetTokenArgsForCall []struct {
+		arg1 int64
+		arg2 string
+	}
+	createPasswordResetTokenReturns struct {
+		result1 int64
+		result2 error
+	}
+	createPasswordResetTokenReturnsOnCall map[int]struct {
+		result1 int64
+		result2 error
+	}
 	GetAccountByUsernameStub        func(string) (*models.Account, error)
 	getAccountByUsernameMutex       sync.RWMutex
 	getAccountByUsernameArgsForCall []struct {
@@ -297,6 +311,70 @@ func (fake *FakeAccountService) CreateActivationTokenReturnsOnCall(i int, result
 		})
 	}
 	fake.createActivationTokenReturnsOnCall[i] = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountService) CreatePasswordResetToken(arg1 int64, arg2 string) (int64, error) {
+	fake.createPasswordResetTokenMutex.Lock()
+	ret, specificReturn := fake.createPasswordResetTokenReturnsOnCall[len(fake.createPasswordResetTokenArgsForCall)]
+	fake.createPasswordResetTokenArgsForCall = append(fake.createPasswordResetTokenArgsForCall, struct {
+		arg1 int64
+		arg2 string
+	}{arg1, arg2})
+	fake.recordInvocation("CreatePasswordResetToken", []interface{}{arg1, arg2})
+	fake.createPasswordResetTokenMutex.Unlock()
+	if fake.CreatePasswordResetTokenStub != nil {
+		return fake.CreatePasswordResetTokenStub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.createPasswordResetTokenReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAccountService) CreatePasswordResetTokenCallCount() int {
+	fake.createPasswordResetTokenMutex.RLock()
+	defer fake.createPasswordResetTokenMutex.RUnlock()
+	return len(fake.createPasswordResetTokenArgsForCall)
+}
+
+func (fake *FakeAccountService) CreatePasswordResetTokenCalls(stub func(int64, string) (int64, error)) {
+	fake.createPasswordResetTokenMutex.Lock()
+	defer fake.createPasswordResetTokenMutex.Unlock()
+	fake.CreatePasswordResetTokenStub = stub
+}
+
+func (fake *FakeAccountService) CreatePasswordResetTokenArgsForCall(i int) (int64, string) {
+	fake.createPasswordResetTokenMutex.RLock()
+	defer fake.createPasswordResetTokenMutex.RUnlock()
+	argsForCall := fake.createPasswordResetTokenArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeAccountService) CreatePasswordResetTokenReturns(result1 int64, result2 error) {
+	fake.createPasswordResetTokenMutex.Lock()
+	defer fake.createPasswordResetTokenMutex.Unlock()
+	fake.CreatePasswordResetTokenStub = nil
+	fake.createPasswordResetTokenReturns = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountService) CreatePasswordResetTokenReturnsOnCall(i int, result1 int64, result2 error) {
+	fake.createPasswordResetTokenMutex.Lock()
+	defer fake.createPasswordResetTokenMutex.Unlock()
+	fake.CreatePasswordResetTokenStub = nil
+	if fake.createPasswordResetTokenReturnsOnCall == nil {
+		fake.createPasswordResetTokenReturnsOnCall = make(map[int]struct {
+			result1 int64
+			result2 error
+		})
+	}
+	fake.createPasswordResetTokenReturnsOnCall[i] = struct {
 		result1 int64
 		result2 error
 	}{result1, result2}
@@ -566,6 +644,8 @@ func (fake *FakeAccountService) Invocations() map[string][][]interface{} {
 	defer fake.createAccountMutex.RUnlock()
 	fake.createActivationTokenMutex.RLock()
 	defer fake.createActivationTokenMutex.RUnlock()
+	fake.createPasswordResetTokenMutex.RLock()
+	defer fake.createPasswordResetTokenMutex.RUnlock()
 	fake.getAccountByUsernameMutex.RLock()
 	defer fake.getAccountByUsernameMutex.RUnlock()
 	fake.registerUserMutex.RLock()

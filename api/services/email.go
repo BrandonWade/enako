@@ -14,6 +14,7 @@ import (
 //go:generate counterfeiter -o fakes/fake_email_service.go . EmailService
 type EmailService interface {
 	SendAccountActivationEmail(token, email string) error
+	SendPasswordResetEmail(email, token string) error
 }
 
 type emailService struct {
@@ -47,7 +48,7 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 
 	message := mailjet.InfoMessagesV31{
 		From: &mailjet.RecipientV31{
-			Email: fmt.Sprintf("register@%s", os.Getenv("ENAKO_DOMAIN")),
+			Email: fmt.Sprintf("accounts@%s", os.Getenv("ENAKO_DOMAIN")),
 			Name:  "Enako",
 		},
 		To: &mailjet.RecipientsV31{
@@ -64,6 +65,48 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method": "EmailService.SendAccountActivationEmail",
+			"email":  email,
+			"token":  token,
+		}).Error(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// SendPasswordResetEmail sends an email with a password reset link to the provided email.
+func (e *emailService) SendPasswordResetEmail(email, token string) error {
+	link := fmt.Sprintf("%s/api/v1/accounts/password/reset?t=%s", os.Getenv("API_HOST"), token)
+
+	template, err := e.templateService.GeneratePasswordResetEmail(link)
+	if err != nil {
+		e.logger.WithFields(logrus.Fields{
+			"method": "EmailService.SendPasswordResetEmail",
+			"email":  email,
+			"token":  token,
+		}).Error(err.Error())
+		return err
+	}
+
+	message := mailjet.InfoMessagesV31{
+		From: &mailjet.RecipientV31{
+			Email: fmt.Sprintf("accounts@%s", os.Getenv("ENAKO_DOMAIN")),
+			Name:  "Enako",
+		},
+		To: &mailjet.RecipientsV31{
+			mailjet.RecipientV31{
+				Email: email,
+			},
+		},
+		Subject:  "Password Reset",
+		HTMLPart: template,
+		CustomID: "EnakoPasswordResetEmail",
+	}
+
+	err = e.emailClient.Send(message)
+	if err != nil {
+		e.logger.WithFields(logrus.Fields{
+			"method": "EmailService.SendPasswordResetEmail",
 			"email":  email,
 			"token":  token,
 		}).Error(err.Error())

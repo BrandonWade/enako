@@ -13,6 +13,7 @@ import (
 //go:generate counterfeiter -o fakes/fake_template_service.go . TemplateService
 type TemplateService interface {
 	GenerateAccountActivationEmail(link string) (string, error)
+	GeneratePasswordResetEmail(link string) (string, error)
 }
 
 type templateService struct {
@@ -59,6 +60,48 @@ func (t *templateService) GenerateAccountActivationEmail(link string) (string, e
 	if err := tmpl.Execute(&tpl, data); err != nil {
 		t.logger.WithFields(logrus.Fields{
 			"method": "TemplateService.GenerateAccountActivationEmail",
+			"link":   link,
+			"path":   path,
+		}).Error(err.Error())
+		return "", err
+	}
+
+	return tpl.String(), nil
+}
+
+// GeneratePasswordResetEmail generates a password reset email with the provided link.
+func (t *templateService) GeneratePasswordResetEmail(link string) (string, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		t.logger.WithFields(logrus.Fields{
+			"method": "TemplateService.GeneratePasswordResetEmail",
+			"link":   link,
+		}).Error(err.Error())
+		return "", err
+	}
+
+	path := filepath.Join(wd, "./templates/reset_password.tmpl")
+
+	tmpl, err := template.ParseFiles(path)
+	if err != nil {
+		t.logger.WithFields(logrus.Fields{
+			"method": "TemplateService.GeneratePasswordResetEmail",
+			"link":   link,
+			"path":   path,
+		}).Error(err.Error())
+		return "", err
+	}
+
+	data := struct {
+		PasswordResetLink string
+	}{
+		link,
+	}
+
+	var tpl bytes.Buffer
+	if err := tmpl.Execute(&tpl, data); err != nil {
+		t.logger.WithFields(logrus.Fields{
+			"method": "TemplateService.GeneratePasswordResetEmail",
 			"link":   link,
 			"path":   path,
 		}).Error(err.Error())
