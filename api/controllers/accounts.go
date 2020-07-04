@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// AccountController an interface for wotking with accounts and sessions.
+// AccountController an interface for working with accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_account_controller.go . AccountController
 type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)

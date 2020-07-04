@@ -65,6 +65,7 @@ func main() {
 	csrfMiddleware := csrf.Protect([]byte(csrfSecret))
 	hasher := helpers.NewPasswordHasher(logger)
 	obfuscator := helpers.NewEmailObfuscator(logger)
+	generator := helpers.NewTokenGenerator()
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
 	stack := middleware.NewMiddlewareStack(logger, store)
@@ -78,7 +79,7 @@ func main() {
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
-	accountService := services.NewAccountService(logger, hasher, obfuscator, emailService, accountRepository)
+	accountService := services.NewAccountService(logger, hasher, obfuscator, generator, emailService, accountRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 

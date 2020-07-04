@@ -19,6 +19,7 @@ var _ = Describe("AccountService", func() {
 		logger         *logrus.Logger
 		hasher         *helpers.FakePasswordHasher
 		obfuscator     *helpers.FakeEmailObfuscator
+		generator      *helpers.FakeTokenGenerator
 		emailService   *servicefakes.FakeEmailService
 		accountRepo    *fakes.FakeAccountRepository
 		accountService services.AccountService
@@ -30,9 +31,10 @@ var _ = Describe("AccountService", func() {
 
 		hasher = &helpers.FakePasswordHasher{}
 		obfuscator = &helpers.FakeEmailObfuscator{}
+		generator = &helpers.FakeTokenGenerator{}
 		emailService = &servicefakes.FakeEmailService{}
 		accountRepo = &fakes.FakeAccountRepository{}
-		accountService = services.NewAccountService(logger, hasher, obfuscator, emailService, accountRepo)
+		accountService = services.NewAccountService(logger, hasher, obfuscator, generator, emailService, accountRepo)
 	})
 
 	Describe("CreateAccount", func() {

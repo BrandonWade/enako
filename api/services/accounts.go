@@ -5,9 +5,7 @@ import (
 	"errors"
 
 	"github.com/BrandonWade/enako/api/helpers"
-	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories"
-	"github.com/dchest/uniuri"
 
 	"github.com/sirupsen/logrus"
 )
@@ -25,11 +23,8 @@ const (
 type AccountService interface {
 	CreateAccount(username, email, password string) (int64, error)
 	RegisterUser(username, email, password string) (int64, error)
-	CreateActivationToken(accountID int64, token string) (int64, error)
 	VerifyAccount(username, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
-	GetAccountByUsername(username string) (*models.Account, error)
-	CreatePasswordResetToken(accountID int64, token string) (int64, error)
 	RequestPasswordReset(username string) (string, error)
 }
 
@@ -37,16 +32,18 @@ type accountService struct {
 	logger       *logrus.Logger
 	hasher       helpers.PasswordHasher
 	obfuscator   helpers.EmailObfuscator
+	generator    helpers.TokenGenerator
 	emailService EmailService
 	repo         repositories.AccountRepository
 }
 
 // NewAccountService returns a new instance of an AccountService.
-func NewAccountService(logger *logrus.Logger, hasher helpers.PasswordHasher, obfuscator helpers.EmailObfuscator, emailService EmailService, repo repositories.AccountRepository) AccountService {
+func NewAccountService(logger *logrus.Logger, hasher helpers.PasswordHasher, obfuscator helpers.EmailObfuscator, generator helpers.TokenGenerator, emailService EmailService, repo repositories.AccountRepository) AccountService {
 	return &accountService{
 		logger,
 		hasher,
 		obfuscator,
+		generator,
 		emailService,
 		repo,
 	}
@@ -75,21 +72,6 @@ func (a *accountService) CreateAccount(username, email, password string) (int64,
 	return id, nil
 }
 
-// CreateActivationToken registers an activation token for the account with the given id.
-func (a *accountService) CreateActivationToken(accountID int64, token string) (int64, error) {
-	id, err := a.repo.CreateActivationToken(accountID, token)
-	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method":    "AccountService.CreateActivationToken",
-			"accountID": accountID,
-			"token":     token,
-		}).Error(err.Error())
-		return 0, err
-	}
-
-	return id, nil
-}
-
 // RegisterUser creates an account, generates an activation token, and sends an activation email.
 func (a *accountService) RegisterUser(username, email, password string) (int64, error) {
 	accountID, err := a.CreateAccount(username, email, password)
@@ -102,8 +84,8 @@ func (a *accountService) RegisterUser(username, email, password string) (int64, 
 		return 0, err
 	}
 
-	token := uniuri.NewLen(ActivationTokenLength)
-	_, err = a.CreateActivationToken(accountID, token)
+	token := a.generator.CreateToken(ActivationTokenLength)
+	_, err = a.repo.CreateActivationToken(accountID, token)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":    "AccountService.RegisterUser",
@@ -163,29 +145,9 @@ func (a *accountService) ActivateAccount(token string) (bool, error) {
 	return a.repo.ActivateAccount(token)
 }
 
-// GetAccountByUsername returns the account with the given username.
-func (a *accountService) GetAccountByUsername(username string) (*models.Account, error) {
-	return a.repo.GetAccountByUsername(username)
-}
-
-// CreatePasswordResetToken registers a password reset token for the account with the given id.
-func (a *accountService) CreatePasswordResetToken(accountID int64, token string) (int64, error) {
-	id, err := a.repo.CreatePasswordResetToken(accountID, token)
-	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method":    "AccountService.CreatePasswordResetToken",
-			"accountID": accountID,
-			"token":     token,
-		}).Error(err.Error())
-		return 0, err
-	}
-
-	return id, nil
-}
-
 // RequestPasswordReset requests a password reset for the account with the given username.
 func (a *accountService) RequestPasswordReset(username string) (string, error) {
-	account, err := a.GetAccountByUsername(username)
+	account, err := a.repo.GetAccountByUsername(username)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			a.logger.WithFields(logrus.Fields{
@@ -204,8 +166,8 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	token := uniuri.NewLen(PasswordResetTokenLength)
-	_, err = a.CreatePasswordResetToken(account.ID, token)
+	token := a.generator.CreateToken(PasswordResetTokenLength)
+	_, err = a.repo.CreatePasswordResetToken(account.ID, token)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":    "AccountService.RequestPasswordReset",
