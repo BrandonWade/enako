@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/BrandonWade/enako/api/models"
+
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/repositories"
 
@@ -26,6 +28,7 @@ type AccountService interface {
 	VerifyAccount(username, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 	RequestPasswordReset(username string) (string, error)
+	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
 }
 
 type accountService struct {
@@ -200,4 +203,9 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 	}
 
 	return email, nil
+}
+
+// GetPasswordResetToken returns the password reset token with the given token.
+func (a *accountService) GetPasswordResetToken(token string) (*models.PasswordResetToken, error) {
+	return a.repo.GetPasswordResetToken(token)
 }

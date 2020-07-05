@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/middleware"
@@ -20,6 +21,7 @@ type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	RequestPasswordReset(w http.ResponseWriter, r *http.Request)
+	SetPasswordResetToken(w http.ResponseWriter, r *http.Request)
 	PasswordReset(w http.ResponseWriter, r *http.Request)
 }
 
@@ -130,7 +132,49 @@ func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.
 	return
 }
 
+func (a *accountController) SetPasswordResetToken(w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+
+	t := params.Get("t")
+	if t == "" {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountController.RequestPasswordReset",
+			"token":  t,
+		}).Error(helpers.ErrorRetrievingPasswordResetToken())
+
+		login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
+		http.Redirect(w, r, login, http.StatusSeeOther)
+		return
+	}
+
+	token, err := a.service.GetPasswordResetToken(t)
+	if err != nil {
+		// TODO: Handle
+	}
+
+	// TODO: This logic should not be in the controller
+	expiresAt, err := time.Parse("2006-01-02 15:04:05", token.ExpiresAt)
+	if err != nil {
+		// TODO: Handle
+	}
+
+	cookie := http.Cookie{
+		Name:     "_password_reset",
+		Value:    token.ResetToken,
+		Expires:  expiresAt,
+		HttpOnly: true,
+		Secure:   true,
+	}
+
+	http.SetCookie(w, &cookie)
+	reset := fmt.Sprintf("http://%s/password/reset", os.Getenv("API_HOST"))
+	http.Redirect(w, r, reset, http.StatusSeeOther)
+	return
+}
+
 func (a *accountController) PasswordReset(w http.ResponseWriter, r *http.Request) {
+	// TODO: Extract token from cookies
+
 	reset, ok := r.Context().Value(middleware.ContextPasswordResetKey).(models.PasswordReset)
 	if !ok {
 		a.logger.WithField("method", "AccountController.PasswordReset").Error(helpers.ErrorRetrievingPasswordReset())
@@ -140,7 +184,7 @@ func (a *accountController) PasswordReset(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// TODO: Redirect to password reset form
+	// TODO: Update password and disable reset token
 	fmt.Printf("%+v", reset)
 
 	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))

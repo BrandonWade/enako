@@ -17,6 +17,7 @@ type AccountRepository interface {
 	ActivateAccount(token string) (bool, error)
 	GetAccountByUsername(username string) (*models.Account, error)
 	CreatePasswordResetToken(accountID int64, resetToken string) (int64, error)
+	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
 }
 
 type accountRepository struct {
@@ -192,4 +193,22 @@ func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken
 	}
 
 	return ID, nil
+}
+
+// GetPasswordResetToken returns the password reset token with the given token.
+func (a *accountRepository) GetPasswordResetToken(token string) (*models.PasswordResetToken, error) {
+	var resetToken models.PasswordResetToken
+
+	err := a.DB.Get(&resetToken, `SELECT
+		*
+		FROM password_reset_tokens p
+		WHERE p.reset_token = ?;
+	`,
+		token,
+	)
+	if err != nil {
+		return &models.PasswordResetToken{}, err
+	}
+
+	return &resetToken, nil
 }

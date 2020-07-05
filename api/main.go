@@ -116,6 +116,7 @@ func main() {
 	accountAPI.HandleFunc("", registerUserHandler).Methods("POST")
 	accountAPI.HandleFunc("/activate", accountController.ActivateAccount).Methods("GET")
 	accountAPI.HandleFunc("/password", requestPasswordResetHander).Methods("POST")
+	accountAPI.HandleFunc("/password/reset", accountController.SetPasswordResetToken).Methods("GET")
 	accountAPI.HandleFunc("/password/reset", passwordResetHander).Methods("POST")
 
 	// Categories

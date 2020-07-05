@@ -39,6 +39,7 @@ var (
 	errObfuscatingEmail                   = errors.New("error obfuscating email")
 	errRetrievingPasswordReset            = errors.New("error retrieving password reset from context")
 	errInvalidPasswordResetPayload        = errors.New("invalid password reset payload")
+	errRetrievingPasswordResetToken       = errors.New("error retrieving password reset token")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -224,4 +225,9 @@ func ErrorInvalidPasswordResetPayload() error {
 // ErrorRetrievingPasswordReset returned when an error occurs when attempting to retrieve the password reset model from the request.
 func ErrorRetrievingPasswordReset() error {
 	return errRetrievingPasswordReset
+}
+
+// ErrorRetrievingPasswordResetToken returned when an error occurs when trying to get a password reset token from the query string.
+func ErrorRetrievingPasswordResetToken() error {
+	return errRetrievingPasswordResetToken
 }

@@ -68,8 +68,9 @@ const App = () => {
                         <BrowserRouter>
                             <Switch>
                                 <Route path='/login' render={() => <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />} />
-                                <Route path='/password' component={ForgotPassword} />
-                                <Route path='/register' component={Register} />
+                                <Route path='/password' exact component={ForgotPassword} />
+                                <Route path='/password/reset' render={() => <Register passwordReset={true} />} />
+                                <Route path='/register' component={() => <Register passwordReset={false} />} />
                                 <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
                                 <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} setSelectedDate={setSelectedDate} />
                                 <AuthenticatedRoute path='/expenses/:id' component={Editor} setExpenses={setExpenses} setSelectedDate={setSelectedDate} />
