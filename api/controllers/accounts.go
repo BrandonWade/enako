@@ -6,13 +6,21 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
+)
+
+const (
+	passwordResetCookieName = "_password_reset"
+)
+
+var (
+	loginRoute         = fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
+	passwordResetRoute = fmt.Sprintf("http://%s/password/reset", os.Getenv("API_HOST"))
 )
 
 // AccountController an interface for working with accounts and sessions.
@@ -22,7 +30,7 @@ type AccountController interface {
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	RequestPasswordReset(w http.ResponseWriter, r *http.Request)
 	SetPasswordResetToken(w http.ResponseWriter, r *http.Request)
-	PasswordReset(w http.ResponseWriter, r *http.Request)
+	ResetPassword(w http.ResponseWriter, r *http.Request)
 }
 
 type accountController struct {
@@ -78,19 +86,16 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	success, err := a.service.ActivateAccount(token)
-	if !success {
-		if err != nil {
-			a.logger.WithField("method", "AccountController.ActivateAccount").Error(err.Error())
-		}
+	_, err := a.service.ActivateAccount(token)
+	if err != nil {
+		a.logger.WithField("method", "AccountController.ActivateAccount").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
 		return
 	}
 
-	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
-	http.Redirect(w, r, login, http.StatusSeeOther)
+	http.Redirect(w, r, loginRoute, http.StatusSeeOther)
 	return
 }
 
@@ -136,58 +141,78 @@ func (a *accountController) SetPasswordResetToken(w http.ResponseWriter, r *http
 	params := r.URL.Query()
 
 	t := params.Get("t")
-	if t == "" {
+	if t == "" || len(t) != services.PasswordResetTokenLength {
 		a.logger.WithFields(logrus.Fields{
-			"method": "AccountController.RequestPasswordReset",
+			"method": "AccountController.SetPasswordResetToken",
 			"token":  t,
-		}).Error(helpers.ErrorRetrievingPasswordResetToken())
+		}).Error(helpers.ErrorRetrievingResetToken())
 
-		login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
-		http.Redirect(w, r, login, http.StatusSeeOther)
+		http.Redirect(w, r, loginRoute, http.StatusSeeOther)
 		return
 	}
 
 	token, err := a.service.GetPasswordResetToken(t)
 	if err != nil {
-		// TODO: Handle
-	}
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountController.SetPasswordResetToken",
+			"token":  t,
+		}).Error(helpers.ErrorRetrievingResetToken())
 
-	// TODO: This logic should not be in the controller
-	expiresAt, err := time.Parse("2006-01-02 15:04:05", token.ExpiresAt)
-	if err != nil {
-		// TODO: Handle
+		http.Redirect(w, r, loginRoute, http.StatusSeeOther)
+		return
 	}
 
 	cookie := http.Cookie{
-		Name:     "_password_reset",
+		Name:     passwordResetCookieName,
 		Value:    token.ResetToken,
-		Expires:  expiresAt,
+		Path:     "/",
+		MaxAge:   86400,
 		HttpOnly: true,
 		Secure:   true,
 	}
 
 	http.SetCookie(w, &cookie)
-	reset := fmt.Sprintf("http://%s/password/reset", os.Getenv("API_HOST"))
-	http.Redirect(w, r, reset, http.StatusSeeOther)
+	http.Redirect(w, r, passwordResetRoute, http.StatusSeeOther)
 	return
 }
 
-func (a *accountController) PasswordReset(w http.ResponseWriter, r *http.Request) {
-	// TODO: Extract token from cookies
+func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie(passwordResetCookieName)
+	if err != nil {
+		if errors.Is(err, http.ErrNoCookie) {
+			a.logger.WithField("method", "AccountController.ResetPassword").Info(helpers.ErrorPasswordResetCookieNotFound())
 
-	reset, ok := r.Context().Value(middleware.ContextPasswordResetKey).(models.PasswordReset)
-	if !ok {
-		a.logger.WithField("method", "AccountController.PasswordReset").Error(helpers.ErrorRetrievingPasswordReset())
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
+			return
+		}
+
+		a.logger.WithField("method", "AccountController.ResetPassword").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
 		return
 	}
 
-	// TODO: Update password and disable reset token
-	fmt.Printf("%+v", reset)
+	reset, ok := r.Context().Value(middleware.ContextPasswordResetKey).(models.PasswordReset)
+	if !ok {
+		a.logger.WithField("method", "AccountController.ResetPassword").Error(helpers.ErrorRetrievingPasswordReset())
 
-	login := fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
-	http.Redirect(w, r, login, http.StatusSeeOther)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
+		return
+	}
+
+	_, err = a.service.ResetPassword(cookie.Value, reset.Password)
+	if err != nil {
+		a.logger.WithField("method", "AccountController.ResetPassword").Error(err.Error())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorResettingPassword()))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessagePasswordUpdated()))
 	return
 }

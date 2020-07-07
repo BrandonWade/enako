@@ -27,6 +27,18 @@ type FakeAccountController struct {
 		arg1 http.ResponseWriter
 		arg2 *http.Request
 	}
+	ResetPasswordStub        func(http.ResponseWriter, *http.Request)
+	resetPasswordMutex       sync.RWMutex
+	resetPasswordArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
+	SetPasswordResetTokenStub        func(http.ResponseWriter, *http.Request)
+	setPasswordResetTokenMutex       sync.RWMutex
+	setPasswordResetTokenArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -127,6 +139,70 @@ func (fake *FakeAccountController) RequestPasswordResetArgsForCall(i int) (http.
 	return argsForCall.arg1, argsForCall.arg2
 }
 
+func (fake *FakeAccountController) ResetPassword(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.resetPasswordMutex.Lock()
+	fake.resetPasswordArgsForCall = append(fake.resetPasswordArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("ResetPassword", []interface{}{arg1, arg2})
+	fake.resetPasswordMutex.Unlock()
+	if fake.ResetPasswordStub != nil {
+		fake.ResetPasswordStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAccountController) ResetPasswordCallCount() int {
+	fake.resetPasswordMutex.RLock()
+	defer fake.resetPasswordMutex.RUnlock()
+	return len(fake.resetPasswordArgsForCall)
+}
+
+func (fake *FakeAccountController) ResetPasswordCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.resetPasswordMutex.Lock()
+	defer fake.resetPasswordMutex.Unlock()
+	fake.ResetPasswordStub = stub
+}
+
+func (fake *FakeAccountController) ResetPasswordArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.resetPasswordMutex.RLock()
+	defer fake.resetPasswordMutex.RUnlock()
+	argsForCall := fake.resetPasswordArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeAccountController) SetPasswordResetToken(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.setPasswordResetTokenMutex.Lock()
+	fake.setPasswordResetTokenArgsForCall = append(fake.setPasswordResetTokenArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("SetPasswordResetToken", []interface{}{arg1, arg2})
+	fake.setPasswordResetTokenMutex.Unlock()
+	if fake.SetPasswordResetTokenStub != nil {
+		fake.SetPasswordResetTokenStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAccountController) SetPasswordResetTokenCallCount() int {
+	fake.setPasswordResetTokenMutex.RLock()
+	defer fake.setPasswordResetTokenMutex.RUnlock()
+	return len(fake.setPasswordResetTokenArgsForCall)
+}
+
+func (fake *FakeAccountController) SetPasswordResetTokenCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.setPasswordResetTokenMutex.Lock()
+	defer fake.setPasswordResetTokenMutex.Unlock()
+	fake.SetPasswordResetTokenStub = stub
+}
+
+func (fake *FakeAccountController) SetPasswordResetTokenArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.setPasswordResetTokenMutex.RLock()
+	defer fake.setPasswordResetTokenMutex.RUnlock()
+	argsForCall := fake.setPasswordResetTokenArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
 func (fake *FakeAccountController) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -136,6 +212,10 @@ func (fake *FakeAccountController) Invocations() map[string][][]interface{} {
 	defer fake.registerUserMutex.RUnlock()
 	fake.requestPasswordResetMutex.RLock()
 	defer fake.requestPasswordResetMutex.RUnlock()
+	fake.resetPasswordMutex.RLock()
+	defer fake.resetPasswordMutex.RUnlock()
+	fake.setPasswordResetTokenMutex.RLock()
+	defer fake.setPasswordResetTokenMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

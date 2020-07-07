@@ -9,5 +9,10 @@ func MessageResetPasswordEmailSent(email string) string {
 
 // MessageAccountWithUsernameNotFound returned when an account with the given username wasn't found in the database.
 func MessageAccountWithUsernameNotFound(username string) string {
-	return fmt.Sprintf("Hmm we couldn't find an account with that username. Please make sure that it's spelled correctly and try again.")
+	return fmt.Sprintf("Hmm we couldn't find an account with that username: %s. Please make sure that it's spelled correctly and try again.", username)
+}
+
+// MessagePasswordUpdated returned when a password reset was successful.
+func MessagePasswordUpdated() string {
+	return fmt.Sprintf("Hey we were able to successfully update your password - please login using your new password.")
 }

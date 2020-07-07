@@ -29,6 +29,7 @@ type AccountService interface {
 	ActivateAccount(token string) (bool, error)
 	RequestPasswordReset(username string) (string, error)
 	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
+	ResetPassword(token, password string) (bool, error)
 }
 
 type accountService struct {
@@ -208,4 +209,18 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 // GetPasswordResetToken returns the password reset token with the given token.
 func (a *accountService) GetPasswordResetToken(token string) (*models.PasswordResetToken, error) {
 	return a.repo.GetPasswordResetToken(token)
+}
+
+// ResetPassword sets the password for the account associated with the reset token.
+func (a *accountService) ResetPassword(token, password string) (bool, error) {
+	hash, err := a.hasher.Generate(password)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":   "AccountService.ResetPassword",
+			"password": password,
+		}).Error(err.Error())
+		return false, err
+	}
+
+	return a.repo.ResetPassword(token, string(hash))
 }

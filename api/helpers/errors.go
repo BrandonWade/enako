@@ -39,7 +39,9 @@ var (
 	errObfuscatingEmail                   = errors.New("error obfuscating email")
 	errRetrievingPasswordReset            = errors.New("error retrieving password reset from context")
 	errInvalidPasswordResetPayload        = errors.New("invalid password reset payload")
-	errRetrievingPasswordResetToken       = errors.New("error retrieving password reset token")
+	errRetrievingResetToken               = errors.New("error retrieving reset token")
+	errResettingPassword                  = errors.New("error resetting password")
+	errPasswordResetCookieNotFound        = errors.New("password reset cookie not found")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -227,7 +229,17 @@ func ErrorRetrievingPasswordReset() error {
 	return errRetrievingPasswordReset
 }
 
-// ErrorRetrievingPasswordResetToken returned when an error occurs when trying to get a password reset token from the query string.
-func ErrorRetrievingPasswordResetToken() error {
-	return errRetrievingPasswordResetToken
+// ErrorRetrievingResetToken returned when an error occurs when trying to get a password reset token from the query string.
+func ErrorRetrievingResetToken() error {
+	return errRetrievingResetToken
+}
+
+// ErrorResettingPassword returned when an error occurs when trying to reset a password.
+func ErrorResettingPassword() error {
+	return errResettingPassword
+}
+
+// ErrorPasswordResetCookieNotFound returned when the cookie containing the password reset token isn't found in the request.
+func ErrorPasswordResetCookieNotFound() error {
+	return errPasswordResetCookieNotFound
 }

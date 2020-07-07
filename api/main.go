@@ -91,7 +91,7 @@ func main() {
 	// Set up route middleware
 	registerUserHandler := stack.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 	requestPasswordResetHander := stack.Apply(accountController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
-	passwordResetHander := stack.Apply(accountController.PasswordReset, []middleware.Middleware{stack.ValidatePasswordReset(), stack.DecodePasswordReset()})
+	passwordResetHander := stack.Apply(accountController.ResetPassword, []middleware.Middleware{stack.ValidatePasswordReset(), stack.DecodePasswordReset()})
 
 	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 

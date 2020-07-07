@@ -18,6 +18,7 @@ type AccountRepository interface {
 	GetAccountByUsername(username string) (*models.Account, error)
 	CreatePasswordResetToken(accountID int64, resetToken string) (int64, error)
 	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
+	ResetPassword(token, password string) (bool, error)
 }
 
 type accountRepository struct {
@@ -211,4 +212,38 @@ func (a *accountRepository) GetPasswordResetToken(token string) (*models.Passwor
 	}
 
 	return &resetToken, nil
+}
+
+// ResetPassword sets the password for the account associated with the reset token.
+func (a *accountRepository) ResetPassword(token, password string) (bool, error) {
+	tx, err := a.DB.Begin()
+	_, err = tx.Exec(`UPDATE password_reset_tokens p
+		INNER JOIN accounts a ON a.id = p.account_id
+		SET is_used = 1
+		WHERE reset_token = ?;
+	`,
+		token,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = tx.Exec(`UPDATE accounts a
+		INNER JOIN password_reset_tokens p ON p.account_id = a.id
+		SET password = ?
+		WHERE p.reset_token = ?;
+	`,
+		password,
+		token,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
