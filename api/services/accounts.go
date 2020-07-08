@@ -30,6 +30,7 @@ type AccountService interface {
 	RequestPasswordReset(username string) (string, error)
 	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
 	ResetPassword(token, password string) (bool, error)
+	NotifyOfPasswordReset(token string) error
 }
 
 type accountService struct {
@@ -223,4 +224,18 @@ func (a *accountService) ResetPassword(token, password string) (bool, error) {
 	}
 
 	return a.repo.ResetPassword(token, string(hash))
+}
+
+// NotifyOfPasswordReset notifies the account owner that their password was reset.
+func (a *accountService) NotifyOfPasswordReset(token string) error {
+	account, err := a.repo.GetAccountByPasswordResetToken(token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.NotifyOfPasswordReset",
+			"token":  token,
+		}).Error(err.Error())
+		return err
+	}
+
+	return a.emailService.SendPasswordUpdatedEmail(account.Email)
 }

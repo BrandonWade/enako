@@ -19,6 +19,7 @@ type AccountRepository interface {
 	CreatePasswordResetToken(accountID int64, resetToken string) (int64, error)
 	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
 	ResetPassword(token, password string) (bool, error)
+	GetAccountByPasswordResetToken(token string) (*models.Account, error)
 }
 
 type accountRepository struct {
@@ -71,12 +72,12 @@ func (a *accountRepository) CreateAccount(username, email, password string) (int
 		return 0, err
 	}
 
-	ID, err := result.LastInsertId()
+	id, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return ID, nil
+	return id, nil
 }
 
 // CreateActivationToken creates an activation token for the given account ID.
@@ -97,12 +98,12 @@ func (a *accountRepository) CreateActivationToken(accountID int64, activationTok
 		return 0, err
 	}
 
-	ID, err := result.LastInsertId()
+	id, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return ID, nil
+	return id, nil
 }
 
 // ActivateAccount marks the account with the given token as active and expires the token.
@@ -172,8 +173,7 @@ func (a *accountRepository) GetAccountByUsername(username string) (*models.Accou
 
 // CreatePasswordResetToken creates an activation token for the given account ID.
 func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken string) (int64, error) {
-	// TODO: Disable all other tokens for this account
-
+	tx, err := a.DB.Begin()
 	result, err := a.DB.Exec(`INSERT
 		INTO password_reset_tokens(
 			account_id,
@@ -190,12 +190,31 @@ func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken
 		return 0, err
 	}
 
-	ID, err := result.LastInsertId()
+	id, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return ID, nil
+	_, err = tx.Exec(`UPDATE password_reset_tokens p
+		INNER JOIN accounts a ON a.id = p.account_id
+		SET p.status = 'disabled'
+		WHERE p.account_id = ?
+		AND p.status = 'pending'
+		AND p.id != ?;
+	`,
+		accountID,
+		id,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 // GetPasswordResetToken returns the password reset token with the given token.
@@ -221,8 +240,8 @@ func (a *accountRepository) ResetPassword(token, password string) (bool, error) 
 	tx, err := a.DB.Begin()
 	_, err = tx.Exec(`UPDATE password_reset_tokens p
 		INNER JOIN accounts a ON a.id = p.account_id
-		SET is_used = 1
-		WHERE reset_token = ?;
+		SET p.status = 'pending'
+		WHERE p.reset_token = ?;
 	`,
 		token,
 	)
@@ -232,7 +251,7 @@ func (a *accountRepository) ResetPassword(token, password string) (bool, error) 
 
 	_, err = tx.Exec(`UPDATE accounts a
 		INNER JOIN password_reset_tokens p ON p.account_id = a.id
-		SET password = ?
+		SET a.password = ?
 		WHERE p.reset_token = ?;
 	`,
 		password,
@@ -248,4 +267,22 @@ func (a *accountRepository) ResetPassword(token, password string) (bool, error) 
 	}
 
 	return true, nil
+}
+
+func (a *accountRepository) GetAccountByPasswordResetToken(token string) (*models.Account, error) {
+	var account models.Account
+
+	err := a.DB.Get(&account, `SELECT
+		a.*
+		FROM accounts a
+		INNER JOIN password_reset_tokens p ON p.account_id = a.id
+		WHERE p.reset_token = ?;
+	`,
+		token,
+	)
+	if err != nil {
+		return &models.Account{}, err
+	}
+
+	return &account, nil
 }

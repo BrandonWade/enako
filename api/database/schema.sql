@@ -30,7 +30,7 @@ CREATE TABLE password_reset_tokens (
   id int unsigned NOT NULL AUTO_INCREMENT,
   account_id int unsigned NOT NULL DEFAULT 0,
   reset_token char(64) NOT NULL DEFAULT '',
-  is_used tinyint(1) NOT NULL DEFAULT 0,
+  status enum('pending', 'used', 'disabled') NOT NULL DEFAULT 'pending',
   expires_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

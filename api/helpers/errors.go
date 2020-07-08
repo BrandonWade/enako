@@ -41,7 +41,6 @@ var (
 	errInvalidPasswordResetPayload        = errors.New("invalid password reset payload")
 	errRetrievingResetToken               = errors.New("error retrieving reset token")
 	errResettingPassword                  = errors.New("error resetting password")
-	errPasswordResetCookieNotFound        = errors.New("password reset cookie not found")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -237,9 +236,4 @@ func ErrorRetrievingResetToken() error {
 // ErrorResettingPassword returned when an error occurs when trying to reset a password.
 func ErrorResettingPassword() error {
 	return errResettingPassword
-}
-
-// ErrorPasswordResetCookieNotFound returned when the cookie containing the password reset token isn't found in the request.
-func ErrorPasswordResetCookieNotFound() error {
-	return errPasswordResetCookieNotFound
 }

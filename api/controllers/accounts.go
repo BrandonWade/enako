@@ -162,6 +162,8 @@ func (a *accountController) SetPasswordResetToken(w http.ResponseWriter, r *http
 		return
 	}
 
+	// TODO: Ensure token is pending and not expired
+
 	cookie := http.Cookie{
 		Name:     passwordResetCookieName,
 		Value:    token.ResetToken,
@@ -180,7 +182,7 @@ func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request
 	cookie, err := r.Cookie(passwordResetCookieName)
 	if err != nil {
 		if errors.Is(err, http.ErrNoCookie) {
-			a.logger.WithField("method", "AccountController.ResetPassword").Info(helpers.ErrorPasswordResetCookieNotFound())
+			a.logger.WithField("method", "AccountController.ResetPassword").Info(err.Error())
 
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
@@ -196,7 +198,10 @@ func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request
 
 	reset, ok := r.Context().Value(middleware.ContextPasswordResetKey).(models.PasswordReset)
 	if !ok {
-		a.logger.WithField("method", "AccountController.ResetPassword").Error(helpers.ErrorRetrievingPasswordReset())
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountController.ResetPassword",
+			"token":  cookie.Value,
+		}).Error(helpers.ErrorRetrievingPasswordReset())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
@@ -205,14 +210,27 @@ func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request
 
 	_, err = a.service.ResetPassword(cookie.Value, reset.Password)
 	if err != nil {
-		a.logger.WithField("method", "AccountController.ResetPassword").Error(err.Error())
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountController.ResetPassword",
+			"token":  cookie.Value,
+		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorResettingPassword()))
 		return
 	}
 
-	// TODO: Call SendPasswordUpdatedEmail
+	err = a.service.NotifyOfPasswordReset(cookie.Value)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountController.ResetPassword",
+			"token":  cookie.Value,
+		}).Error(err.Error())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorResettingPassword()))
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessagePasswordUpdated()))

@@ -78,6 +78,19 @@ type FakeAccountRepository struct {
 		result1 *models.Account
 		result2 error
 	}
+	GetAccountByPasswordResetTokenStub        func(string) (*models.Account, error)
+	getAccountByPasswordResetTokenMutex       sync.RWMutex
+	getAccountByPasswordResetTokenArgsForCall []struct {
+		arg1 string
+	}
+	getAccountByPasswordResetTokenReturns struct {
+		result1 *models.Account
+		result2 error
+	}
+	getAccountByPasswordResetTokenReturnsOnCall map[int]struct {
+		result1 *models.Account
+		result2 error
+	}
 	GetAccountByUsernameStub        func(string) (*models.Account, error)
 	getAccountByUsernameMutex       sync.RWMutex
 	getAccountByUsernameArgsForCall []struct {
@@ -441,6 +454,69 @@ func (fake *FakeAccountRepository) GetAccountReturnsOnCall(i int, result1 *model
 	}{result1, result2}
 }
 
+func (fake *FakeAccountRepository) GetAccountByPasswordResetToken(arg1 string) (*models.Account, error) {
+	fake.getAccountByPasswordResetTokenMutex.Lock()
+	ret, specificReturn := fake.getAccountByPasswordResetTokenReturnsOnCall[len(fake.getAccountByPasswordResetTokenArgsForCall)]
+	fake.getAccountByPasswordResetTokenArgsForCall = append(fake.getAccountByPasswordResetTokenArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("GetAccountByPasswordResetToken", []interface{}{arg1})
+	fake.getAccountByPasswordResetTokenMutex.Unlock()
+	if fake.GetAccountByPasswordResetTokenStub != nil {
+		return fake.GetAccountByPasswordResetTokenStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getAccountByPasswordResetTokenReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenCallCount() int {
+	fake.getAccountByPasswordResetTokenMutex.RLock()
+	defer fake.getAccountByPasswordResetTokenMutex.RUnlock()
+	return len(fake.getAccountByPasswordResetTokenArgsForCall)
+}
+
+func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenCalls(stub func(string) (*models.Account, error)) {
+	fake.getAccountByPasswordResetTokenMutex.Lock()
+	defer fake.getAccountByPasswordResetTokenMutex.Unlock()
+	fake.GetAccountByPasswordResetTokenStub = stub
+}
+
+func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenArgsForCall(i int) string {
+	fake.getAccountByPasswordResetTokenMutex.RLock()
+	defer fake.getAccountByPasswordResetTokenMutex.RUnlock()
+	argsForCall := fake.getAccountByPasswordResetTokenArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenReturns(result1 *models.Account, result2 error) {
+	fake.getAccountByPasswordResetTokenMutex.Lock()
+	defer fake.getAccountByPasswordResetTokenMutex.Unlock()
+	fake.GetAccountByPasswordResetTokenStub = nil
+	fake.getAccountByPasswordResetTokenReturns = struct {
+		result1 *models.Account
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenReturnsOnCall(i int, result1 *models.Account, result2 error) {
+	fake.getAccountByPasswordResetTokenMutex.Lock()
+	defer fake.getAccountByPasswordResetTokenMutex.Unlock()
+	fake.GetAccountByPasswordResetTokenStub = nil
+	if fake.getAccountByPasswordResetTokenReturnsOnCall == nil {
+		fake.getAccountByPasswordResetTokenReturnsOnCall = make(map[int]struct {
+			result1 *models.Account
+			result2 error
+		})
+	}
+	fake.getAccountByPasswordResetTokenReturnsOnCall[i] = struct {
+		result1 *models.Account
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAccountRepository) GetAccountByUsername(arg1 string) (*models.Account, error) {
 	fake.getAccountByUsernameMutex.Lock()
 	ret, specificReturn := fake.getAccountByUsernameReturnsOnCall[len(fake.getAccountByUsernameArgsForCall)]
@@ -644,6 +720,8 @@ func (fake *FakeAccountRepository) Invocations() map[string][][]interface{} {
 	defer fake.createPasswordResetTokenMutex.RUnlock()
 	fake.getAccountMutex.RLock()
 	defer fake.getAccountMutex.RUnlock()
+	fake.getAccountByPasswordResetTokenMutex.RLock()
+	defer fake.getAccountByPasswordResetTokenMutex.RUnlock()
 	fake.getAccountByUsernameMutex.RLock()
 	defer fake.getAccountByUsernameMutex.RUnlock()
 	fake.getPasswordResetTokenMutex.RLock()

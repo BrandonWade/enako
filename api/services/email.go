@@ -10,6 +10,12 @@ import (
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
+const (
+	accountActivationEmailID = "EnakoAccountActivationEmail"
+	passwordResetEmailID     = "EnakoPasswordResetEmail"
+	passwordUpdatedEmailID   = "EnakoPasswordUpdatedEmail"
+)
+
 // EmailService an interface for sending emails.
 //go:generate counterfeiter -o fakes/fake_email_service.go . EmailService
 type EmailService interface {
@@ -59,7 +65,7 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 		},
 		Subject:  "Complete Registration",
 		HTMLPart: template,
-		CustomID: "EnakoAccountActivationEmail",
+		CustomID: accountActivationEmailID,
 	}
 
 	err = e.emailClient.Send(message)
@@ -101,7 +107,7 @@ func (e *emailService) SendPasswordResetEmail(email, token string) error {
 		},
 		Subject:  "Password Reset",
 		HTMLPart: template,
-		CustomID: "EnakoPasswordResetEmail",
+		CustomID: passwordResetEmailID,
 	}
 
 	err = e.emailClient.Send(message)
@@ -140,7 +146,7 @@ func (e *emailService) SendPasswordUpdatedEmail(email string) error {
 		},
 		Subject:  "Password Updated",
 		HTMLPart: template,
-		CustomID: "EnakoPasswordUpdatedEmail",
+		CustomID: passwordUpdatedEmailID,
 	}
 
 	err = e.emailClient.Send(message)
