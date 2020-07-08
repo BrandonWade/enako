@@ -212,6 +212,8 @@ func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// TODO: Call SendPasswordUpdatedEmail
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessagePasswordUpdated()))
 	return

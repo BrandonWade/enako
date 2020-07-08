@@ -32,6 +32,17 @@ type FakeEmailService struct {
 	sendPasswordResetEmailReturnsOnCall map[int]struct {
 		result1 error
 	}
+	SendPasswordUpdatedEmailStub        func(string) error
+	sendPasswordUpdatedEmailMutex       sync.RWMutex
+	sendPasswordUpdatedEmailArgsForCall []struct {
+		arg1 string
+	}
+	sendPasswordUpdatedEmailReturns struct {
+		result1 error
+	}
+	sendPasswordUpdatedEmailReturnsOnCall map[int]struct {
+		result1 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -158,6 +169,66 @@ func (fake *FakeEmailService) SendPasswordResetEmailReturnsOnCall(i int, result1
 	}{result1}
 }
 
+func (fake *FakeEmailService) SendPasswordUpdatedEmail(arg1 string) error {
+	fake.sendPasswordUpdatedEmailMutex.Lock()
+	ret, specificReturn := fake.sendPasswordUpdatedEmailReturnsOnCall[len(fake.sendPasswordUpdatedEmailArgsForCall)]
+	fake.sendPasswordUpdatedEmailArgsForCall = append(fake.sendPasswordUpdatedEmailArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("SendPasswordUpdatedEmail", []interface{}{arg1})
+	fake.sendPasswordUpdatedEmailMutex.Unlock()
+	if fake.SendPasswordUpdatedEmailStub != nil {
+		return fake.SendPasswordUpdatedEmailStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1
+	}
+	fakeReturns := fake.sendPasswordUpdatedEmailReturns
+	return fakeReturns.result1
+}
+
+func (fake *FakeEmailService) SendPasswordUpdatedEmailCallCount() int {
+	fake.sendPasswordUpdatedEmailMutex.RLock()
+	defer fake.sendPasswordUpdatedEmailMutex.RUnlock()
+	return len(fake.sendPasswordUpdatedEmailArgsForCall)
+}
+
+func (fake *FakeEmailService) SendPasswordUpdatedEmailCalls(stub func(string) error) {
+	fake.sendPasswordUpdatedEmailMutex.Lock()
+	defer fake.sendPasswordUpdatedEmailMutex.Unlock()
+	fake.SendPasswordUpdatedEmailStub = stub
+}
+
+func (fake *FakeEmailService) SendPasswordUpdatedEmailArgsForCall(i int) string {
+	fake.sendPasswordUpdatedEmailMutex.RLock()
+	defer fake.sendPasswordUpdatedEmailMutex.RUnlock()
+	argsForCall := fake.sendPasswordUpdatedEmailArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeEmailService) SendPasswordUpdatedEmailReturns(result1 error) {
+	fake.sendPasswordUpdatedEmailMutex.Lock()
+	defer fake.sendPasswordUpdatedEmailMutex.Unlock()
+	fake.SendPasswordUpdatedEmailStub = nil
+	fake.sendPasswordUpdatedEmailReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakeEmailService) SendPasswordUpdatedEmailReturnsOnCall(i int, result1 error) {
+	fake.sendPasswordUpdatedEmailMutex.Lock()
+	defer fake.sendPasswordUpdatedEmailMutex.Unlock()
+	fake.SendPasswordUpdatedEmailStub = nil
+	if fake.sendPasswordUpdatedEmailReturnsOnCall == nil {
+		fake.sendPasswordUpdatedEmailReturnsOnCall = make(map[int]struct {
+			result1 error
+		})
+	}
+	fake.sendPasswordUpdatedEmailReturnsOnCall[i] = struct {
+		result1 error
+	}{result1}
+}
+
 func (fake *FakeEmailService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -165,6 +236,8 @@ func (fake *FakeEmailService) Invocations() map[string][][]interface{} {
 	defer fake.sendAccountActivationEmailMutex.RUnlock()
 	fake.sendPasswordResetEmailMutex.RLock()
 	defer fake.sendPasswordResetEmailMutex.RUnlock()
+	fake.sendPasswordUpdatedEmailMutex.RLock()
+	defer fake.sendPasswordUpdatedEmailMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

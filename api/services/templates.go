@@ -2,6 +2,7 @@ package services
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
@@ -14,6 +15,7 @@ import (
 type TemplateService interface {
 	GenerateAccountActivationEmail(link string) (string, error)
 	GeneratePasswordResetEmail(link string) (string, error)
+	GeneratePasswordUpdatedEmail() (string, error)
 }
 
 type templateService struct {
@@ -103,6 +105,43 @@ func (t *templateService) GeneratePasswordResetEmail(link string) (string, error
 		t.logger.WithFields(logrus.Fields{
 			"method": "TemplateService.GeneratePasswordResetEmail",
 			"link":   link,
+			"path":   path,
+		}).Error(err.Error())
+		return "", err
+	}
+
+	return tpl.String(), nil
+}
+
+// GeneratePasswordUpdatedEmail generates an email when a password was updated.
+func (t *templateService) GeneratePasswordUpdatedEmail() (string, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		t.logger.WithField("method", "TemplateService.GeneratePasswordUpdatedEmail").Error(err.Error())
+		return "", err
+	}
+
+	path := filepath.Join(wd, "./templates/password_updated.tmpl")
+
+	tmpl, err := template.ParseFiles(path)
+	if err != nil {
+		t.logger.WithFields(logrus.Fields{
+			"method": "TemplateService.GeneratePasswordUpdatedEmail",
+			"path":   path,
+		}).Error(err.Error())
+		return "", err
+	}
+
+	data := struct {
+		ForgotPasswordLink string
+	}{
+		fmt.Sprintf("http://%s/password", os.Getenv("API_HOST")),
+	}
+
+	var tpl bytes.Buffer
+	if err := tmpl.Execute(&tpl, data); err != nil {
+		t.logger.WithFields(logrus.Fields{
+			"method": "TemplateService.GeneratePasswordUpdatedEmail",
 			"path":   path,
 		}).Error(err.Error())
 		return "", err

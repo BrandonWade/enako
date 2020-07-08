@@ -13,8 +13,9 @@ import (
 // EmailService an interface for sending emails.
 //go:generate counterfeiter -o fakes/fake_email_service.go . EmailService
 type EmailService interface {
-	SendAccountActivationEmail(token, email string) error
+	SendAccountActivationEmail(email, token string) error
 	SendPasswordResetEmail(email, token string) error
+	SendPasswordUpdatedEmail(email string) error
 }
 
 type emailService struct {
@@ -74,7 +75,7 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 	return nil
 }
 
-// SendPasswordResetEmail sends an email with a password reset link to the provided email.
+// SendPasswordResetEmail sends an email with a paeset, ssword link to the provided email.
 func (e *emailService) SendPasswordResetEmail(email, token string) error {
 	link := fmt.Sprintf("%s/api/v1/accounts/password/reset?t=%s", os.Getenv("API_HOST"), token)
 
@@ -109,6 +110,44 @@ func (e *emailService) SendPasswordResetEmail(email, token string) error {
 			"method": "EmailService.SendPasswordResetEmail",
 			"email":  email,
 			"token":  token,
+		}).Error(err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// SendPasswordUpdatedEmail sends an email when a password has been updated.
+func (e *emailService) SendPasswordUpdatedEmail(email string) error {
+	template, err := e.templateService.GeneratePasswordUpdatedEmail()
+	if err != nil {
+		e.logger.WithFields(logrus.Fields{
+			"method": "EmailService.SendPasswordUpdatedEmail",
+			"email":  email,
+		}).Error(err.Error())
+		return err
+	}
+
+	message := mailjet.InfoMessagesV31{
+		From: &mailjet.RecipientV31{
+			Email: fmt.Sprintf("accounts@%s", os.Getenv("ENAKO_DOMAIN")),
+			Name:  "Enako",
+		},
+		To: &mailjet.RecipientsV31{
+			mailjet.RecipientV31{
+				Email: email,
+			},
+		},
+		Subject:  "Password Updated",
+		HTMLPart: template,
+		CustomID: "EnakoPasswordUpdatedEmail",
+	}
+
+	err = e.emailClient.Send(message)
+	if err != nil {
+		e.logger.WithFields(logrus.Fields{
+			"method": "EmailService.SendPasswordUpdatedEmail",
+			"email":  email,
 		}).Error(err.Error())
 		return err
 	}

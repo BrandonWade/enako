@@ -172,6 +172,8 @@ func (a *accountRepository) GetAccountByUsername(username string) (*models.Accou
 
 // CreatePasswordResetToken creates an activation token for the given account ID.
 func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken string) (int64, error) {
+	// TODO: Disable all other tokens for this account
+
 	result, err := a.DB.Exec(`INSERT
 		INTO password_reset_tokens(
 			account_id,
