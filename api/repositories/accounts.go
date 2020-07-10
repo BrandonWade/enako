@@ -238,10 +238,15 @@ func (a *accountRepository) GetPasswordResetToken(token string) (*models.Passwor
 // ResetPassword sets the password for the account associated with the reset token.
 func (a *accountRepository) ResetPassword(token, password string) (bool, error) {
 	tx, err := a.DB.Begin()
+	if err != nil {
+		return false, err
+	}
+
 	_, err = tx.Exec(`UPDATE password_reset_tokens p
 		INNER JOIN accounts a ON a.id = p.account_id
-		SET p.status = 'pending'
-		WHERE p.reset_token = ?;
+		SET p.status = 'used'
+		WHERE p.reset_token = ?
+		AND p.status = 'pending';
 	`,
 		token,
 	)

@@ -41,6 +41,7 @@ var (
 	errInvalidPasswordResetPayload        = errors.New("invalid password reset payload")
 	errRetrievingResetToken               = errors.New("error retrieving reset token")
 	errResettingPassword                  = errors.New("error resetting password")
+	errResetTokenExpiredOrInvalid         = errors.New("password reset token is either exired or invalid")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -236,4 +237,9 @@ func ErrorRetrievingResetToken() error {
 // ErrorResettingPassword returned when an error occurs when trying to reset a password.
 func ErrorResettingPassword() error {
 	return errResettingPassword
+}
+
+// ErrorResetTokenExpiredOrInvalid returned when a given password reset token is either expired or invalid.
+func ErrorResetTokenExpiredOrInvalid() error {
+	return errResetTokenExpiredOrInvalid
 }

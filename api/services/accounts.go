@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"time"
 
 	"github.com/BrandonWade/enako/api/models"
 
@@ -214,6 +215,34 @@ func (a *accountService) GetPasswordResetToken(token string) (*models.PasswordRe
 
 // ResetPassword sets the password for the account associated with the reset token.
 func (a *accountService) ResetPassword(token, password string) (bool, error) {
+	resetToken, err := a.repo.GetPasswordResetToken(token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.ResetPassword",
+			"token":  token,
+		}).Error(err.Error())
+		return false, err
+	}
+
+	now := time.Now()
+	expiresAt, err := time.Parse("2006-01-02 03:04:05", resetToken.ExpiresAt)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.ResetPassword",
+			"token":     token,
+			"expiresAt": resetToken.ExpiresAt,
+		}).Error(err.Error())
+		return false, err
+	}
+
+	if resetToken.Status != "pending" || now.After(expiresAt) {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.ResetPassword",
+			"token":  token,
+		}).Info(helpers.ErrorResetTokenExpiredOrInvalid())
+		return false, helpers.ErrorResetTokenExpiredOrInvalid()
+	}
+
 	hash, err := a.hasher.Generate(password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
