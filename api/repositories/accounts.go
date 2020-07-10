@@ -177,10 +177,12 @@ func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken
 	result, err := a.DB.Exec(`INSERT
 		INTO password_reset_tokens(
 			account_id,
-			reset_token
+			reset_token,
+			expires_at
 		) VALUES (
 			?,
-			?
+			?,
+			DATE_ADD(NOW(), INTERVAL 1 HOUR)
 		);
 	`,
 		accountID,

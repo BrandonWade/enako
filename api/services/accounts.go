@@ -252,7 +252,25 @@ func (a *accountService) ResetPassword(token, password string) (bool, error) {
 		return false, err
 	}
 
-	return a.repo.ResetPassword(token, string(hash))
+	_, err = a.repo.ResetPassword(token, string(hash))
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.ResetPassword",
+			"token":  token,
+		}).Error(err.Error())
+		return false, err
+	}
+
+	err = a.NotifyOfPasswordReset(token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.ResetPassword",
+			"token":  token,
+		}).Error(err.Error())
+		return false, err
+	}
+
+	return true, nil
 }
 
 // NotifyOfPasswordReset notifies the account owner that their password was reset.
