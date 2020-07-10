@@ -92,13 +92,32 @@ const Register = props => {
                 <Card className='Register-form'>
                     <div className='Register-formGrid'>
                         {renderEmail()}
-                        <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
-                        <div className={`Register-validatorRules ${props.passwordReset ? 'Register-passwordRules--passwordReset' : 'Register-passwordRules'}`}>
+                        <InputField
+                            type='password'
+                            label='Password'
+                            value={password}
+                            autoComplete='current-password'
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                        <div
+                            className={`Register-validatorRules ${
+                                props.passwordReset ? 'Register-passwordRules--passwordReset' : 'Register-passwordRules'
+                            }`}
+                        >
                             <ValidationRow valid={validPasswordLength} description='Password is between 15 and 50 characters' />
-                            <ValidationRow valid={validPasswordCharacters} description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _' />
+                            <ValidationRow
+                                valid={validPasswordCharacters}
+                                description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
+                            />
                             <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
                         </div>
-                        <InputField type='password' label='Confirm Password' value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                        <InputField
+                            type='password'
+                            label='Confirm Password'
+                            value={confirmPassword}
+                            autoComplete='new-password'
+                            onChange={e => setConfirmPassword(e.target.value)}
+                        />
                     </div>
                     <div className='Register-buttons'>
                         <Link to='/login'>

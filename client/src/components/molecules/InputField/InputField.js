@@ -9,6 +9,7 @@ const InputField = props => {
             name={props.name}
             value={props.value}
             step={props.type === 'number' ? '0.01' : ''}
+            autoComplete={props.autoComplete || ''}
             onChange={props.onChange}
         />
     );

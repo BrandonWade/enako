@@ -15,12 +15,14 @@ import (
 )
 
 const (
-	passwordResetCookieName = "_password_reset"
+	passwordResetCookieName   = "_password_reset"
+	passwordResetCookieMaxAge = 86400 // 24 hours
 )
 
 var (
-	loginRoute         = fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
-	passwordResetRoute = fmt.Sprintf("http://%s/password/reset", os.Getenv("API_HOST"))
+	loginRoute          = fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
+	forgotPasswordRoute = fmt.Sprintf("http://%s/password", os.Getenv("API_HOST"))
+	passwordResetRoute  = fmt.Sprintf("http://%s/password/reset", os.Getenv("API_HOST"))
 )
 
 // AccountController an interface for working with accounts and sessions.
@@ -151,23 +153,24 @@ func (a *accountController) SetPasswordResetToken(w http.ResponseWriter, r *http
 		return
 	}
 
-	// TODO: Ensure token is not expired
-	token, err := a.service.GetPasswordResetToken(t)
+	err := a.service.VerifyPasswordResetToken(t)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method": "AccountController.SetPasswordResetToken",
 			"token":  t,
 		}).Error(err.Error())
 
-		http.Redirect(w, r, loginRoute, http.StatusSeeOther)
+		// TODO: Show message indicating reset token was invalid
+
+		http.Redirect(w, r, forgotPasswordRoute, http.StatusSeeOther)
 		return
 	}
 
 	cookie := http.Cookie{
 		Name:     passwordResetCookieName,
-		Value:    token.ResetToken,
+		Value:    t,
 		Path:     "/",
-		MaxAge:   86400,
+		MaxAge:   passwordResetCookieMaxAge,
 		HttpOnly: true,
 		Secure:   true,
 	}
@@ -215,8 +218,9 @@ func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request
 				"token":  cookie.Value,
 			}).Info(err.Error())
 
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorResetTokenExpiredOrInvalid()))
+			// TODO: Show message indicating reset token was invalid
+
+			http.Redirect(w, r, forgotPasswordRoute, http.StatusSeeOther)
 			return
 		}
 

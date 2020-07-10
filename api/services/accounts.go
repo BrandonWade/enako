@@ -29,7 +29,8 @@ type AccountService interface {
 	VerifyAccount(username, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 	RequestPasswordReset(username string) (string, error)
-	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
+	CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) error
+	VerifyPasswordResetToken(token string) error
 	ResetPassword(token, password string) (bool, error)
 	NotifyOfPasswordReset(token string) error
 }
@@ -208,9 +209,41 @@ func (a *accountService) RequestPasswordReset(username string) (string, error) {
 	return email, nil
 }
 
-// GetPasswordResetToken returns the password reset token with the given token.
-func (a *accountService) GetPasswordResetToken(token string) (*models.PasswordResetToken, error) {
-	return a.repo.GetPasswordResetToken(token)
+// CheckPasswordResetTokenIsValid checks whether the given password reset token has a status of pending and is not expired.
+func (a *accountService) CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) error {
+	now := time.Now()
+	expiresAt, err := time.Parse("2006-01-02 03:04:05", resetToken.ExpiresAt)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.CheckPasswordResetTokenIsValid",
+			"token":     resetToken.ResetToken,
+			"expiresAt": resetToken.ExpiresAt,
+		}).Error(err.Error())
+		return err
+	}
+
+	if resetToken.Status != "pending" || now.After(expiresAt) {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.CheckPasswordResetTokenIsValid",
+			"token":  resetToken.ResetToken,
+		}).Info(helpers.ErrorResetTokenExpiredOrInvalid())
+		return helpers.ErrorResetTokenExpiredOrInvalid()
+	}
+
+	return nil
+}
+
+// VerifyPasswordResetToken retrieves the password reset token model using the given token and checks whether it is valid.
+func (a *accountService) VerifyPasswordResetToken(token string) error {
+	resetToken, err := a.repo.GetPasswordResetToken(token)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method": "AccountService.VerifyPasswordResetToken",
+			"token":  token,
+		}).Error(err.Error())
+	}
+
+	return a.CheckPasswordResetTokenIsValid(resetToken)
 }
 
 // ResetPassword sets the password for the account associated with the reset token.
@@ -224,23 +257,13 @@ func (a *accountService) ResetPassword(token, password string) (bool, error) {
 		return false, err
 	}
 
-	now := time.Now()
-	expiresAt, err := time.Parse("2006-01-02 03:04:05", resetToken.ExpiresAt)
+	err = a.CheckPasswordResetTokenIsValid(resetToken)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method":    "AccountService.ResetPassword",
-			"token":     token,
-			"expiresAt": resetToken.ExpiresAt,
-		}).Error(err.Error())
-		return false, err
-	}
-
-	if resetToken.Status != "pending" || now.After(expiresAt) {
 		a.logger.WithFields(logrus.Fields{
 			"method": "AccountService.ResetPassword",
 			"token":  token,
-		}).Info(helpers.ErrorResetTokenExpiredOrInvalid())
-		return false, helpers.ErrorResetTokenExpiredOrInvalid()
+		}).Error(err.Error())
+		return false, err
 	}
 
 	hash, err := a.hasher.Generate(password)

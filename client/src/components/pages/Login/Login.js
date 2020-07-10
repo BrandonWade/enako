@@ -34,7 +34,13 @@ const Login = props => {
                 <Logo />
                 <Card className='Login-form'>
                     <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
-                    <InputField type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
+                    <InputField
+                        type='password'
+                        label='Password'
+                        value={password}
+                        autoComplete='current-password'
+                        onChange={e => setPassword(e.target.value)}
+                    />
                     <div className='Login-forgotPassword'>
                         <Link to='/password'>
                             <span>Forgot your password?</span>

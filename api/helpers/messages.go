@@ -14,5 +14,5 @@ func MessageAccountWithUsernameNotFound(username string) string {
 
 // MessagePasswordUpdated returned when a password reset was successful.
 func MessagePasswordUpdated() string {
-	return fmt.Sprintf("Hey we were able to successfully update your password - please login using your new password.")
+	return fmt.Sprintf("Hey we were able to successfully update your account - please login using your new password.")
 }
