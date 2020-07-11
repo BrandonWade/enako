@@ -2,10 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/middleware"
@@ -14,25 +11,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	passwordResetCookieName   = "_password_reset"
-	passwordResetCookieMaxAge = 86400 // 24 hours
-)
-
-var (
-	loginRoute          = fmt.Sprintf("http://%s/login", os.Getenv("API_HOST"))
-	forgotPasswordRoute = fmt.Sprintf("http://%s/password", os.Getenv("API_HOST"))
-	passwordResetRoute  = fmt.Sprintf("http://%s/password/reset", os.Getenv("API_HOST"))
-)
-
 // AccountController an interface for working with accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_account_controller.go . AccountController
 type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
-	RequestPasswordReset(w http.ResponseWriter, r *http.Request)
-	SetPasswordResetToken(w http.ResponseWriter, r *http.Request)
-	ResetPassword(w http.ResponseWriter, r *http.Request)
 }
 
 type accountController struct {
@@ -97,144 +80,6 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	http.Redirect(w, r, loginRoute, http.StatusSeeOther)
-	return
-}
-
-func (a *accountController) RequestPasswordReset(w http.ResponseWriter, r *http.Request) {
-	resetRequest, ok := r.Context().Value(middleware.ContextRequestPasswordResetKey).(models.RequestPasswordReset)
-	if !ok {
-		a.logger.WithField("method", "AccountController.RequestPasswordReset").Error(helpers.ErrorRetrievingRequestPasswordReset())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRequestingPasswordReset()))
-		return
-	}
-
-	email, err := a.service.RequestPasswordReset(resetRequest.Username)
-	if err != nil {
-		if errors.Is(err, helpers.ErrorAccountNotFound()) {
-			a.logger.WithFields(logrus.Fields{
-				"method":   "AccountController.RequestPasswordReset",
-				"username": resetRequest.Username,
-			}).Info(helpers.ErrorAccountNotFound())
-
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithUsernameNotFound(resetRequest.Username)))
-			return
-		}
-
-		a.logger.WithFields(logrus.Fields{
-			"method":   "AccountController.RequestPasswordReset",
-			"username": resetRequest.Username,
-		}).Error(err.Error())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRequestingPasswordReset()))
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageResetPasswordEmailSent(email)))
-	return
-}
-
-func (a *accountController) SetPasswordResetToken(w http.ResponseWriter, r *http.Request) {
-	params := r.URL.Query()
-
-	t := params.Get("t")
-	if t == "" || len(t) != services.PasswordResetTokenLength {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AccountController.SetPasswordResetToken",
-			"token":  t,
-		}).Error(helpers.ErrorRetrievingResetToken())
-
-		http.Redirect(w, r, loginRoute, http.StatusSeeOther)
-		return
-	}
-
-	err := a.service.VerifyPasswordResetToken(t)
-	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AccountController.SetPasswordResetToken",
-			"token":  t,
-		}).Error(err.Error())
-
-		// TODO: Show message indicating reset token was invalid
-
-		http.Redirect(w, r, forgotPasswordRoute, http.StatusSeeOther)
-		return
-	}
-
-	cookie := http.Cookie{
-		Name:     passwordResetCookieName,
-		Value:    t,
-		Path:     "/",
-		MaxAge:   passwordResetCookieMaxAge,
-		HttpOnly: true,
-		Secure:   true,
-	}
-
-	http.SetCookie(w, &cookie)
-	http.Redirect(w, r, passwordResetRoute, http.StatusSeeOther)
-	return
-}
-
-func (a *accountController) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie(passwordResetCookieName)
-	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			a.logger.WithField("method", "AccountController.ResetPassword").Info(err.Error())
-
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
-			return
-		}
-
-		a.logger.WithField("method", "AccountController.ResetPassword").Error(err.Error())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
-		return
-	}
-
-	reset, ok := r.Context().Value(middleware.ContextPasswordResetKey).(models.PasswordReset)
-	if !ok {
-		a.logger.WithFields(logrus.Fields{
-			"method": "AccountController.ResetPassword",
-			"token":  cookie.Value,
-		}).Error(helpers.ErrorRetrievingPasswordReset())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
-		return
-	}
-
-	_, err = a.service.ResetPassword(cookie.Value, reset.Password)
-	if err != nil {
-		if errors.Is(err, helpers.ErrorResetTokenExpiredOrInvalid()) {
-			a.logger.WithFields(logrus.Fields{
-				"method": "AccountController.ResetPassword",
-				"token":  cookie.Value,
-			}).Info(err.Error())
-
-			// TODO: Show message indicating reset token was invalid
-
-			http.Redirect(w, r, forgotPasswordRoute, http.StatusSeeOther)
-			return
-		}
-
-		a.logger.WithFields(logrus.Fields{
-			"method": "AccountController.ResetPassword",
-			"token":  cookie.Value,
-		}).Error(err.Error())
-
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorResettingPassword()))
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessagePasswordUpdated()))
+	http.Redirect(w, r, helpers.LoginRoute, http.StatusSeeOther)
 	return
 }

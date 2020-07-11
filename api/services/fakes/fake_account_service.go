@@ -4,7 +4,6 @@ package fakes
 import (
 	"sync"
 
-	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 )
 
@@ -22,17 +21,6 @@ type FakeAccountService struct {
 		result1 bool
 		result2 error
 	}
-	CheckPasswordResetTokenIsValidStub        func(*models.PasswordResetToken) error
-	checkPasswordResetTokenIsValidMutex       sync.RWMutex
-	checkPasswordResetTokenIsValidArgsForCall []struct {
-		arg1 *models.PasswordResetToken
-	}
-	checkPasswordResetTokenIsValidReturns struct {
-		result1 error
-	}
-	checkPasswordResetTokenIsValidReturnsOnCall map[int]struct {
-		result1 error
-	}
 	CreateAccountStub        func(string, string, string) (int64, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
@@ -47,17 +35,6 @@ type FakeAccountService struct {
 	createAccountReturnsOnCall map[int]struct {
 		result1 int64
 		result2 error
-	}
-	NotifyOfPasswordResetStub        func(string) error
-	notifyOfPasswordResetMutex       sync.RWMutex
-	notifyOfPasswordResetArgsForCall []struct {
-		arg1 string
-	}
-	notifyOfPasswordResetReturns struct {
-		result1 error
-	}
-	notifyOfPasswordResetReturnsOnCall map[int]struct {
-		result1 error
 	}
 	RegisterUserStub        func(string, string, string) (int64, error)
 	registerUserMutex       sync.RWMutex
@@ -74,33 +51,6 @@ type FakeAccountService struct {
 		result1 int64
 		result2 error
 	}
-	RequestPasswordResetStub        func(string) (string, error)
-	requestPasswordResetMutex       sync.RWMutex
-	requestPasswordResetArgsForCall []struct {
-		arg1 string
-	}
-	requestPasswordResetReturns struct {
-		result1 string
-		result2 error
-	}
-	requestPasswordResetReturnsOnCall map[int]struct {
-		result1 string
-		result2 error
-	}
-	ResetPasswordStub        func(string, string) (bool, error)
-	resetPasswordMutex       sync.RWMutex
-	resetPasswordArgsForCall []struct {
-		arg1 string
-		arg2 string
-	}
-	resetPasswordReturns struct {
-		result1 bool
-		result2 error
-	}
-	resetPasswordReturnsOnCall map[int]struct {
-		result1 bool
-		result2 error
-	}
 	VerifyAccountStub        func(string, string) (int64, error)
 	verifyAccountMutex       sync.RWMutex
 	verifyAccountArgsForCall []struct {
@@ -114,17 +64,6 @@ type FakeAccountService struct {
 	verifyAccountReturnsOnCall map[int]struct {
 		result1 int64
 		result2 error
-	}
-	VerifyPasswordResetTokenStub        func(string) error
-	verifyPasswordResetTokenMutex       sync.RWMutex
-	verifyPasswordResetTokenArgsForCall []struct {
-		arg1 string
-	}
-	verifyPasswordResetTokenReturns struct {
-		result1 error
-	}
-	verifyPasswordResetTokenReturnsOnCall map[int]struct {
-		result1 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
@@ -193,66 +132,6 @@ func (fake *FakeAccountService) ActivateAccountReturnsOnCall(i int, result1 bool
 	}{result1, result2}
 }
 
-func (fake *FakeAccountService) CheckPasswordResetTokenIsValid(arg1 *models.PasswordResetToken) error {
-	fake.checkPasswordResetTokenIsValidMutex.Lock()
-	ret, specificReturn := fake.checkPasswordResetTokenIsValidReturnsOnCall[len(fake.checkPasswordResetTokenIsValidArgsForCall)]
-	fake.checkPasswordResetTokenIsValidArgsForCall = append(fake.checkPasswordResetTokenIsValidArgsForCall, struct {
-		arg1 *models.PasswordResetToken
-	}{arg1})
-	fake.recordInvocation("CheckPasswordResetTokenIsValid", []interface{}{arg1})
-	fake.checkPasswordResetTokenIsValidMutex.Unlock()
-	if fake.CheckPasswordResetTokenIsValidStub != nil {
-		return fake.CheckPasswordResetTokenIsValidStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.checkPasswordResetTokenIsValidReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakeAccountService) CheckPasswordResetTokenIsValidCallCount() int {
-	fake.checkPasswordResetTokenIsValidMutex.RLock()
-	defer fake.checkPasswordResetTokenIsValidMutex.RUnlock()
-	return len(fake.checkPasswordResetTokenIsValidArgsForCall)
-}
-
-func (fake *FakeAccountService) CheckPasswordResetTokenIsValidCalls(stub func(*models.PasswordResetToken) error) {
-	fake.checkPasswordResetTokenIsValidMutex.Lock()
-	defer fake.checkPasswordResetTokenIsValidMutex.Unlock()
-	fake.CheckPasswordResetTokenIsValidStub = stub
-}
-
-func (fake *FakeAccountService) CheckPasswordResetTokenIsValidArgsForCall(i int) *models.PasswordResetToken {
-	fake.checkPasswordResetTokenIsValidMutex.RLock()
-	defer fake.checkPasswordResetTokenIsValidMutex.RUnlock()
-	argsForCall := fake.checkPasswordResetTokenIsValidArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeAccountService) CheckPasswordResetTokenIsValidReturns(result1 error) {
-	fake.checkPasswordResetTokenIsValidMutex.Lock()
-	defer fake.checkPasswordResetTokenIsValidMutex.Unlock()
-	fake.CheckPasswordResetTokenIsValidStub = nil
-	fake.checkPasswordResetTokenIsValidReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeAccountService) CheckPasswordResetTokenIsValidReturnsOnCall(i int, result1 error) {
-	fake.checkPasswordResetTokenIsValidMutex.Lock()
-	defer fake.checkPasswordResetTokenIsValidMutex.Unlock()
-	fake.CheckPasswordResetTokenIsValidStub = nil
-	if fake.checkPasswordResetTokenIsValidReturnsOnCall == nil {
-		fake.checkPasswordResetTokenIsValidReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.checkPasswordResetTokenIsValidReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
 func (fake *FakeAccountService) CreateAccount(arg1 string, arg2 string, arg3 string) (int64, error) {
 	fake.createAccountMutex.Lock()
 	ret, specificReturn := fake.createAccountReturnsOnCall[len(fake.createAccountArgsForCall)]
@@ -318,66 +197,6 @@ func (fake *FakeAccountService) CreateAccountReturnsOnCall(i int, result1 int64,
 	}{result1, result2}
 }
 
-func (fake *FakeAccountService) NotifyOfPasswordReset(arg1 string) error {
-	fake.notifyOfPasswordResetMutex.Lock()
-	ret, specificReturn := fake.notifyOfPasswordResetReturnsOnCall[len(fake.notifyOfPasswordResetArgsForCall)]
-	fake.notifyOfPasswordResetArgsForCall = append(fake.notifyOfPasswordResetArgsForCall, struct {
-		arg1 string
-	}{arg1})
-	fake.recordInvocation("NotifyOfPasswordReset", []interface{}{arg1})
-	fake.notifyOfPasswordResetMutex.Unlock()
-	if fake.NotifyOfPasswordResetStub != nil {
-		return fake.NotifyOfPasswordResetStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.notifyOfPasswordResetReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakeAccountService) NotifyOfPasswordResetCallCount() int {
-	fake.notifyOfPasswordResetMutex.RLock()
-	defer fake.notifyOfPasswordResetMutex.RUnlock()
-	return len(fake.notifyOfPasswordResetArgsForCall)
-}
-
-func (fake *FakeAccountService) NotifyOfPasswordResetCalls(stub func(string) error) {
-	fake.notifyOfPasswordResetMutex.Lock()
-	defer fake.notifyOfPasswordResetMutex.Unlock()
-	fake.NotifyOfPasswordResetStub = stub
-}
-
-func (fake *FakeAccountService) NotifyOfPasswordResetArgsForCall(i int) string {
-	fake.notifyOfPasswordResetMutex.RLock()
-	defer fake.notifyOfPasswordResetMutex.RUnlock()
-	argsForCall := fake.notifyOfPasswordResetArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeAccountService) NotifyOfPasswordResetReturns(result1 error) {
-	fake.notifyOfPasswordResetMutex.Lock()
-	defer fake.notifyOfPasswordResetMutex.Unlock()
-	fake.NotifyOfPasswordResetStub = nil
-	fake.notifyOfPasswordResetReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeAccountService) NotifyOfPasswordResetReturnsOnCall(i int, result1 error) {
-	fake.notifyOfPasswordResetMutex.Lock()
-	defer fake.notifyOfPasswordResetMutex.Unlock()
-	fake.NotifyOfPasswordResetStub = nil
-	if fake.notifyOfPasswordResetReturnsOnCall == nil {
-		fake.notifyOfPasswordResetReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.notifyOfPasswordResetReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
 func (fake *FakeAccountService) RegisterUser(arg1 string, arg2 string, arg3 string) (int64, error) {
 	fake.registerUserMutex.Lock()
 	ret, specificReturn := fake.registerUserReturnsOnCall[len(fake.registerUserArgsForCall)]
@@ -439,133 +258,6 @@ func (fake *FakeAccountService) RegisterUserReturnsOnCall(i int, result1 int64, 
 	}
 	fake.registerUserReturnsOnCall[i] = struct {
 		result1 int64
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAccountService) RequestPasswordReset(arg1 string) (string, error) {
-	fake.requestPasswordResetMutex.Lock()
-	ret, specificReturn := fake.requestPasswordResetReturnsOnCall[len(fake.requestPasswordResetArgsForCall)]
-	fake.requestPasswordResetArgsForCall = append(fake.requestPasswordResetArgsForCall, struct {
-		arg1 string
-	}{arg1})
-	fake.recordInvocation("RequestPasswordReset", []interface{}{arg1})
-	fake.requestPasswordResetMutex.Unlock()
-	if fake.RequestPasswordResetStub != nil {
-		return fake.RequestPasswordResetStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	fakeReturns := fake.requestPasswordResetReturns
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeAccountService) RequestPasswordResetCallCount() int {
-	fake.requestPasswordResetMutex.RLock()
-	defer fake.requestPasswordResetMutex.RUnlock()
-	return len(fake.requestPasswordResetArgsForCall)
-}
-
-func (fake *FakeAccountService) RequestPasswordResetCalls(stub func(string) (string, error)) {
-	fake.requestPasswordResetMutex.Lock()
-	defer fake.requestPasswordResetMutex.Unlock()
-	fake.RequestPasswordResetStub = stub
-}
-
-func (fake *FakeAccountService) RequestPasswordResetArgsForCall(i int) string {
-	fake.requestPasswordResetMutex.RLock()
-	defer fake.requestPasswordResetMutex.RUnlock()
-	argsForCall := fake.requestPasswordResetArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeAccountService) RequestPasswordResetReturns(result1 string, result2 error) {
-	fake.requestPasswordResetMutex.Lock()
-	defer fake.requestPasswordResetMutex.Unlock()
-	fake.RequestPasswordResetStub = nil
-	fake.requestPasswordResetReturns = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAccountService) RequestPasswordResetReturnsOnCall(i int, result1 string, result2 error) {
-	fake.requestPasswordResetMutex.Lock()
-	defer fake.requestPasswordResetMutex.Unlock()
-	fake.RequestPasswordResetStub = nil
-	if fake.requestPasswordResetReturnsOnCall == nil {
-		fake.requestPasswordResetReturnsOnCall = make(map[int]struct {
-			result1 string
-			result2 error
-		})
-	}
-	fake.requestPasswordResetReturnsOnCall[i] = struct {
-		result1 string
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAccountService) ResetPassword(arg1 string, arg2 string) (bool, error) {
-	fake.resetPasswordMutex.Lock()
-	ret, specificReturn := fake.resetPasswordReturnsOnCall[len(fake.resetPasswordArgsForCall)]
-	fake.resetPasswordArgsForCall = append(fake.resetPasswordArgsForCall, struct {
-		arg1 string
-		arg2 string
-	}{arg1, arg2})
-	fake.recordInvocation("ResetPassword", []interface{}{arg1, arg2})
-	fake.resetPasswordMutex.Unlock()
-	if fake.ResetPasswordStub != nil {
-		return fake.ResetPasswordStub(arg1, arg2)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	fakeReturns := fake.resetPasswordReturns
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeAccountService) ResetPasswordCallCount() int {
-	fake.resetPasswordMutex.RLock()
-	defer fake.resetPasswordMutex.RUnlock()
-	return len(fake.resetPasswordArgsForCall)
-}
-
-func (fake *FakeAccountService) ResetPasswordCalls(stub func(string, string) (bool, error)) {
-	fake.resetPasswordMutex.Lock()
-	defer fake.resetPasswordMutex.Unlock()
-	fake.ResetPasswordStub = stub
-}
-
-func (fake *FakeAccountService) ResetPasswordArgsForCall(i int) (string, string) {
-	fake.resetPasswordMutex.RLock()
-	defer fake.resetPasswordMutex.RUnlock()
-	argsForCall := fake.resetPasswordArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2
-}
-
-func (fake *FakeAccountService) ResetPasswordReturns(result1 bool, result2 error) {
-	fake.resetPasswordMutex.Lock()
-	defer fake.resetPasswordMutex.Unlock()
-	fake.ResetPasswordStub = nil
-	fake.resetPasswordReturns = struct {
-		result1 bool
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAccountService) ResetPasswordReturnsOnCall(i int, result1 bool, result2 error) {
-	fake.resetPasswordMutex.Lock()
-	defer fake.resetPasswordMutex.Unlock()
-	fake.ResetPasswordStub = nil
-	if fake.resetPasswordReturnsOnCall == nil {
-		fake.resetPasswordReturnsOnCall = make(map[int]struct {
-			result1 bool
-			result2 error
-		})
-	}
-	fake.resetPasswordReturnsOnCall[i] = struct {
-		result1 bool
 		result2 error
 	}{result1, result2}
 }
@@ -634,87 +326,17 @@ func (fake *FakeAccountService) VerifyAccountReturnsOnCall(i int, result1 int64,
 	}{result1, result2}
 }
 
-func (fake *FakeAccountService) VerifyPasswordResetToken(arg1 string) error {
-	fake.verifyPasswordResetTokenMutex.Lock()
-	ret, specificReturn := fake.verifyPasswordResetTokenReturnsOnCall[len(fake.verifyPasswordResetTokenArgsForCall)]
-	fake.verifyPasswordResetTokenArgsForCall = append(fake.verifyPasswordResetTokenArgsForCall, struct {
-		arg1 string
-	}{arg1})
-	fake.recordInvocation("VerifyPasswordResetToken", []interface{}{arg1})
-	fake.verifyPasswordResetTokenMutex.Unlock()
-	if fake.VerifyPasswordResetTokenStub != nil {
-		return fake.VerifyPasswordResetTokenStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1
-	}
-	fakeReturns := fake.verifyPasswordResetTokenReturns
-	return fakeReturns.result1
-}
-
-func (fake *FakeAccountService) VerifyPasswordResetTokenCallCount() int {
-	fake.verifyPasswordResetTokenMutex.RLock()
-	defer fake.verifyPasswordResetTokenMutex.RUnlock()
-	return len(fake.verifyPasswordResetTokenArgsForCall)
-}
-
-func (fake *FakeAccountService) VerifyPasswordResetTokenCalls(stub func(string) error) {
-	fake.verifyPasswordResetTokenMutex.Lock()
-	defer fake.verifyPasswordResetTokenMutex.Unlock()
-	fake.VerifyPasswordResetTokenStub = stub
-}
-
-func (fake *FakeAccountService) VerifyPasswordResetTokenArgsForCall(i int) string {
-	fake.verifyPasswordResetTokenMutex.RLock()
-	defer fake.verifyPasswordResetTokenMutex.RUnlock()
-	argsForCall := fake.verifyPasswordResetTokenArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeAccountService) VerifyPasswordResetTokenReturns(result1 error) {
-	fake.verifyPasswordResetTokenMutex.Lock()
-	defer fake.verifyPasswordResetTokenMutex.Unlock()
-	fake.VerifyPasswordResetTokenStub = nil
-	fake.verifyPasswordResetTokenReturns = struct {
-		result1 error
-	}{result1}
-}
-
-func (fake *FakeAccountService) VerifyPasswordResetTokenReturnsOnCall(i int, result1 error) {
-	fake.verifyPasswordResetTokenMutex.Lock()
-	defer fake.verifyPasswordResetTokenMutex.Unlock()
-	fake.VerifyPasswordResetTokenStub = nil
-	if fake.verifyPasswordResetTokenReturnsOnCall == nil {
-		fake.verifyPasswordResetTokenReturnsOnCall = make(map[int]struct {
-			result1 error
-		})
-	}
-	fake.verifyPasswordResetTokenReturnsOnCall[i] = struct {
-		result1 error
-	}{result1}
-}
-
 func (fake *FakeAccountService) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
 	fake.activateAccountMutex.RLock()
 	defer fake.activateAccountMutex.RUnlock()
-	fake.checkPasswordResetTokenIsValidMutex.RLock()
-	defer fake.checkPasswordResetTokenIsValidMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
-	fake.notifyOfPasswordResetMutex.RLock()
-	defer fake.notifyOfPasswordResetMutex.RUnlock()
 	fake.registerUserMutex.RLock()
 	defer fake.registerUserMutex.RUnlock()
-	fake.requestPasswordResetMutex.RLock()
-	defer fake.requestPasswordResetMutex.RUnlock()
-	fake.resetPasswordMutex.RLock()
-	defer fake.resetPasswordMutex.RUnlock()
 	fake.verifyAccountMutex.RLock()
 	defer fake.verifyAccountMutex.RUnlock()
-	fake.verifyPasswordResetTokenMutex.RLock()
-	defer fake.verifyPasswordResetTokenMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

@@ -16,9 +16,6 @@ type AccountRepository interface {
 	CreateActivationToken(accountID int64, activationToken string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 	GetAccountByUsername(username string) (*models.Account, error)
-	CreatePasswordResetToken(accountID int64, resetToken string) (int64, error)
-	GetPasswordResetToken(token string) (*models.PasswordResetToken, error)
-	ResetPassword(token, password string) (bool, error)
 	GetAccountByPasswordResetToken(token string) (*models.Account, error)
 }
 
@@ -169,111 +166,6 @@ func (a *accountRepository) GetAccountByUsername(username string) (*models.Accou
 	}
 
 	return &account, nil
-}
-
-// CreatePasswordResetToken creates an activation token for the given account ID.
-func (a *accountRepository) CreatePasswordResetToken(accountID int64, resetToken string) (int64, error) {
-	tx, err := a.DB.Begin()
-	result, err := a.DB.Exec(`INSERT
-		INTO password_reset_tokens(
-			account_id,
-			reset_token,
-			expires_at
-		) VALUES (
-			?,
-			?,
-			DATE_ADD(NOW(), INTERVAL 1 HOUR)
-		);
-	`,
-		accountID,
-		resetToken,
-	)
-	if err != nil {
-		return 0, err
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-
-	_, err = tx.Exec(`UPDATE password_reset_tokens p
-		INNER JOIN accounts a ON a.id = p.account_id
-		SET p.status = 'disabled'
-		WHERE p.account_id = ?
-		AND p.status = 'pending'
-		AND p.id != ?;
-	`,
-		accountID,
-		id,
-	)
-	if err != nil {
-		return 0, err
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
-}
-
-// GetPasswordResetToken returns the password reset token with the given token.
-func (a *accountRepository) GetPasswordResetToken(token string) (*models.PasswordResetToken, error) {
-	var resetToken models.PasswordResetToken
-
-	err := a.DB.Get(&resetToken, `SELECT
-		*
-		FROM password_reset_tokens p
-		WHERE p.reset_token = ?;
-	`,
-		token,
-	)
-	if err != nil {
-		return &models.PasswordResetToken{}, err
-	}
-
-	return &resetToken, nil
-}
-
-// ResetPassword sets the password for the account associated with the reset token.
-func (a *accountRepository) ResetPassword(token, password string) (bool, error) {
-	tx, err := a.DB.Begin()
-	if err != nil {
-		return false, err
-	}
-
-	_, err = tx.Exec(`UPDATE password_reset_tokens p
-		INNER JOIN accounts a ON a.id = p.account_id
-		SET p.status = 'used'
-		WHERE p.reset_token = ?
-		AND p.status = 'pending';
-	`,
-		token,
-	)
-	if err != nil {
-		return false, err
-	}
-
-	_, err = tx.Exec(`UPDATE accounts a
-		INNER JOIN password_reset_tokens p ON p.account_id = a.id
-		SET a.password = ?
-		WHERE p.reset_token = ?;
-	`,
-		password,
-		token,
-	)
-	if err != nil {
-		return false, err
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
 }
 
 func (a *accountRepository) GetAccountByPasswordResetToken(token string) (*models.Account, error) {

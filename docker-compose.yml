@@ -25,14 +25,14 @@ services:
         ports:
             - '8000:8000'
         environment:
-            - API_HOST=localhost:8100
-            - COOKIE_SECRET=super-secret-key
-            - CSRF_SECRET=another-super-secret-key
-            - DB_HOST=enako-db
-            - DB_PORT=3306
-            - DB_USERNAME=root
-            - DB_PASSWORD=root
-            - DB_DATABASE=enako
+            - API_HOST=${API_HOST:?err}
+            - COOKIE_SECRET=${COOKIE_SECRET:?err}
+            - CSRF_SECRET=${CSRF_SECRET:?err}
+            - DB_HOST=${DB_HOST:?err}
+            - DB_PORT=${DB_PORT:?err}
+            - DB_USERNAME=${DB_USERNAME:?err}
+            - DB_PASSWORD=${DB_PASSWORD:?err}
+            - DB_DATABASE=${DB_DATABASE:?err}
             - MAILJET_PUBLIC_KEY=${MAILJET_PUBLIC_KEY:?err}
             - MAILJET_PRIVATE_KEY=${MAILJET_PRIVATE_KEY:?err}
             - ENAKO_DOMAIN=${ENAKO_DOMAIN:?err}
