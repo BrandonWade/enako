@@ -15,9 +15,9 @@ const (
 // AccountService an interface for working with accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_account_service.go . AccountService
 type AccountService interface {
-	CreateAccount(username, email, password string) (int64, error)
-	RegisterUser(username, email, password string) (int64, error)
-	VerifyAccount(username, password string) (int64, error)
+	CreateAccount(email, password string) (int64, error)
+	RegisterUser(email, password string) (int64, error)
+	VerifyAccount(email, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 }
 
@@ -40,8 +40,8 @@ func NewAccountService(logger *logrus.Logger, hasher helpers.PasswordHasher, gen
 	}
 }
 
-// CreateAccount creates an account with the given username, email, and password.
-func (a *accountService) CreateAccount(username, email, password string) (int64, error) {
+// CreateAccount creates an account with the given email and password.
+func (a *accountService) CreateAccount(email, password string) (int64, error) {
 	hash, err := a.hasher.Generate(password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
@@ -51,11 +51,11 @@ func (a *accountService) CreateAccount(username, email, password string) (int64,
 		return 0, err
 	}
 
-	id, err := a.repo.CreateAccount(username, email, string(hash))
+	id, err := a.repo.CreateAccount(email, string(hash))
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "AccountService.CreateAccount",
-			"username": username,
+			"method": "AccountService.CreateAccount",
+			"email":  email,
 		}).Error(err.Error())
 		return 0, err
 	}
@@ -64,13 +64,12 @@ func (a *accountService) CreateAccount(username, email, password string) (int64,
 }
 
 // RegisterUser creates an account, generates an activation token, and sends an activation email.
-func (a *accountService) RegisterUser(username, email, password string) (int64, error) {
-	accountID, err := a.CreateAccount(username, email, password)
+func (a *accountService) RegisterUser(email, password string) (int64, error) {
+	accountID, err := a.CreateAccount(email, password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "AccountService.RegisterUser",
-			"username": username,
-			"email":    email,
+			"method": "AccountService.RegisterUser",
+			"email":  email,
 		}).Error(err.Error())
 		return 0, err
 	}
@@ -100,13 +99,13 @@ func (a *accountService) RegisterUser(username, email, password string) (int64, 
 	return accountID, nil
 }
 
-// VerifyAccount checks whether or not an account exists for the given username and password.
-func (a *accountService) VerifyAccount(username, password string) (int64, error) {
-	account, err := a.repo.GetAccount(username)
+// VerifyAccount checks whether or not an account exists for the given email and password.
+func (a *accountService) VerifyAccount(email, password string) (int64, error) {
+	account, err := a.repo.GetAccount(email)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "AccountService.VerifyAccount",
-			"username": username,
+			"method": "AccountService.VerifyAccount",
+			"email":  email,
 		}).Error(err.Error())
 		return 0, err
 	}
@@ -122,8 +121,8 @@ func (a *accountService) VerifyAccount(username, password string) (int64, error)
 
 	if !account.IsActivated {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "AccountService.VerifyAccount",
-			"username": username,
+			"method": "AccountService.VerifyAccount",
+			"email":  email,
 		}).Info(helpers.ErrorAccountNotActivated())
 		return 0, helpers.ErrorAccountNotActivated()
 	}

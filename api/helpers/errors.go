@@ -22,9 +22,8 @@ var (
 	errNoExpensesDeleted                  = errors.New("no expenses were deleted")
 	errFetchingCategories                 = errors.New("error fetching categories")
 	errFetchingSession                    = errors.New("error fetching session")
-	errInvalidUsernameOrPassword          = errors.New("invalid username or password")
+	errInvalidEmailOrPassword             = errors.New("invalid email or password")
 	errMustBeString                       = errors.New("must be string")
-	errInvalidUsernameCharacters          = errors.New("username may only contain alphanumeric characters and underscores")
 	errInvalidEmail                       = errors.New("invalid email")
 	errInvalidPasswordCharacters          = errors.New("password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *")
 	errInvalidDate                        = errors.New("invalid date")
@@ -124,29 +123,14 @@ func ErrorFetchingSession() error {
 	return errFetchingSession
 }
 
-// ErrorInvalidUsernameOrPassword returned when an error occurs when an invalid username or password is submitted.
-func ErrorInvalidUsernameOrPassword() error {
-	return errInvalidUsernameOrPassword
+// ErrorInvalidEmailOrPassword returned when an error occurs when an invalid email or password is submitted.
+func ErrorInvalidEmailOrPassword() error {
+	return errInvalidEmailOrPassword
 }
 
 // ErrorMustBeString returned when an error occurs when a submitted value is an invalid type.
 func ErrorMustBeString() error {
 	return errMustBeString
-}
-
-// ErrorUsernameTooShort returned when an error occurs when a submitted username is too short.
-func ErrorUsernameTooShort(minUsernameLength int) error {
-	return fmt.Errorf("username must be minimum %d characters", minUsernameLength)
-}
-
-// ErrorUsernameTooLong returned when an error occurs when a submitted username is too long.
-func ErrorUsernameTooLong(maxUsernameLength int) error {
-	return fmt.Errorf("username must be maximum %d characters", maxUsernameLength)
-}
-
-// ErrorInvalidUsernameCharacters returned when an error occurs when a submitted username contains invalid characters.
-func ErrorInvalidUsernameCharacters() error {
-	return errInvalidUsernameCharacters
 }
 
 // ErrorInvalidEmail returned when an error occurs when a submitted email is malformed.

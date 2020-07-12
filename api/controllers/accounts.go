@@ -42,7 +42,7 @@ func (a *accountController) RegisterUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	id, err := a.service.RegisterUser(createAccount.Username, createAccount.Email, createAccount.Password)
+	id, err := a.service.RegisterUser(createAccount.Email, createAccount.Password)
 	if err != nil {
 		a.logger.WithField("method", "AccountController.RegisterUser").Error(err.Error())
 

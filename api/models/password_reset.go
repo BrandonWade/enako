@@ -2,7 +2,7 @@ package models
 
 // RequestPasswordReset a model for RequestPasswordReset requests.
 type RequestPasswordReset struct {
-	Username string `json:"username" validate:"uname"`
+	Email string `json:"email" validate:"email"`
 }
 
 // PasswordReset a model for PasswordReset requests.

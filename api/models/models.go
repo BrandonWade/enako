@@ -11,7 +11,6 @@ type Category struct {
 // Account a model for working with accounts.
 type Account struct {
 	ID          int64  `json:"id" db:"id"`
-	Username    string `json:"username" db:"username" validate:"uname"`
 	Email       string `json:"email,omitempty" db:"email" validate:"email"`
 	Password    string `json:"password,omitempty" db:"password" validate:"pword"`
 	IsActivated bool   `json:"is_activated,omitempty" db:"is_activated"`

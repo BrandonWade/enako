@@ -21,7 +21,7 @@ const (
 // PasswordResetService an interface for working with password resets.
 //go:generate counterfeiter -o fakes/fake_password_reset_service.go . PasswordResetService
 type PasswordResetService interface {
-	RequestPasswordReset(username string) (string, error)
+	RequestPasswordReset(email string) (string, error)
 	CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) error
 	VerifyPasswordResetToken(token string) error
 	ResetPassword(token, password string) (bool, error)
@@ -51,22 +51,22 @@ func NewPasswordResetService(logger *logrus.Logger, hasher helpers.PasswordHashe
 	}
 }
 
-// RequestPasswordReset requests a password reset for the account with the given username.
-func (a *passwordResetToken) RequestPasswordReset(username string) (string, error) {
-	account, err := a.accountRepo.GetAccountByUsername(username)
+// RequestPasswordReset requests a password reset for the account with the given email.
+func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) {
+	account, err := a.accountRepo.GetAccountByEmail(email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			a.logger.WithFields(logrus.Fields{
-				"method":   "PasswordResetService.RequestPasswordReset",
-				"username": username,
+				"method": "PasswordResetService.RequestPasswordReset",
+				"email":  email,
 			}).Info(err.Error())
 
 			return "", helpers.ErrorAccountNotFound()
 		}
 
 		a.logger.WithFields(logrus.Fields{
-			"method":   "PasswordResetService.RequestPasswordReset",
-			"username": username,
+			"method": "PasswordResetService.RequestPasswordReset",
+			"email":  email,
 		}).Error(err.Error())
 
 		return "", helpers.ErrorRequestingPasswordReset()
@@ -86,26 +86,24 @@ func (a *passwordResetToken) RequestPasswordReset(username string) (string, erro
 	err = a.emailService.SendPasswordResetEmail(account.Email, token)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "PasswordResetService.RequestPasswordReset",
-			"username": username,
-			"email":    account.Email,
-			"token":    token,
+			"method": "PasswordResetService.RequestPasswordReset",
+			"email":  account.Email,
+			"token":  token,
 		}).Error(err.Error())
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	email, err := a.obfuscator.Obfuscate(account.Email)
+	obfuscatedEmail, err := a.obfuscator.Obfuscate(account.Email)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "PasswordResetService.RequestPasswordReset",
-			"username": username,
-			"email":    account.Email,
+			"method": "PasswordResetService.RequestPasswordReset",
+			"email":  account.Email,
 		}).Error(err.Error())
 
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	return email, nil
+	return obfuscatedEmail, nil
 }
 
 // CheckPasswordResetTokenIsValid checks whether the given password reset token has a status of pending and is not expired.

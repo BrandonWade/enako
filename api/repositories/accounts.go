@@ -11,11 +11,11 @@ import (
 // AccountRepository an interface for working with accounts.
 //go:generate counterfeiter -o fakes/fake_account_repository.go . AccountRepository
 type AccountRepository interface {
-	GetAccount(username string) (*models.Account, error)
-	CreateAccount(username, email, password string) (int64, error)
+	GetAccount(email string) (*models.Account, error)
+	CreateAccount(email, password string) (int64, error)
 	CreateActivationToken(accountID int64, activationToken string) (int64, error)
 	ActivateAccount(token string) (bool, error)
-	GetAccountByUsername(username string) (*models.Account, error)
+	GetAccountByEmail(email string) (*models.Account, error)
 	GetAccountByPasswordResetToken(token string) (*models.Account, error)
 }
 
@@ -30,16 +30,16 @@ func NewAccountRepository(DB *sqlx.DB) AccountRepository {
 	}
 }
 
-// GetAccount returns an account with the given username.
-func (a *accountRepository) GetAccount(username string) (*models.Account, error) {
+// GetAccount returns an account with the given email.
+func (a *accountRepository) GetAccount(email string) (*models.Account, error) {
 	account := models.Account{}
 
 	err := a.DB.Get(&account, `SELECT
 		*
 		FROM accounts a
-		WHERE a.username = ?;
+		WHERE a.email = ?;
 	`,
-		username,
+		email,
 	)
 	if err != nil {
 		return &models.Account{}, err
@@ -48,20 +48,17 @@ func (a *accountRepository) GetAccount(username string) (*models.Account, error)
 	return &account, nil
 }
 
-// CreateAccount creates an account with the given username, email, and password.
-func (a *accountRepository) CreateAccount(username, email, password string) (int64, error) {
+// CreateAccount creates an account with the given email, email, and password.
+func (a *accountRepository) CreateAccount(email, password string) (int64, error) {
 	result, err := a.DB.Exec(`INSERT
 		INTO accounts(
-			username,
 			email,
 			password
 		) VALUES (
 			?,
-			?,
 			?
 		);
 	`,
-		username,
 		email,
 		password,
 	)
@@ -150,16 +147,16 @@ func (a *accountRepository) ActivateAccount(token string) (bool, error) {
 	return true, nil
 }
 
-// GetAccountByUsername returns the account with the given username.
-func (a *accountRepository) GetAccountByUsername(username string) (*models.Account, error) {
+// GetAccountByEmail returns the account with the given email.
+func (a *accountRepository) GetAccountByEmail(email string) (*models.Account, error) {
 	var account models.Account
 
 	err := a.DB.Get(&account, `SELECT
 		*
 		FROM accounts a
-		WHERE a.username = ?;
+		WHERE a.email = ?;
 	`,
-		username,
+		email,
 	)
 	if err != nil {
 		return &models.Account{}, err

@@ -55,12 +55,11 @@ var _ = Describe("DecodeCreateAccountMiddleware", func() {
 			})
 
 			It("calls the next function with no error", func() {
-				username := "test"
 				email := "test@example.com"
 				password := "testpassword123"
 				confirmPassword := "testpassword123"
 
-				payload := models.CreateAccount{Username: username, Email: email, Password: password, ConfirmPassword: confirmPassword}
+				payload := models.CreateAccount{Email: email, Password: password, ConfirmPassword: confirmPassword}
 				payloadJSON, _ := json.Marshal(payload)
 
 				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
@@ -73,12 +72,11 @@ var _ = Describe("DecodeCreateAccountMiddleware", func() {
 			})
 
 			It("stores the decoded CreateAccount payload in the request context", func() {
-				username := "test"
 				email := "test@example.com"
 				password := "testpassword123"
 				confirmPassword := "testpassword123"
 
-				payload := models.CreateAccount{Username: username, Email: email, Password: password, ConfirmPassword: confirmPassword}
+				payload := models.CreateAccount{Email: email, Password: password, ConfirmPassword: confirmPassword}
 				payloadJSON, _ := json.Marshal(payload)
 
 				r = httptest.NewRequest("POST", "/v1/accounts", bytes.NewBuffer(payloadJSON))
@@ -86,7 +84,6 @@ var _ = Describe("DecodeCreateAccountMiddleware", func() {
 					createAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
 
 					Expect(createAccount).To(gstruct.MatchFields(gstruct.IgnoreExtras, gstruct.Fields{
-						"Username":        Equal(username),
 						"Email":           Equal(email),
 						"Password":        Equal(password),
 						"ConfirmPassword": Equal(confirmPassword),

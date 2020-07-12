@@ -48,22 +48,22 @@ func (a *passwordResetController) RequestPasswordReset(w http.ResponseWriter, r 
 		return
 	}
 
-	email, err := a.service.RequestPasswordReset(resetRequest.Username)
+	email, err := a.service.RequestPasswordReset(resetRequest.Email)
 	if err != nil {
 		if errors.Is(err, helpers.ErrorAccountNotFound()) {
 			a.logger.WithFields(logrus.Fields{
-				"method":   "PasswordResetController.RequestPasswordReset",
-				"username": resetRequest.Username,
+				"method": "PasswordResetController.RequestPasswordReset",
+				"email":  resetRequest.Email,
 			}).Info(helpers.ErrorAccountNotFound())
 
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithUsernameNotFound(resetRequest.Username)))
+			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithEmailNotFound(resetRequest.Email)))
 			return
 		}
 
 		a.logger.WithFields(logrus.Fields{
-			"method":   "PasswordResetController.RequestPasswordReset",
-			"username": resetRequest.Username,
+			"method": "PasswordResetController.RequestPasswordReset",
+			"email":  resetRequest.Email,
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)

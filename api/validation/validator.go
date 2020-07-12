@@ -10,44 +10,15 @@ import (
 )
 
 const (
-	minUsernameLength = 5
-	maxUsernameLength = 32
 	minPasswordLength = 15
 	maxPasswordLength = 50
 )
 
 // InitValidator registers custom validation rules with the validator.
 func InitValidator() {
-	validator.SetValidationFunc("uname", ValidateUsername)
 	validator.SetValidationFunc("email", ValidateEmail)
 	validator.SetValidationFunc("pword", ValidatePassword)
 	validator.SetValidationFunc("date", ValidateDate)
-}
-
-// ValidateUsername checks that a username is valid (alphanumeric).
-func ValidateUsername(v interface{}, param string) error {
-	t := reflect.ValueOf(v)
-	if t.Kind() != reflect.String {
-		return helpers.ErrorMustBeString()
-	}
-
-	uname := t.String()
-	l := len(uname)
-
-	if l < minUsernameLength {
-		return helpers.ErrorUsernameTooShort(minUsernameLength)
-	}
-
-	if l > maxUsernameLength {
-		return helpers.ErrorUsernameTooLong(maxUsernameLength)
-	}
-
-	match, err := regexp.MatchString("^[^\\W_]+$", uname)
-	if err != nil || match != true {
-		return helpers.ErrorInvalidUsernameCharacters()
-	}
-
-	return nil
 }
 
 // ValidateEmail checks that an email is valid.

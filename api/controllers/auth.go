@@ -63,14 +63,14 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ID, err := a.service.VerifyAccount(account.Username, account.Password)
+	ID, err := a.service.VerifyAccount(account.Email, account.Password)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
-			"method":   "AuthController.Login",
-			"username": account.Username,
+			"method": "AuthController.Login",
+			"email":  account.Email,
 		}).Error(err.Error())
 
-		errMsg := helpers.ErrorInvalidUsernameOrPassword()
+		errMsg := helpers.ErrorInvalidEmailOrPassword()
 		if errors.Is(err, helpers.ErrorAccountNotActivated()) {
 			errMsg = helpers.ErrorAccountNotActivated()
 		}

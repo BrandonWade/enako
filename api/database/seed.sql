@@ -21,4 +21,4 @@ VALUES
 
 INSERT INTO accounts
 VALUES
-(1, 'foobar', 'foo@bar.net', '$2a$10$qVGU07cZd4AvKo32Ef6ruuxqzVeTqwxXHBSfpj/PZe5feUZJUKX/2', 1, '2020-05-24 15:20:08', '2020-05-24 15:20:08');
+(1, 'foo@bar.net', '$2a$10$qVGU07cZd4AvKo32Ef6ruuxqzVeTqwxXHBSfpj/PZe5feUZJUKX/2', 1, '2020-05-24 15:20:08', '2020-05-24 15:20:08');

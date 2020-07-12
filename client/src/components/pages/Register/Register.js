@@ -8,36 +8,27 @@ import InputField from '../../molecules/InputField';
 import PasswordField from '../../molecules/PasswordField';
 import ValidationRow from '../../atoms/ValidationRow';
 import Button from '../../atoms/Button';
-import { ValidateUsernameLength, ValidateUsernameCharacters } from '../../../validators/username';
 import { ValidateEmailFormat } from '../../../validators/email';
 import { ValidatePasswordLength, ValidatePasswordCharacters, ValidatePasswordsMatch } from '../../../validators/password';
 import './Register.scss';
 
 const Register = props => {
     const history = useHistory();
-    const [username, setUsername] = useState('foobar');
     const [email, setEmail] = useState('foo@bar.net');
     const [password, setPassword] = useState('testpassword123');
     const [confirmPassword, setConfirmPassword] = useState('testpassword123');
 
-    const validUsernameLength = ValidateUsernameLength(username);
-    const validUsernameCharacters = ValidateUsernameCharacters(username);
     const validEmailFormat = ValidateEmailFormat(email);
     const validPasswordLength = ValidatePasswordLength(password);
     const validPasswordCharacters = ValidatePasswordCharacters(password);
     const validPasswordsMatch = ValidatePasswordsMatch(password, confirmPassword);
 
     const isPasswordValid = validPasswordLength && validPasswordCharacters && validPasswordsMatch;
-    const isEnabled = validUsernameLength && validUsernameCharacters && validEmailFormat && isPasswordValid;
+    const isEnabled = validEmailFormat && isPasswordValid;
 
     const renderEmail = () => {
         return !props.passwordReset ? (
             <>
-                <InputField label='Username' value={username} onChange={e => setUsername(e.target.value)} />
-                <div className='Register-validatorRules'>
-                    <ValidationRow valid={validUsernameLength} description='Username is between 5 and 32 characters' />
-                    <ValidationRow valid={validUsernameCharacters} description='Username contains only numbers and letters' />
-                </div>
                 <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
                 <div className='Register-validatorRules'>
                     <ValidationRow valid={validEmailFormat} description='Email is well formatted' />
@@ -71,7 +62,6 @@ const Register = props => {
 
     const onCreateAccount = async () => {
         const data = {
-            username,
             email,
             password,
             confirm_password: confirmPassword,

@@ -22,12 +22,11 @@ type FakeAccountRepository struct {
 		result1 bool
 		result2 error
 	}
-	CreateAccountStub        func(string, string, string) (int64, error)
+	CreateAccountStub        func(string, string) (int64, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
 		arg1 string
 		arg2 string
-		arg3 string
 	}
 	createAccountReturns struct {
 		result1 int64
@@ -64,6 +63,19 @@ type FakeAccountRepository struct {
 		result1 *models.Account
 		result2 error
 	}
+	GetAccountByEmailStub        func(string) (*models.Account, error)
+	getAccountByEmailMutex       sync.RWMutex
+	getAccountByEmailArgsForCall []struct {
+		arg1 string
+	}
+	getAccountByEmailReturns struct {
+		result1 *models.Account
+		result2 error
+	}
+	getAccountByEmailReturnsOnCall map[int]struct {
+		result1 *models.Account
+		result2 error
+	}
 	GetAccountByPasswordResetTokenStub        func(string) (*models.Account, error)
 	getAccountByPasswordResetTokenMutex       sync.RWMutex
 	getAccountByPasswordResetTokenArgsForCall []struct {
@@ -74,19 +86,6 @@ type FakeAccountRepository struct {
 		result2 error
 	}
 	getAccountByPasswordResetTokenReturnsOnCall map[int]struct {
-		result1 *models.Account
-		result2 error
-	}
-	GetAccountByUsernameStub        func(string) (*models.Account, error)
-	getAccountByUsernameMutex       sync.RWMutex
-	getAccountByUsernameArgsForCall []struct {
-		arg1 string
-	}
-	getAccountByUsernameReturns struct {
-		result1 *models.Account
-		result2 error
-	}
-	getAccountByUsernameReturnsOnCall map[int]struct {
 		result1 *models.Account
 		result2 error
 	}
@@ -157,18 +156,17 @@ func (fake *FakeAccountRepository) ActivateAccountReturnsOnCall(i int, result1 b
 	}{result1, result2}
 }
 
-func (fake *FakeAccountRepository) CreateAccount(arg1 string, arg2 string, arg3 string) (int64, error) {
+func (fake *FakeAccountRepository) CreateAccount(arg1 string, arg2 string) (int64, error) {
 	fake.createAccountMutex.Lock()
 	ret, specificReturn := fake.createAccountReturnsOnCall[len(fake.createAccountArgsForCall)]
 	fake.createAccountArgsForCall = append(fake.createAccountArgsForCall, struct {
 		arg1 string
 		arg2 string
-		arg3 string
-	}{arg1, arg2, arg3})
-	fake.recordInvocation("CreateAccount", []interface{}{arg1, arg2, arg3})
+	}{arg1, arg2})
+	fake.recordInvocation("CreateAccount", []interface{}{arg1, arg2})
 	fake.createAccountMutex.Unlock()
 	if fake.CreateAccountStub != nil {
-		return fake.CreateAccountStub(arg1, arg2, arg3)
+		return fake.CreateAccountStub(arg1, arg2)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -183,17 +181,17 @@ func (fake *FakeAccountRepository) CreateAccountCallCount() int {
 	return len(fake.createAccountArgsForCall)
 }
 
-func (fake *FakeAccountRepository) CreateAccountCalls(stub func(string, string, string) (int64, error)) {
+func (fake *FakeAccountRepository) CreateAccountCalls(stub func(string, string) (int64, error)) {
 	fake.createAccountMutex.Lock()
 	defer fake.createAccountMutex.Unlock()
 	fake.CreateAccountStub = stub
 }
 
-func (fake *FakeAccountRepository) CreateAccountArgsForCall(i int) (string, string, string) {
+func (fake *FakeAccountRepository) CreateAccountArgsForCall(i int) (string, string) {
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
 	argsForCall := fake.createAccountArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+	return argsForCall.arg1, argsForCall.arg2
 }
 
 func (fake *FakeAccountRepository) CreateAccountReturns(result1 int64, result2 error) {
@@ -349,6 +347,69 @@ func (fake *FakeAccountRepository) GetAccountReturnsOnCall(i int, result1 *model
 	}{result1, result2}
 }
 
+func (fake *FakeAccountRepository) GetAccountByEmail(arg1 string) (*models.Account, error) {
+	fake.getAccountByEmailMutex.Lock()
+	ret, specificReturn := fake.getAccountByEmailReturnsOnCall[len(fake.getAccountByEmailArgsForCall)]
+	fake.getAccountByEmailArgsForCall = append(fake.getAccountByEmailArgsForCall, struct {
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("GetAccountByEmail", []interface{}{arg1})
+	fake.getAccountByEmailMutex.Unlock()
+	if fake.GetAccountByEmailStub != nil {
+		return fake.GetAccountByEmailStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getAccountByEmailReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAccountRepository) GetAccountByEmailCallCount() int {
+	fake.getAccountByEmailMutex.RLock()
+	defer fake.getAccountByEmailMutex.RUnlock()
+	return len(fake.getAccountByEmailArgsForCall)
+}
+
+func (fake *FakeAccountRepository) GetAccountByEmailCalls(stub func(string) (*models.Account, error)) {
+	fake.getAccountByEmailMutex.Lock()
+	defer fake.getAccountByEmailMutex.Unlock()
+	fake.GetAccountByEmailStub = stub
+}
+
+func (fake *FakeAccountRepository) GetAccountByEmailArgsForCall(i int) string {
+	fake.getAccountByEmailMutex.RLock()
+	defer fake.getAccountByEmailMutex.RUnlock()
+	argsForCall := fake.getAccountByEmailArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeAccountRepository) GetAccountByEmailReturns(result1 *models.Account, result2 error) {
+	fake.getAccountByEmailMutex.Lock()
+	defer fake.getAccountByEmailMutex.Unlock()
+	fake.GetAccountByEmailStub = nil
+	fake.getAccountByEmailReturns = struct {
+		result1 *models.Account
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountRepository) GetAccountByEmailReturnsOnCall(i int, result1 *models.Account, result2 error) {
+	fake.getAccountByEmailMutex.Lock()
+	defer fake.getAccountByEmailMutex.Unlock()
+	fake.GetAccountByEmailStub = nil
+	if fake.getAccountByEmailReturnsOnCall == nil {
+		fake.getAccountByEmailReturnsOnCall = make(map[int]struct {
+			result1 *models.Account
+			result2 error
+		})
+	}
+	fake.getAccountByEmailReturnsOnCall[i] = struct {
+		result1 *models.Account
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAccountRepository) GetAccountByPasswordResetToken(arg1 string) (*models.Account, error) {
 	fake.getAccountByPasswordResetTokenMutex.Lock()
 	ret, specificReturn := fake.getAccountByPasswordResetTokenReturnsOnCall[len(fake.getAccountByPasswordResetTokenArgsForCall)]
@@ -412,69 +473,6 @@ func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenReturnsOnCall(i
 	}{result1, result2}
 }
 
-func (fake *FakeAccountRepository) GetAccountByUsername(arg1 string) (*models.Account, error) {
-	fake.getAccountByUsernameMutex.Lock()
-	ret, specificReturn := fake.getAccountByUsernameReturnsOnCall[len(fake.getAccountByUsernameArgsForCall)]
-	fake.getAccountByUsernameArgsForCall = append(fake.getAccountByUsernameArgsForCall, struct {
-		arg1 string
-	}{arg1})
-	fake.recordInvocation("GetAccountByUsername", []interface{}{arg1})
-	fake.getAccountByUsernameMutex.Unlock()
-	if fake.GetAccountByUsernameStub != nil {
-		return fake.GetAccountByUsernameStub(arg1)
-	}
-	if specificReturn {
-		return ret.result1, ret.result2
-	}
-	fakeReturns := fake.getAccountByUsernameReturns
-	return fakeReturns.result1, fakeReturns.result2
-}
-
-func (fake *FakeAccountRepository) GetAccountByUsernameCallCount() int {
-	fake.getAccountByUsernameMutex.RLock()
-	defer fake.getAccountByUsernameMutex.RUnlock()
-	return len(fake.getAccountByUsernameArgsForCall)
-}
-
-func (fake *FakeAccountRepository) GetAccountByUsernameCalls(stub func(string) (*models.Account, error)) {
-	fake.getAccountByUsernameMutex.Lock()
-	defer fake.getAccountByUsernameMutex.Unlock()
-	fake.GetAccountByUsernameStub = stub
-}
-
-func (fake *FakeAccountRepository) GetAccountByUsernameArgsForCall(i int) string {
-	fake.getAccountByUsernameMutex.RLock()
-	defer fake.getAccountByUsernameMutex.RUnlock()
-	argsForCall := fake.getAccountByUsernameArgsForCall[i]
-	return argsForCall.arg1
-}
-
-func (fake *FakeAccountRepository) GetAccountByUsernameReturns(result1 *models.Account, result2 error) {
-	fake.getAccountByUsernameMutex.Lock()
-	defer fake.getAccountByUsernameMutex.Unlock()
-	fake.GetAccountByUsernameStub = nil
-	fake.getAccountByUsernameReturns = struct {
-		result1 *models.Account
-		result2 error
-	}{result1, result2}
-}
-
-func (fake *FakeAccountRepository) GetAccountByUsernameReturnsOnCall(i int, result1 *models.Account, result2 error) {
-	fake.getAccountByUsernameMutex.Lock()
-	defer fake.getAccountByUsernameMutex.Unlock()
-	fake.GetAccountByUsernameStub = nil
-	if fake.getAccountByUsernameReturnsOnCall == nil {
-		fake.getAccountByUsernameReturnsOnCall = make(map[int]struct {
-			result1 *models.Account
-			result2 error
-		})
-	}
-	fake.getAccountByUsernameReturnsOnCall[i] = struct {
-		result1 *models.Account
-		result2 error
-	}{result1, result2}
-}
-
 func (fake *FakeAccountRepository) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -486,10 +484,10 @@ func (fake *FakeAccountRepository) Invocations() map[string][][]interface{} {
 	defer fake.createActivationTokenMutex.RUnlock()
 	fake.getAccountMutex.RLock()
 	defer fake.getAccountMutex.RUnlock()
+	fake.getAccountByEmailMutex.RLock()
+	defer fake.getAccountByEmailMutex.RUnlock()
 	fake.getAccountByPasswordResetTokenMutex.RLock()
 	defer fake.getAccountByPasswordResetTokenMutex.RUnlock()
-	fake.getAccountByUsernameMutex.RLock()
-	defer fake.getAccountByUsernameMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

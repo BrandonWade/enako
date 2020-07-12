@@ -4,10 +4,6 @@
     display: flex;
     align-items: center;
     position: relative;
-
-    &:first-of-type {
-        margin-top: 0.75rem;
-    }
 }
 
 .ValidationRow-message {

@@ -28,6 +28,7 @@ const PasswordField = props => {
             name={props.name}
             value={props.value}
             className={passwordClass}
+            label={props.label || ''}
             description={passwordDescription || ''}
             autoComplete={props.autoComplete || ''}
             onChange={props.onChange}

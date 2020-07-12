@@ -1,14 +1,12 @@
 DROP TABLE IF EXISTS accounts;
 CREATE TABLE accounts (
   id int unsigned NOT NULL AUTO_INCREMENT,
-  username varchar(32) NOT NULL DEFAULT '',
   email varchar(256) NOT NULL DEFAULT '',
   password varbinary(60) NOT NULL DEFAULT '0',
   is_activated tinyint(1) NOT NULL DEFAULT 0,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY U_username (username),
   UNIQUE KEY U_email (email)
 );
 

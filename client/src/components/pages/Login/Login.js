@@ -9,12 +9,12 @@ import './Login.scss';
 
 const Login = props => {
     const history = useHistory();
-    const [username, setUsername] = useState('foobar');
+    const [email, setEmail] = useState('foo@bar.net');
     const [password, setPassword] = useState('testpassword123');
 
     const onLogin = async () => {
         const data = {
-            username,
+            email,
             password,
         };
 
@@ -33,7 +33,7 @@ const Login = props => {
             <div className='Login-content'>
                 <Logo />
                 <Card className='Login-form'>
-                    <InputField type='text' label='Username' value={username} onChange={e => setUsername(e.target.value)} />
+                    <InputField type='text' label='Email' value={email} onChange={e => setEmail(e.target.value)} />
                     <InputField
                         type='password'
                         label='Password'
