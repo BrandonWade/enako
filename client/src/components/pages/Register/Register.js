@@ -5,6 +5,7 @@ import resetPassword from '../../../effects/resetPassword';
 import Logo from '../../atoms/Logo';
 import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
+import PasswordField from '../../molecules/PasswordField';
 import ValidationRow from '../../atoms/ValidationRow';
 import Button from '../../atoms/Button';
 import { ValidateUsernameLength, ValidateUsernameCharacters } from '../../../validators/username';
@@ -92,7 +93,7 @@ const Register = props => {
                 <Card className='Register-form'>
                     <div className='Register-formGrid'>
                         {renderEmail()}
-                        <InputField
+                        <PasswordField
                             type='password'
                             label='Password'
                             value={password}
@@ -111,7 +112,7 @@ const Register = props => {
                             />
                             <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
                         </div>
-                        <InputField
+                        <PasswordField
                             type='password'
                             label='Confirm Password'
                             value={confirmPassword}
