@@ -89,6 +89,32 @@ type FakeAccountRepository struct {
 		result1 *models.Account
 		result2 error
 	}
+	GetActivationTokenByAccountIDStub        func(int64) (*models.ActivationToken, error)
+	getActivationTokenByAccountIDMutex       sync.RWMutex
+	getActivationTokenByAccountIDArgsForCall []struct {
+		arg1 int64
+	}
+	getActivationTokenByAccountIDReturns struct {
+		result1 *models.ActivationToken
+		result2 error
+	}
+	getActivationTokenByAccountIDReturnsOnCall map[int]struct {
+		result1 *models.ActivationToken
+		result2 error
+	}
+	UpdateActivationTokenLastSentAtStub        func(int64) (int64, error)
+	updateActivationTokenLastSentAtMutex       sync.RWMutex
+	updateActivationTokenLastSentAtArgsForCall []struct {
+		arg1 int64
+	}
+	updateActivationTokenLastSentAtReturns struct {
+		result1 int64
+		result2 error
+	}
+	updateActivationTokenLastSentAtReturnsOnCall map[int]struct {
+		result1 int64
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -473,6 +499,132 @@ func (fake *FakeAccountRepository) GetAccountByPasswordResetTokenReturnsOnCall(i
 	}{result1, result2}
 }
 
+func (fake *FakeAccountRepository) GetActivationTokenByAccountID(arg1 int64) (*models.ActivationToken, error) {
+	fake.getActivationTokenByAccountIDMutex.Lock()
+	ret, specificReturn := fake.getActivationTokenByAccountIDReturnsOnCall[len(fake.getActivationTokenByAccountIDArgsForCall)]
+	fake.getActivationTokenByAccountIDArgsForCall = append(fake.getActivationTokenByAccountIDArgsForCall, struct {
+		arg1 int64
+	}{arg1})
+	fake.recordInvocation("GetActivationTokenByAccountID", []interface{}{arg1})
+	fake.getActivationTokenByAccountIDMutex.Unlock()
+	if fake.GetActivationTokenByAccountIDStub != nil {
+		return fake.GetActivationTokenByAccountIDStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.getActivationTokenByAccountIDReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAccountRepository) GetActivationTokenByAccountIDCallCount() int {
+	fake.getActivationTokenByAccountIDMutex.RLock()
+	defer fake.getActivationTokenByAccountIDMutex.RUnlock()
+	return len(fake.getActivationTokenByAccountIDArgsForCall)
+}
+
+func (fake *FakeAccountRepository) GetActivationTokenByAccountIDCalls(stub func(int64) (*models.ActivationToken, error)) {
+	fake.getActivationTokenByAccountIDMutex.Lock()
+	defer fake.getActivationTokenByAccountIDMutex.Unlock()
+	fake.GetActivationTokenByAccountIDStub = stub
+}
+
+func (fake *FakeAccountRepository) GetActivationTokenByAccountIDArgsForCall(i int) int64 {
+	fake.getActivationTokenByAccountIDMutex.RLock()
+	defer fake.getActivationTokenByAccountIDMutex.RUnlock()
+	argsForCall := fake.getActivationTokenByAccountIDArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeAccountRepository) GetActivationTokenByAccountIDReturns(result1 *models.ActivationToken, result2 error) {
+	fake.getActivationTokenByAccountIDMutex.Lock()
+	defer fake.getActivationTokenByAccountIDMutex.Unlock()
+	fake.GetActivationTokenByAccountIDStub = nil
+	fake.getActivationTokenByAccountIDReturns = struct {
+		result1 *models.ActivationToken
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountRepository) GetActivationTokenByAccountIDReturnsOnCall(i int, result1 *models.ActivationToken, result2 error) {
+	fake.getActivationTokenByAccountIDMutex.Lock()
+	defer fake.getActivationTokenByAccountIDMutex.Unlock()
+	fake.GetActivationTokenByAccountIDStub = nil
+	if fake.getActivationTokenByAccountIDReturnsOnCall == nil {
+		fake.getActivationTokenByAccountIDReturnsOnCall = make(map[int]struct {
+			result1 *models.ActivationToken
+			result2 error
+		})
+	}
+	fake.getActivationTokenByAccountIDReturnsOnCall[i] = struct {
+		result1 *models.ActivationToken
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountRepository) UpdateActivationTokenLastSentAt(arg1 int64) (int64, error) {
+	fake.updateActivationTokenLastSentAtMutex.Lock()
+	ret, specificReturn := fake.updateActivationTokenLastSentAtReturnsOnCall[len(fake.updateActivationTokenLastSentAtArgsForCall)]
+	fake.updateActivationTokenLastSentAtArgsForCall = append(fake.updateActivationTokenLastSentAtArgsForCall, struct {
+		arg1 int64
+	}{arg1})
+	fake.recordInvocation("UpdateActivationTokenLastSentAt", []interface{}{arg1})
+	fake.updateActivationTokenLastSentAtMutex.Unlock()
+	if fake.UpdateActivationTokenLastSentAtStub != nil {
+		return fake.UpdateActivationTokenLastSentAtStub(arg1)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.updateActivationTokenLastSentAtReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAccountRepository) UpdateActivationTokenLastSentAtCallCount() int {
+	fake.updateActivationTokenLastSentAtMutex.RLock()
+	defer fake.updateActivationTokenLastSentAtMutex.RUnlock()
+	return len(fake.updateActivationTokenLastSentAtArgsForCall)
+}
+
+func (fake *FakeAccountRepository) UpdateActivationTokenLastSentAtCalls(stub func(int64) (int64, error)) {
+	fake.updateActivationTokenLastSentAtMutex.Lock()
+	defer fake.updateActivationTokenLastSentAtMutex.Unlock()
+	fake.UpdateActivationTokenLastSentAtStub = stub
+}
+
+func (fake *FakeAccountRepository) UpdateActivationTokenLastSentAtArgsForCall(i int) int64 {
+	fake.updateActivationTokenLastSentAtMutex.RLock()
+	defer fake.updateActivationTokenLastSentAtMutex.RUnlock()
+	argsForCall := fake.updateActivationTokenLastSentAtArgsForCall[i]
+	return argsForCall.arg1
+}
+
+func (fake *FakeAccountRepository) UpdateActivationTokenLastSentAtReturns(result1 int64, result2 error) {
+	fake.updateActivationTokenLastSentAtMutex.Lock()
+	defer fake.updateActivationTokenLastSentAtMutex.Unlock()
+	fake.UpdateActivationTokenLastSentAtStub = nil
+	fake.updateActivationTokenLastSentAtReturns = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountRepository) UpdateActivationTokenLastSentAtReturnsOnCall(i int, result1 int64, result2 error) {
+	fake.updateActivationTokenLastSentAtMutex.Lock()
+	defer fake.updateActivationTokenLastSentAtMutex.Unlock()
+	fake.UpdateActivationTokenLastSentAtStub = nil
+	if fake.updateActivationTokenLastSentAtReturnsOnCall == nil {
+		fake.updateActivationTokenLastSentAtReturnsOnCall = make(map[int]struct {
+			result1 int64
+			result2 error
+		})
+	}
+	fake.updateActivationTokenLastSentAtReturnsOnCall[i] = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeAccountRepository) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -488,6 +640,10 @@ func (fake *FakeAccountRepository) Invocations() map[string][][]interface{} {
 	defer fake.getAccountByEmailMutex.RUnlock()
 	fake.getAccountByPasswordResetTokenMutex.RLock()
 	defer fake.getAccountByPasswordResetTokenMutex.RUnlock()
+	fake.getActivationTokenByAccountIDMutex.RLock()
+	defer fake.getActivationTokenByAccountIDMutex.RUnlock()
+	fake.updateActivationTokenLastSentAtMutex.RLock()
+	defer fake.updateActivationTokenLastSentAtMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

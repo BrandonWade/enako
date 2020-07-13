@@ -57,7 +57,7 @@ var _ = Describe("AccountController", func() {
 				accountService.RegisterUserReturns(accountID, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: accountEmail, Password: "testpassword123", ConfirmPassword: "testpassword123"}
-				resBody := `{"id":100,"email":"email@test.com"}`
+				resBody := `{"messages":["We've sent an email to email@test.com - please follow the instructions inside to activate your account."]}`
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
