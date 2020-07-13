@@ -42,7 +42,7 @@ func (a *accountController) RegisterUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	id, err := a.service.RegisterUser(createAccount.Email, createAccount.Password)
+	_, err := a.service.RegisterUser(createAccount.Email, createAccount.Password)
 	if err != nil {
 		a.logger.WithField("method", "AccountController.RegisterUser").Error(err.Error())
 
@@ -51,12 +51,8 @@ func (a *accountController) RegisterUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	createAccount.ID = id
-	createAccount.Password = ""
-	createAccount.ConfirmPassword = ""
-
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(createAccount)
+	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageActivationEmailSent(createAccount.Email)))
 	return
 }
 

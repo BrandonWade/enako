@@ -2,6 +2,11 @@ package helpers
 
 import "fmt"
 
+// MessageActivationEmailSent returned when an account activation email is sent.
+func MessageActivationEmailSent(email string) string {
+	return fmt.Sprintf("We've sent an email to %s - please follow the instructions inside to activate your account.", email)
+}
+
 // MessageResetPasswordEmailSent returned when a reset password request is made.
 func MessageResetPasswordEmailSent(email string) string {
 	return fmt.Sprintf("Heads up! A password reset link was sent to the email associated with your account: %s", email)
@@ -14,5 +19,5 @@ func MessageAccountWithEmailNotFound(email string) string {
 
 // MessagePasswordUpdated returned when a password reset was successful.
 func MessagePasswordUpdated() string {
-	return fmt.Sprintf("Hey we were able to successfully update your account - please login using your new password.")
+	return "Hey we were able to successfully update your account - please login using your new password."
 }

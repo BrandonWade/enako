@@ -70,13 +70,15 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 			"email":  account.Email,
 		}).Error(err.Error())
 
-		errMsg := helpers.ErrorInvalidEmailOrPassword()
-		if errors.Is(err, helpers.ErrorAccountNotActivated()) {
-			errMsg = helpers.ErrorAccountNotActivated()
+		w.WriteHeader(http.StatusUnauthorized)
+		if errors.Is(err, helpers.ErrorActivationEmailResent()) {
+			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageActivationEmailSent(account.Email)))
+		} else if errors.Is(err, helpers.ErrorAccountNotActivated()) {
+			json.NewEncoder(w).Encode(models.NewAPIError(err))
+		} else {
+			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidEmailOrPassword()))
 		}
 
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(models.NewAPIError(errMsg))
 		return
 	}
 

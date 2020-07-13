@@ -1,6 +1,8 @@
 package services
 
 import (
+	"time"
+
 	"github.com/BrandonWade/enako/api/helpers"
 	"github.com/BrandonWade/enako/api/repositories"
 
@@ -120,6 +122,46 @@ func (a *accountService) VerifyAccount(email, password string) (int64, error) {
 	}
 
 	if !account.IsActivated {
+		activationToken, err := a.repo.GetActivationTokenByAccountID(account.ID)
+		if err != nil {
+			a.logger.WithFields(logrus.Fields{
+				"method":    "AccountService.VerifyAccount",
+				"accountID": account.ID,
+			}).Error(err.Error())
+			return 0, err
+		}
+
+		lastSent, err := time.Parse("2006-01-02 15:04:05", activationToken.LastSentAt)
+		if err != nil {
+			a.logger.WithFields(logrus.Fields{
+				"method":  "AccountService.VerifyAccount",
+				"tokenID": activationToken.ID,
+			}).Error(err.Error())
+			return 0, err
+		}
+
+		if time.Now().After(lastSent.Add(1 * time.Hour)) {
+			err = a.emailService.SendAccountActivationEmail(account.Email, activationToken.ActivationToken)
+			if err != nil {
+				a.logger.WithFields(logrus.Fields{
+					"method":  "AccountService.VerifyAccount",
+					"tokenID": activationToken.ID,
+				}).Error(err.Error())
+				return 0, err
+			}
+
+			_, err := a.repo.UpdateActivationTokenLastSentAt(activationToken.ID)
+			if err != nil {
+				a.logger.WithFields(logrus.Fields{
+					"method":  "AccountService.VerifyAccount",
+					"tokenID": activationToken.ID,
+				}).Error(err.Error())
+				return 0, err
+			}
+
+			return 0, helpers.ErrorActivationEmailResent()
+		}
+
 		a.logger.WithFields(logrus.Fields{
 			"method": "AccountService.VerifyAccount",
 			"email":  email,

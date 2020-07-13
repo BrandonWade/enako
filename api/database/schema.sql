@@ -20,6 +20,7 @@ CREATE TABLE account_activation_tokens (
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
+  UNIQUE KEY U_account_id (account_id),
   UNIQUE KEY U_activation_token (activation_token)
 );
 

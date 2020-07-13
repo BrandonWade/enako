@@ -17,6 +17,9 @@ type AccountRepository interface {
 	ActivateAccount(token string) (bool, error)
 	GetAccountByEmail(email string) (*models.Account, error)
 	GetAccountByPasswordResetToken(token string) (*models.Account, error)
+
+	GetActivationTokenByAccountID(accountID int64) (*models.ActivationToken, error)
+	UpdateActivationTokenLastSentAt(tokenID int64) (int64, error)
 }
 
 type accountRepository struct {
@@ -165,6 +168,7 @@ func (a *accountRepository) GetAccountByEmail(email string) (*models.Account, er
 	return &account, nil
 }
 
+// GetAccountByPasswordResetToken returns the account associated with the given password reset token.
 func (a *accountRepository) GetAccountByPasswordResetToken(token string) (*models.Account, error) {
 	var account models.Account
 
@@ -181,4 +185,42 @@ func (a *accountRepository) GetAccountByPasswordResetToken(token string) (*model
 	}
 
 	return &account, nil
+}
+
+// GetActivationTokenByAccountID returns the activation token associated with the given account id.
+func (a *accountRepository) GetActivationTokenByAccountID(accountID int64) (*models.ActivationToken, error) {
+	var activationToken models.ActivationToken
+
+	err := a.DB.Get(&activationToken, `SELECT
+		t.*
+		FROM account_activation_tokens t
+		WHERE t.account_id = ?;
+	`,
+		accountID,
+	)
+	if err != nil {
+		return &models.ActivationToken{}, err
+	}
+
+	return &activationToken, nil
+}
+
+// UpdateActivationTokenLastSentAt sets the last sent at timestamp for the activation token with the given id.
+func (a *accountRepository) UpdateActivationTokenLastSentAt(tokenID int64) (int64, error) {
+	result, err := a.DB.Exec(`UPDATE account_activation_tokens
+		SET last_sent_at = NOW()
+		WHERE id = ?;
+	`,
+		tokenID,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }

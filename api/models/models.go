@@ -31,6 +31,17 @@ type Expense struct {
 	UpdatedAt   string  `json:"updated_at,omitempty" db:"updated_at"`
 }
 
+// ActivationToken a model for activating accounts.
+type ActivationToken struct {
+	ID              int64  `json:"id" db:"id"`
+	AccountID       int64  `json:"account_id" db:"account_id"`
+	ActivationToken string `json:"activation_token" db:"activation_token"`
+	IsUsed          bool   `json:"is_used" db:"is_used"`
+	LastSentAt      string `json:"last_sent_at" db:"last_sent_at"`
+	CreatedAt       string `json:"created_at" db:"created_at"`
+	UpdatedAt       string `json:"updated_at" db:"updated_at"`
+}
+
 // PasswordResetToken a model for working with password reset tokens.
 type PasswordResetToken struct {
 	ID         int64  `json:"id" db:"id"`

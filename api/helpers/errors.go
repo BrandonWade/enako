@@ -29,6 +29,7 @@ var (
 	errInvalidDate                        = errors.New("invalid date")
 	errRetrievingAccountID                = errors.New("error retrieving user account id")
 	errAccountNotActivated                = errors.New("account not activated")
+	errActivationEmailResent              = errors.New("account activation email resent")
 	errInvalidActivationToken             = errors.New("invalid account activation token")
 	errActivatingAccount                  = errors.New("error activating account")
 	errInvalidRequestPasswordResetPayload = errors.New("invalid request password reset payload")
@@ -166,6 +167,11 @@ func ErrorRetrievingAccountID() error {
 // ErrorAccountNotActivated returned when attempting to log into an account that has not yet been activated.
 func ErrorAccountNotActivated() error {
 	return errAccountNotActivated
+}
+
+// ErrorActivationEmailResent returned when attempting to log into an account that has not yet been activated.
+func ErrorActivationEmailResent() error {
+	return errActivationEmailResent
 }
 
 // ErrorInvalidActivationToken returned when a problem occurs when attempting to retrieve the activation token from the query string.
