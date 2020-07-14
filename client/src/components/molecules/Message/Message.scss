@@ -1,0 +1,30 @@
+.Message {
+    position: relative;
+    padding: 1.1rem;
+    margin-bottom: 1.5rem;
+    border: var(--line);
+    border-radius: var(--border-radius);
+
+    &--info {
+        background-color: #ccdffe;
+    }
+
+    &--error {
+        background-color: #fea3aa;
+    }
+}
+
+.Message-dismissButton {
+    position: absolute;
+    top: 0;
+    right: 0.4rem;
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+    border: none;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.6);
+
+    &:hover {
+        color: rgba(0, 0, 0, 0.4);
+    }
+}
