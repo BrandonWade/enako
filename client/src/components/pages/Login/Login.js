@@ -21,9 +21,8 @@ const Login = props => {
         };
 
         const response = await loginToAccount(data);
-        // TODO: Should not prevent login when messages are present
-        if (response.errors || response.messages) {
-            console.error(response); // TODO: Implement proper error handling
+        if (response?.messages?.length > 0) {
+            props.setMessages(response.messages);
             return;
         }
 

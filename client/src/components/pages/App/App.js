@@ -7,6 +7,7 @@ import AuthenticatedContext from '../../../contexts/AuthenticatedContext';
 import SelectedDateContext from '../../../contexts/SelectedDateContext';
 import CategoryContext from '../../../contexts/CategoryContext';
 import ExpenseContext from '../../../contexts/ExpenseContext';
+import MessageContext from '../../../contexts/MessageContext';
 import AuthenticatedRoute from '../../routing/AuthenticatedRoute';
 import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
 import Home from '../Home';
@@ -17,19 +18,17 @@ import Editor from '../Editor';
 import './App.scss';
 
 const App = () => {
+    const [messages, setMessages] = useState([]);
     const [authenticated, setAuthenticated] = useState(document.cookie.includes('enako-session'));
     const [selectedDate, setSelectedDate] = useState(new Date());
-
     const [categories, setCategories] = useState([]);
     const [expenses, setExpenses] = useState([]);
 
     useEffect(() => {
         const fetchCSRF = async () => {
             const csrfToken = await retrieveCSRFToken();
-
-            // TODO: Implement proper error handling
-            if (csrfToken.errors) {
-                console.error(csrfToken);
+            if (csrfToken?.messages?.length > 0) {
+                setMessages(csrfToken.messages);
                 return;
             }
 
@@ -45,12 +44,14 @@ const App = () => {
             }
 
             const categories = await fetchCategories();
-            const expenses = await fetchExpenses();
+            if (categories?.messages?.length > 0) {
+                setMessages(categories.messages);
+                return;
+            }
 
-            // TODO: Implement proper error handling
-            if (categories.errors || expenses.errors) {
-                console.error(categories);
-                console.error(expenses);
+            const expenses = await fetchExpenses();
+            if (expenses?.messages?.length > 0) {
+                setMessages(expenses.messages);
                 return;
             }
 
@@ -61,26 +62,64 @@ const App = () => {
     }, [authenticated]);
 
     return (
-        <AuthenticatedContext.Provider value={authenticated}>
-            <SelectedDateContext.Provider value={selectedDate}>
-                <CategoryContext.Provider value={categories}>
-                    <ExpenseContext.Provider value={expenses}>
-                        <BrowserRouter>
-                            <Switch>
-                                <Route path='/login' render={() => <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />} />
-                                <Route path='/password' exact component={ForgotPassword} />
-                                <Route path='/password/reset' render={() => <Register passwordReset={true} />} />
-                                <Route path='/register' component={() => <Register passwordReset={false} />} />
-                                <AuthenticatedRoute path='/' exact component={Home} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-                                <AuthenticatedRoute path='/expenses' exact component={Editor} setExpenses={setExpenses} setSelectedDate={setSelectedDate} />
-                                <AuthenticatedRoute path='/expenses/:id' component={Editor} setExpenses={setExpenses} setSelectedDate={setSelectedDate} />
-                                <AuthenticatedRedirect />
-                            </Switch>
-                        </BrowserRouter>
-                    </ExpenseContext.Provider>
-                </CategoryContext.Provider>
-            </SelectedDateContext.Provider>
-        </AuthenticatedContext.Provider>
+        <MessageContext.Provider value={messages}>
+            <AuthenticatedContext.Provider value={authenticated}>
+                <SelectedDateContext.Provider value={selectedDate}>
+                    <CategoryContext.Provider value={categories}>
+                        <ExpenseContext.Provider value={expenses}>
+                            <BrowserRouter>
+                                <Switch>
+                                    <Route
+                                        path='/login'
+                                        render={() => (
+                                            <Login
+                                                setMessages={setMessages}
+                                                setAuthenticated={setAuthenticated}
+                                                setCategories={setCategories}
+                                                setExpenses={setExpenses}
+                                            />
+                                        )}
+                                    />
+                                    <Route path='/password' exact render={() => <ForgotPassword setMessages={setMessages} />} />
+                                    <Route
+                                        path='/password/reset'
+                                        render={() => <Register passwordReset={true} setMessages={setMessages} />}
+                                    />
+                                    <Route
+                                        path='/register'
+                                        component={() => <Register passwordReset={false} setMessages={setMessages} />}
+                                    />
+                                    <AuthenticatedRoute
+                                        path='/'
+                                        exact
+                                        component={Home}
+                                        setMessages={setMessages}
+                                        selectedDate={selectedDate}
+                                        setSelectedDate={setSelectedDate}
+                                    />
+                                    <AuthenticatedRoute
+                                        path='/expenses'
+                                        exact
+                                        component={Editor}
+                                        setMessages={setMessages}
+                                        setExpenses={setExpenses}
+                                        setSelectedDate={setSelectedDate}
+                                    />
+                                    <AuthenticatedRoute
+                                        path='/expenses/:id'
+                                        component={Editor}
+                                        setMessages={setMessages}
+                                        setExpenses={setExpenses}
+                                        setSelectedDate={setSelectedDate}
+                                    />
+                                    <AuthenticatedRedirect />
+                                </Switch>
+                            </BrowserRouter>
+                        </ExpenseContext.Provider>
+                    </CategoryContext.Provider>
+                </SelectedDateContext.Provider>
+            </AuthenticatedContext.Provider>
+        </MessageContext.Provider>
     );
 };
 

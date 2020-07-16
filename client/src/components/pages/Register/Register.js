@@ -7,6 +7,7 @@ import Card from '../../atoms/Card';
 import InputField from '../../molecules/InputField';
 import PasswordField from '../../molecules/PasswordField';
 import ValidationRow from '../../atoms/ValidationRow';
+import MessageList from '../../organisms/MessageList';
 import Button from '../../atoms/Button';
 import { ValidateEmailFormat } from '../../../validators/email';
 import { ValidatePasswordLength, ValidatePasswordCharacters, ValidatePasswordsMatch } from '../../../validators/password';
@@ -52,8 +53,8 @@ const Register = props => {
         };
 
         const response = await resetPassword(data);
-        if (response.errors) {
-            console.error(response); // TODO: Implement proper error handling
+        if (response?.messages?.length > 0) {
+            props.setMessages(response.messages);
             return;
         }
 
@@ -68,8 +69,8 @@ const Register = props => {
         };
 
         const response = await createAccount(data);
-        if (response.errors) {
-            console.error(response); // TODO: Implement proper error handling
+        if (response?.messages?.length > 0) {
+            props.setMessages(response.messages);
             return;
         }
 
@@ -81,6 +82,7 @@ const Register = props => {
             <div className='Register-content'>
                 <Logo />
                 <Card className='Register-form'>
+                    <MessageList />
                     <div className='Register-formGrid'>
                         {renderEmail()}
                         <PasswordField
