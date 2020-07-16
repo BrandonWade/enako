@@ -43,7 +43,7 @@ var _ = Describe("AccountController", func() {
 			It("returns an error if one was encountered while communicating with the service", func() {
 				accountService.RegisterUserReturns(0, errors.New("service error"))
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorCreatingAccount())
+				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorCreatingAccount())
 
 				accountController.RegisterUser(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
@@ -57,7 +57,7 @@ var _ = Describe("AccountController", func() {
 				accountService.RegisterUserReturns(accountID, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: accountEmail, Password: "testpassword123", ConfirmPassword: "testpassword123"}
-				resBody := `{"messages":["We've sent an email to email@test.com - please follow the instructions inside to activate your account."]}`
+				resBody := fmt.Sprintf(`[{"text":"%s","type":"info"}]`, helpers.MessageActivationEmailSent(accountEmail))
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 

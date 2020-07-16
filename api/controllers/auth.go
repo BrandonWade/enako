@@ -49,7 +49,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		a.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingSession()))
 		return
 	}
 
@@ -59,7 +59,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		a.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidAccountPayload()))
 		return
 	}
 
@@ -72,11 +72,11 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusUnauthorized)
 		if errors.Is(err, helpers.ErrorActivationEmailResent()) {
-			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageActivationEmailSent(account.Email)))
+			json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageActivationEmailSent(account.Email)))
 		} else if errors.Is(err, helpers.ErrorAccountNotActivated()) {
-			json.NewEncoder(w).Encode(models.NewAPIError(err))
+			json.NewEncoder(w).Encode(models.MessagesFromErrors(err))
 		} else {
-			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidEmailOrPassword()))
+			json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidEmailOrPassword()))
 		}
 
 		return
@@ -101,7 +101,7 @@ func (a *authController) Logout(w http.ResponseWriter, r *http.Request) {
 		a.logger.WithField("method", "AuthController.Logout").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingSession()))
 		return
 	}
 

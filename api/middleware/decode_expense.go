@@ -19,7 +19,7 @@ func (m *MiddlewareStack) DecodeExpense() Middleware {
 				m.logger.WithField("method", "middleware.DecodeExpense").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
 				return
 			}
 

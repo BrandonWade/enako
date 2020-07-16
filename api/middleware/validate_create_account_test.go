@@ -43,7 +43,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 		Context("when validating a CreateAccount from an incoming request", func() {
 			It("returns an error if an error is encountered retrieving the CreateAccount from the request Context", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidAccountPayload())
+				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorInvalidAccountPayload())
 
 				handler := mw(decorator)
 				handler(w, r)
@@ -55,7 +55,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 			It("returns an error if an invalid email is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: "invalid@@invalid.com", Password: "testpassword123", ConfirmPassword: "testpassword123"}
-				resBody := `{"errors":["Email: invalid email"]}`
+				resBody := `[{"text":"Email: invalid email","type":"error"}]`
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
@@ -69,7 +69,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 			It("returns an error if a password that is too short is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: "test@email.com", Password: "password", ConfirmPassword: "password1234567890"}
-				resBody := `{"errors":["Password: password must be minimum 15 characters"]}`
+				resBody := `[{"text":"Password: password must be minimum 15 characters","type":"error"}]`
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
@@ -83,7 +83,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 			It("returns an error if a password that is too long is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: "test@email.com", Password: "thisisareallylongpasswordthatistoolongandwillfailvalidation", ConfirmPassword: "thisisareallylongpassword"}
-				resBody := `{"errors":["Password: password must be maximum 50 characters"]}`
+				resBody := `[{"text":"Password: password must be maximum 50 characters","type":"error"}]`
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
@@ -97,7 +97,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 			It("returns an error if a password that contains invalid characters is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: "test@email.com", Password: "_-123testpassword456-_", ConfirmPassword: "123testpassword456"}
-				resBody := `{"errors":["Password: password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *"]}`
+				resBody := `[{"text":"Password: password may only contain alphanumeric characters and the following symbols: _ ! @ # $ % ^ *","type":"error"}]`
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 
@@ -111,7 +111,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 			It("returns an error if the passwords do not match", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				payload := models.CreateAccount{Email: "email@test.com", Password: "testpassword123", ConfirmPassword: "testpassword1234"}
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorPasswordsDoNotMatch())
+				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorPasswordsDoNotMatch())
 				ctx := context.WithValue(r.Context(), middleware.ContextCreateAccountKey, payload)
 				r = r.WithContext(ctx)
 

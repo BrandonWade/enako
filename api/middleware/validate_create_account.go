@@ -18,7 +18,7 @@ func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
 				m.logger.WithField("method", "middleware.ValidateCreateAccount").Error(helpers.ErrorRetrievingAccount())
 
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidAccountPayload()))
 				return
 			}
 
@@ -26,7 +26,7 @@ func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
 				m.logger.WithField("method", "middleware.ValidateCreateAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
-				json.NewEncoder(w).Encode(models.NewAPIError(err))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(err))
 				return
 			}
 
@@ -34,7 +34,7 @@ func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
 				m.logger.WithField("method", "middleware.ValidateCreateAccount").Info(helpers.ErrorPasswordsDoNotMatch())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorPasswordsDoNotMatch()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorPasswordsDoNotMatch()))
 				return
 			}
 

@@ -38,7 +38,7 @@ func (a *accountController) RegisterUser(w http.ResponseWriter, r *http.Request)
 		a.logger.WithField("method", "AccountController.RegisterUser").Error(helpers.ErrorRetrievingAccount())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorCreatingAccount()))
 		return
 	}
 
@@ -47,12 +47,12 @@ func (a *accountController) RegisterUser(w http.ResponseWriter, r *http.Request)
 		a.logger.WithField("method", "AccountController.RegisterUser").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingAccount()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorCreatingAccount()))
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageActivationEmailSent(createAccount.Email)))
+	json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageActivationEmailSent(createAccount.Email)))
 	return
 }
 
@@ -63,7 +63,7 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 		a.logger.WithField("method", "AccountController.ActivateAccount").Error(helpers.ErrorInvalidActivationToken())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorActivatingAccount()))
 		return
 	}
 
@@ -72,7 +72,7 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 		a.logger.WithField("method", "AccountController.ActivateAccount").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorActivatingAccount()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorActivatingAccount()))
 		return
 	}
 

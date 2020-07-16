@@ -44,7 +44,7 @@ func (a *passwordResetController) RequestPasswordReset(w http.ResponseWriter, r 
 		a.logger.WithField("method", "PasswordResetController.RequestPasswordReset").Error(helpers.ErrorRetrievingRequestPasswordReset())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRequestingPasswordReset()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRequestingPasswordReset()))
 		return
 	}
 
@@ -57,7 +57,7 @@ func (a *passwordResetController) RequestPasswordReset(w http.ResponseWriter, r 
 			}).Info(helpers.ErrorAccountNotFound())
 
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageAccountWithEmailNotFound(resetRequest.Email)))
+			json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageAccountWithEmailNotFound(resetRequest.Email)))
 			return
 		}
 
@@ -67,12 +67,12 @@ func (a *passwordResetController) RequestPasswordReset(w http.ResponseWriter, r 
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRequestingPasswordReset()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRequestingPasswordReset()))
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessageResetPasswordEmailSent(email)))
+	json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageResetPasswordEmailSent(email)))
 	return
 }
 
@@ -124,14 +124,14 @@ func (a *passwordResetController) ResetPassword(w http.ResponseWriter, r *http.R
 			a.logger.WithField("method", "PasswordResetController.ResetPassword").Info(err.Error())
 
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
+			json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRetrievingPasswordReset()))
 			return
 		}
 
 		a.logger.WithField("method", "PasswordResetController.ResetPassword").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRetrievingPasswordReset()))
 		return
 	}
 
@@ -143,7 +143,7 @@ func (a *passwordResetController) ResetPassword(w http.ResponseWriter, r *http.R
 		}).Error(helpers.ErrorRetrievingPasswordReset())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorRetrievingPasswordReset()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRetrievingPasswordReset()))
 		return
 	}
 
@@ -167,11 +167,11 @@ func (a *passwordResetController) ResetPassword(w http.ResponseWriter, r *http.R
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorResettingPassword()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorResettingPassword()))
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(models.NewAPIMessage(helpers.MessagePasswordUpdated()))
+	json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessagePasswordUpdated()))
 	return
 }

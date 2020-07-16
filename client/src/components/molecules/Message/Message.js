@@ -5,6 +5,7 @@ const Message = props => {
     const [visible, setVisible] = useState(true);
 
     const onDismiss = () => {
+        // TODO: Remove from MessageContext
         setVisible(false);
     };
 

@@ -18,7 +18,7 @@ func (m *MiddlewareStack) ValidatePasswordReset() Middleware {
 				m.logger.WithField("method", "middleware.ValidatePasswordReset").Error(helpers.ErrorRetrievingPasswordReset())
 
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidPasswordResetPayload()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidPasswordResetPayload()))
 				return
 			}
 
@@ -26,7 +26,7 @@ func (m *MiddlewareStack) ValidatePasswordReset() Middleware {
 				m.logger.WithField("method", "middleware.ValidatePasswordReset").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
-				json.NewEncoder(w).Encode(models.NewAPIError(err))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(err))
 				return
 			}
 

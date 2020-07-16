@@ -38,7 +38,7 @@ func (c *categoryController) GetCategories(w http.ResponseWriter, r *http.Reques
 		c.logger.WithField("method", "CategoryController.GetCategories").Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingCategories()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingCategories()))
 		return
 	}
 

@@ -18,7 +18,7 @@ func (m *MiddlewareStack) ValidateExpense() Middleware {
 				m.logger.WithField("method", "middleware.ValidateExpense").Error(helpers.ErrorRetrievingExpense())
 
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
 				return
 			}
 
@@ -26,7 +26,7 @@ func (m *MiddlewareStack) ValidateExpense() Middleware {
 				m.logger.WithField("method", "middleware.ValidateExpense").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
-				json.NewEncoder(w).Encode(models.NewAPIError(err))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(err))
 				return
 			}
 

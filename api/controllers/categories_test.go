@@ -55,7 +55,7 @@ var _ = Describe("CategoryController", func() {
 		Context("when requesting the list of categories", func() {
 			It("returns an error if an error is encountered", func() {
 				categoryService.GetCategoriesReturns([]models.Category{}, errors.New("service error"))
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorFetchingCategories())
+				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorFetchingCategories())
 
 				categoryController.GetCategories(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))

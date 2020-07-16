@@ -19,7 +19,7 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 				m.logger.WithField("method", "middleware.Authenticate").Error(err.Error())
 
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingSession()))
 				return
 			}
 
@@ -27,7 +27,7 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 				m.logger.WithField("method", "middleware.Authenticate").Info(helpers.ErrorUserNotAuthenticated())
 
 				w.WriteHeader(http.StatusUnauthorized)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorUserNotAuthenticated()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorUserNotAuthenticated()))
 				return
 			}
 
@@ -36,7 +36,7 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 				m.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingSession()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingSession()))
 				return
 			}
 

@@ -8,11 +8,8 @@ const MessageList = () => {
 
     return (
         <>
-            {messages.errors.map(e => (
-                <Message key={e} type='error' text={e} />
-            ))}
-            {messages.messages.map(m => (
-                <Message key={m} type='info' text={m} />
+            {messages.map(m => (
+                <Message key={m.text} type={m.type} text={m.text} />
             ))}
         </>
     );

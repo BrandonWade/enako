@@ -19,7 +19,7 @@ func (m *MiddlewareStack) DecodeCreateAccount() Middleware {
 				m.logger.WithField("method", "middleware.DecodeCreateAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidAccountPayload()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidAccountPayload()))
 				return
 			}
 

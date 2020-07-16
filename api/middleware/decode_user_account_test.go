@@ -45,7 +45,7 @@ var _ = Describe("DecodeCreateAccountMiddleware", func() {
 		Context("when decoding a CreateAccount from an incoming request", func() {
 			It("returns an error if a malformed payload is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", strings.NewReader("{foo}"))
-				resBody := fmt.Sprintf(`{"errors":["%s"]}`, helpers.ErrorInvalidAccountPayload())
+				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorInvalidAccountPayload())
 
 				handler := mw(decorator)
 				handler(w, r)

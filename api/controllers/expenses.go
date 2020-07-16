@@ -44,7 +44,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 		e.logger.WithField("method", "ExpenseController.GetExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
 		return
 	}
 
@@ -56,7 +56,7 @@ func (e *expenseController) GetExpenses(w http.ResponseWriter, r *http.Request) 
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorFetchingExpenses()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingExpenses()))
 		return
 	}
 
@@ -72,7 +72,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		e.logger.WithField("method", "ExpenseController.CreateExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
 		return
 	}
 
@@ -84,7 +84,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		}).Error(helpers.ErrorRetrievingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingExpense()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorCreatingExpense()))
 		return
 	}
 
@@ -97,7 +97,7 @@ func (e *expenseController) CreateExpense(w http.ResponseWriter, r *http.Request
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorCreatingExpense()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorCreatingExpense()))
 		return
 	}
 
@@ -116,7 +116,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		e.logger.WithField("method", "ExpenseController.UpdateExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
 		return
 	}
 
@@ -131,7 +131,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpenseID()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpenseID()))
 		return
 	}
 
@@ -144,7 +144,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		}).Error(helpers.ErrorRetrievingExpense())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorUpdatingExpense()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorUpdatingExpense()))
 		return
 	}
 
@@ -157,7 +157,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorUpdatingExpense()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorUpdatingExpense()))
 		return
 	}
 
@@ -169,7 +169,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		}).Warn(helpers.ErrorNoExpensesUpdated())
 
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorNoExpensesUpdated()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorNoExpensesUpdated()))
 		return
 	}
 
@@ -188,7 +188,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 		e.logger.WithField("method", "ExpenseController.DeleteExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpensePayload()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
 		return
 	}
 
@@ -203,7 +203,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidExpenseID()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpenseID()))
 		return
 	}
 
@@ -216,7 +216,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 		}).Error(err.Error())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorDeletingExpense()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorDeletingExpense()))
 		return
 	}
 
@@ -228,7 +228,7 @@ func (e *expenseController) DeleteExpense(w http.ResponseWriter, r *http.Request
 		}).Warn(helpers.ErrorNoExpensesDeleted())
 
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorNoExpensesDeleted()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorNoExpensesDeleted()))
 		return
 	}
 

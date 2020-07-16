@@ -19,7 +19,7 @@ func (m *MiddlewareStack) DecodeRequestPasswordReset() Middleware {
 				m.logger.WithField("method", "middleware.DecodeRequestPasswordReset").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(models.NewAPIError(helpers.ErrorInvalidRequestPasswordResetPayload()))
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidRequestPasswordResetPayload()))
 				return
 			}
 
