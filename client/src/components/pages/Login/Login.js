@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import MessageContext from '../../../contexts/MessageContext';
 import loginToAccount from '../../../effects/loginToAccount';
 import Logo from '../../atoms/Logo';
 import Card from '../../atoms/Card';
@@ -13,8 +14,11 @@ const Login = props => {
     const history = useHistory();
     const [email, setEmail] = useState('foo@bar.net');
     const [password, setPassword] = useState('testpassword123');
+    const { setMessages } = useContext(MessageContext);
 
     const onLogin = async () => {
+        setMessages([]);
+
         const data = {
             email,
             password,
@@ -22,7 +26,7 @@ const Login = props => {
 
         const response = await loginToAccount(data);
         if (response?.messages?.length > 0) {
-            props.setMessages(response.messages);
+            setMessages(response.messages);
             return;
         }
 

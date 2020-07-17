@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import MessageContext from '../../../contexts/MessageContext';
 import './Message.scss';
 
 const Message = props => {
     const [visible, setVisible] = useState(true);
+    const { messages, setMessages } = useContext(MessageContext);
 
     const onDismiss = () => {
-        // TODO: Remove from MessageContext
         setVisible(false);
+        setMessages(messages.filter(m => m.text !== props.text));
     };
 
     return (

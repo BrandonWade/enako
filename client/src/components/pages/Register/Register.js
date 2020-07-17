@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import createAccount from '../../../effects/createAccount';
 import resetPassword from '../../../effects/resetPassword';
@@ -9,6 +9,7 @@ import PasswordField from '../../molecules/PasswordField';
 import ValidationRow from '../../atoms/ValidationRow';
 import MessageList from '../../organisms/MessageList';
 import Button from '../../atoms/Button';
+import MessageContext from '../../../contexts/MessageContext';
 import { ValidateEmailFormat } from '../../../validators/email';
 import { ValidatePasswordLength, ValidatePasswordCharacters, ValidatePasswordsMatch } from '../../../validators/password';
 import './Register.scss';
@@ -18,6 +19,7 @@ const Register = props => {
     const [email, setEmail] = useState('foo@bar.net');
     const [password, setPassword] = useState('testpassword123');
     const [confirmPassword, setConfirmPassword] = useState('testpassword123');
+    const { setMessages } = useContext(MessageContext);
 
     const validEmailFormat = ValidateEmailFormat(email);
     const validPasswordLength = ValidatePasswordLength(password);
@@ -47,6 +49,8 @@ const Register = props => {
     };
 
     const onResetPassword = async () => {
+        setMessages([]);
+
         const data = {
             password,
             confirm_password: confirmPassword,
@@ -54,7 +58,7 @@ const Register = props => {
 
         const response = await resetPassword(data);
         if (response?.messages?.length > 0) {
-            props.setMessages(response.messages);
+            setMessages(response.messages);
             return;
         }
 
@@ -62,6 +66,8 @@ const Register = props => {
     };
 
     const onCreateAccount = async () => {
+        setMessages([]);
+
         const data = {
             email,
             password,
@@ -70,7 +76,7 @@ const Register = props => {
 
         const response = await createAccount(data);
         if (response?.messages?.length > 0) {
-            props.setMessages(response.messages);
+            setMessages(response.messages);
             return;
         }
 

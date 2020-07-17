@@ -62,7 +62,7 @@ const App = () => {
     }, [authenticated]);
 
     return (
-        <MessageContext.Provider value={messages}>
+        <MessageContext.Provider value={{ messages, setMessages }}>
             <AuthenticatedContext.Provider value={authenticated}>
                 <SelectedDateContext.Provider value={selectedDate}>
                     <CategoryContext.Provider value={categories}>
@@ -73,27 +73,19 @@ const App = () => {
                                         path='/login'
                                         render={() => (
                                             <Login
-                                                setMessages={setMessages}
                                                 setAuthenticated={setAuthenticated}
                                                 setCategories={setCategories}
                                                 setExpenses={setExpenses}
                                             />
                                         )}
                                     />
-                                    <Route path='/password' exact render={() => <ForgotPassword setMessages={setMessages} />} />
-                                    <Route
-                                        path='/password/reset'
-                                        render={() => <Register passwordReset={true} setMessages={setMessages} />}
-                                    />
-                                    <Route
-                                        path='/register'
-                                        component={() => <Register passwordReset={false} setMessages={setMessages} />}
-                                    />
+                                    <Route path='/password' exact render={() => <ForgotPassword />} />
+                                    <Route path='/password/reset' render={() => <Register passwordReset={true} />} />
+                                    <Route path='/register' component={() => <Register passwordReset={false} />} />
                                     <AuthenticatedRoute
                                         path='/'
                                         exact
                                         component={Home}
-                                        setMessages={setMessages}
                                         selectedDate={selectedDate}
                                         setSelectedDate={setSelectedDate}
                                     />
@@ -101,14 +93,12 @@ const App = () => {
                                         path='/expenses'
                                         exact
                                         component={Editor}
-                                        setMessages={setMessages}
                                         setExpenses={setExpenses}
                                         setSelectedDate={setSelectedDate}
                                     />
                                     <AuthenticatedRoute
                                         path='/expenses/:id'
                                         component={Editor}
-                                        setMessages={setMessages}
                                         setExpenses={setExpenses}
                                         setSelectedDate={setSelectedDate}
                                     />

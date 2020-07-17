@@ -1,10 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import MessageContext from '../../../contexts/MessageContext';
 import Message from '../../molecules/Message';
 import './MessageList.scss';
 
 const MessageList = () => {
-    const messages = useContext(MessageContext);
+    const { messages, setMessages } = useContext(MessageContext);
+
+    useEffect(() => {
+        return () => {
+            if (messages.length > 0) {
+                setMessages([]);
+            }
+        };
+    }, [messages, setMessages]);
 
     return (
         <>
