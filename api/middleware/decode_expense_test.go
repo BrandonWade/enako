@@ -46,7 +46,7 @@ var _ = Describe("DecodeExpenseMiddleware", func() {
 		Context("when decoding an Expense from an incoming request", func() {
 			It("returns an error if a malformed payload is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", strings.NewReader("{foo}"))
-				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorInvalidExpensePayload())
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
 
 				handler := mw(decorator)
 				handler(w, r)

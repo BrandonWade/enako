@@ -49,7 +49,7 @@ var _ = Describe("AuthenticateMiddleware", func() {
 			It("returns an error if an error is encountered retrieving the session", func() {
 				store.IsAuthenticatedReturns(false, errors.New("session error"))
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorFetchingSession())
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorFetchingSession())
 
 				handler := mw(decorator)
 				handler(w, r)
@@ -62,7 +62,7 @@ var _ = Describe("AuthenticateMiddleware", func() {
 			It("returns an error if the session is not authenticated", func() {
 				store.IsAuthenticatedReturns(false, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
-				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorUserNotAuthenticated())
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorUserNotAuthenticated())
 
 				handler := mw(decorator)
 				handler(w, r)

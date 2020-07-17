@@ -43,7 +43,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 		Context("when validating an Expense from an incoming request", func() {
 			It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
-				resBody := fmt.Sprintf(`[{"text":"%s","type":"error"}]`, helpers.ErrorInvalidExpensePayload())
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
 
 				handler := mw(decorator)
 				handler(w, r)
@@ -55,7 +55,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 			It("returns an error if an invalid expense category id is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 0, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
-				resBody := `[{"text":"CategoryID: less than min","type":"error"}]`
+				resBody := `{"messages":[{"text":"CategoryID: less than min","type":"error"}]}`
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -69,7 +69,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 			It("returns an error if an empty description is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "", Amount: 1234, ExpenseDate: "2019-01-01"}
-				resBody := `[{"text":"Description: zero value","type":"error"}]`
+				resBody := `{"messages":[{"text":"Description: zero value","type":"error"}]}`
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -83,7 +83,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 			It("returns an error if an invalid expense amount is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 0, ExpenseDate: "2019-01-01"}
-				resBody := `[{"text":"Amount: less than min","type":"error"}]`
+				resBody := `{"messages":[{"text":"Amount: less than min","type":"error"}]}`
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -97,7 +97,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 			It("returns an error if an invalid date is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "0000-00-00"}
-				resBody := `[{"text":"ExpenseDate: invalid date","type":"error"}]`
+				resBody := `{"messages":[{"text":"ExpenseDate: invalid date","type":"error"}]}`
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
@@ -111,7 +111,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 			It("returns an error if a malformed date is submitted", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01"}
-				resBody := `[{"text":"ExpenseDate: invalid date","type":"error"}]`
+				resBody := `{"messages":[{"text":"ExpenseDate: invalid date","type":"error"}]}`
 				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
 				r = r.WithContext(ctx)
 
