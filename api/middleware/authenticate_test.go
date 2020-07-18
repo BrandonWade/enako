@@ -24,7 +24,7 @@ var _ = Describe("AuthenticateMiddleware", func() {
 		logger    *logrus.Logger
 		store     *helperfakes.FakeCookieStorer
 		session   *helperfakes.FakeSessionStorer
-		stack     *middleware.MiddlewareStack
+		stack     *middleware.Stack
 		mw        middleware.Middleware
 		decorator func(http.ResponseWriter, *http.Request)
 		w         *httptest.ResponseRecorder

@@ -10,13 +10,13 @@ import (
 )
 
 // DecodeRequestPasswordReset decodes a requested password reset from a request and stores it in the request context.
-func (m *MiddlewareStack) DecodeRequestPasswordReset() Middleware {
+func (s *Stack) DecodeRequestPasswordReset() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			var resetRequest models.RequestPasswordReset
 			err := json.NewDecoder(r.Body).Decode(&resetRequest)
 			if err != nil {
-				m.logger.WithField("method", "middleware.DecodeRequestPasswordReset").Info(err.Error())
+				s.logger.WithField("method", "middleware.DecodeRequestPasswordReset").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidRequestPasswordResetPayload()))

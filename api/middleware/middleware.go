@@ -29,27 +29,22 @@ const (
 // Middleware is a type alias for working with middleware.
 type Middleware func(http.HandlerFunc) http.HandlerFunc
 
-// MiddlewareStacker an interface for working with a middleware stack.
-type MiddlewareStacker interface {
-	Apply(http.HandlerFunc, []Middleware) http.HandlerFunc
-}
-
-// MiddlewareStack used to inject dependencies into middleware.
-type MiddlewareStack struct {
+// Stack used to inject dependencies into middleware.
+type Stack struct {
 	logger *logrus.Logger
 	store  helpers.CookieStorer
 }
 
-// NewMiddlewareStack returns a new instance of a MiddlewareStack.
-func NewMiddlewareStack(logger *logrus.Logger, store helpers.CookieStorer) *MiddlewareStack {
-	return &MiddlewareStack{
+// NewMiddlewareStack returns a new instance of a middleware stack.
+func NewMiddlewareStack(logger *logrus.Logger, store helpers.CookieStorer) *Stack {
+	return &Stack{
 		logger,
 		store,
 	}
 }
 
 // Apply applies a middleware stack to the given HTTP handler.
-func (s *MiddlewareStack) Apply(f http.HandlerFunc, middlewares []Middleware) http.HandlerFunc {
+func (s *Stack) Apply(f http.HandlerFunc, middlewares []Middleware) http.HandlerFunc {
 	for _, m := range middlewares {
 		f = m(f)
 	}

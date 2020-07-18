@@ -10,12 +10,12 @@ import (
 )
 
 // ValidateRequestPasswordReset checks whether a decoded RequestPasswordReset payload in a request is valid.
-func (m *MiddlewareStack) ValidateRequestPasswordReset() Middleware {
+func (s *Stack) ValidateRequestPasswordReset() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			requestPasswordReset, ok := r.Context().Value(ContextRequestPasswordResetKey).(models.RequestPasswordReset)
 			if !ok {
-				m.logger.WithField("method", "middleware.ValidateRequestPasswordReset").Error(helpers.ErrorRetrievingRequestPasswordReset())
+				s.logger.WithField("method", "middleware.ValidateRequestPasswordReset").Error(helpers.ErrorRetrievingRequestPasswordReset())
 
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidRequestPasswordResetPayload()))
@@ -23,7 +23,7 @@ func (m *MiddlewareStack) ValidateRequestPasswordReset() Middleware {
 			}
 
 			if err := validator.Validate(requestPasswordReset); err != nil {
-				m.logger.WithField("method", "middleware.ValidateRequestPasswordReset").Info(err.Error())
+				s.logger.WithField("method", "middleware.ValidateRequestPasswordReset").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(err))

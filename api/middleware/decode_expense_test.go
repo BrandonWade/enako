@@ -23,7 +23,7 @@ var _ = Describe("DecodeExpenseMiddleware", func() {
 	var (
 		logger    *logrus.Logger
 		store     helpers.CookieStorer
-		stack     *middleware.MiddlewareStack
+		stack     *middleware.Stack
 		mw        middleware.Middleware
 		decorator func(http.ResponseWriter, *http.Request)
 		w         *httptest.ResponseRecorder

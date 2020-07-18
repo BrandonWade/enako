@@ -10,13 +10,13 @@ import (
 )
 
 // DecodeCreateAccount decodes a create account payload from a request and stores it in the request context.
-func (m *MiddlewareStack) DecodeCreateAccount() Middleware {
+func (s *Stack) DecodeCreateAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			var createAccount models.CreateAccount
 			err := json.NewDecoder(r.Body).Decode(&createAccount)
 			if err != nil {
-				m.logger.WithField("method", "middleware.DecodeCreateAccount").Info(err.Error())
+				s.logger.WithField("method", "middleware.DecodeCreateAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidAccountPayload()))

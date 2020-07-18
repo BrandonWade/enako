@@ -11,12 +11,12 @@ import (
 )
 
 // Authenticate checks whether a valid session exists for the request.
-func (m *MiddlewareStack) Authenticate() Middleware {
+func (s *Stack) Authenticate() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			authenticated, err := m.store.IsAuthenticated(r)
+			authenticated, err := s.store.IsAuthenticated(r)
 			if err != nil {
-				m.logger.WithField("method", "middleware.Authenticate").Error(err.Error())
+				s.logger.WithField("method", "middleware.Authenticate").Error(err.Error())
 
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingSession()))
@@ -24,16 +24,16 @@ func (m *MiddlewareStack) Authenticate() Middleware {
 			}
 
 			if !authenticated {
-				m.logger.WithField("method", "middleware.Authenticate").Info(helpers.ErrorUserNotAuthenticated())
+				s.logger.WithField("method", "middleware.Authenticate").Info(helpers.ErrorUserNotAuthenticated())
 
 				w.WriteHeader(http.StatusUnauthorized)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorUserNotAuthenticated()))
 				return
 			}
 
-			session, err := m.store.Get(r, helpers.SessionCookieName)
+			session, err := s.store.Get(r, helpers.SessionCookieName)
 			if err != nil {
-				m.logger.WithField("method", "AuthController.Login").Error(err.Error())
+				s.logger.WithField("method", "AuthController.Login").Error(err.Error())
 
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorFetchingSession()))

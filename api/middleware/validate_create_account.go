@@ -10,12 +10,12 @@ import (
 )
 
 // ValidateCreateAccount checks whether a decoded CreateAccount payload in a request is valid.
-func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
+func (s *Stack) ValidateCreateAccount() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			createAccount, ok := r.Context().Value(ContextCreateAccountKey).(models.CreateAccount)
 			if !ok {
-				m.logger.WithField("method", "middleware.ValidateCreateAccount").Error(helpers.ErrorRetrievingAccount())
+				s.logger.WithField("method", "middleware.ValidateCreateAccount").Error(helpers.ErrorRetrievingAccount())
 
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidAccountPayload()))
@@ -23,7 +23,7 @@ func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
 			}
 
 			if err := validator.Validate(createAccount); err != nil {
-				m.logger.WithField("method", "middleware.ValidateCreateAccount").Info(err.Error())
+				s.logger.WithField("method", "middleware.ValidateCreateAccount").Info(err.Error())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(err))
@@ -31,7 +31,7 @@ func (m *MiddlewareStack) ValidateCreateAccount() Middleware {
 			}
 
 			if createAccount.Password != createAccount.ConfirmPassword {
-				m.logger.WithField("method", "middleware.ValidateCreateAccount").Info(helpers.ErrorPasswordsDoNotMatch())
+				s.logger.WithField("method", "middleware.ValidateCreateAccount").Info(helpers.ErrorPasswordsDoNotMatch())
 
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorPasswordsDoNotMatch()))

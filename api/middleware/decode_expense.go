@@ -10,13 +10,13 @@ import (
 )
 
 // DecodeExpense decodes an expense from a request and stores it in the request context.
-func (m *MiddlewareStack) DecodeExpense() Middleware {
+func (s *Stack) DecodeExpense() Middleware {
 	return func(f http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			var expense models.Expense
 			err := json.NewDecoder(r.Body).Decode(&expense)
 			if err != nil {
-				m.logger.WithField("method", "middleware.DecodeExpense").Info(err.Error())
+				s.logger.WithField("method", "middleware.DecodeExpense").Info(err.Error())
 
 				w.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))

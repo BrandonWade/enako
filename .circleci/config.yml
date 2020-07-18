@@ -7,8 +7,11 @@ jobs:
         steps:
             - checkout
             - run:
-                  name: Fetch Unit Test Dependencies
-                  command: go get -v github.com/onsi/ginkgo/ginkgo && go get -v github.com/onsi/gomega
+                  name: Fetching dependencies
+                  command: go get -v github.com/onsi/ginkgo/ginkgo && go get -v github.com/onsi/gomega && go get -u golang.org/x/lint/golint
             - run:
-                  name: Run Unit Tests
+                  name: Running unit tests (backend)
                   command: cd api && ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+            - run:
+                  name: Running linter (backend)
+                  command: golint -set_exit_status ./...
