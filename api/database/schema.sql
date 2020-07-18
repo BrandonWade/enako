@@ -5,7 +5,7 @@ CREATE TABLE accounts (
   password varbinary(60) NOT NULL DEFAULT '0',
   is_activated tinyint(1) NOT NULL DEFAULT 0,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY U_email (email)
 );
@@ -18,7 +18,7 @@ CREATE TABLE account_activation_tokens (
   is_used tinyint(1) NOT NULL DEFAULT 0,
   last_sent_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY U_account_id (account_id),
   UNIQUE KEY U_activation_token (activation_token)
@@ -32,7 +32,7 @@ CREATE TABLE password_reset_tokens (
   status enum('pending', 'used', 'disabled') NOT NULL DEFAULT 'pending',
   expires_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY U_reset_token (reset_token)
 );
@@ -42,7 +42,7 @@ CREATE TABLE categories (
   id int unsigned NOT NULL AUTO_INCREMENT,
   name varchar(32) NOT NULL DEFAULT '',
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY U_name (name)
 );
@@ -56,6 +56,6 @@ CREATE TABLE expenses (
   amount int unsigned NOT NULL DEFAULT '0',
   expense_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 );
