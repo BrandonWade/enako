@@ -92,17 +92,17 @@ func main() {
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	// Set up route middleware
-	registerUserHandler := stack.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
+	registerUserHandler := middleware.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 
-	requestPasswordResetHander := stack.Apply(passwordResetController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
-	passwordResetHander := stack.Apply(passwordResetController.ResetPassword, []middleware.Middleware{stack.ValidatePasswordReset(), stack.DecodePasswordReset()})
+	requestPasswordResetHander := middleware.Apply(passwordResetController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
+	passwordResetHander := middleware.Apply(passwordResetController.ResetPassword, []middleware.Middleware{stack.ValidatePasswordReset(), stack.DecodePasswordReset()})
 
-	getCategoriesHandler := stack.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
+	getCategoriesHandler := middleware.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
-	getExpensesHandler := stack.Apply(expenseController.GetExpenses, []middleware.Middleware{stack.Authenticate()})
-	createExpenseHandler := stack.Apply(expenseController.CreateExpense, []middleware.Middleware{stack.ValidateExpense(), stack.DecodeExpense(), stack.Authenticate()})
-	updateExpenseHandler := stack.Apply(expenseController.UpdateExpense, []middleware.Middleware{stack.ValidateExpense(), stack.DecodeExpense(), stack.Authenticate()})
-	deleteExpenseHandler := stack.Apply(expenseController.DeleteExpense, []middleware.Middleware{stack.Authenticate()})
+	getExpensesHandler := middleware.Apply(expenseController.GetExpenses, []middleware.Middleware{stack.Authenticate()})
+	createExpenseHandler := middleware.Apply(expenseController.CreateExpense, []middleware.Middleware{stack.ValidateExpense(), stack.DecodeExpense(), stack.Authenticate()})
+	updateExpenseHandler := middleware.Apply(expenseController.UpdateExpense, []middleware.Middleware{stack.ValidateExpense(), stack.DecodeExpense(), stack.Authenticate()})
+	deleteExpenseHandler := middleware.Apply(expenseController.DeleteExpense, []middleware.Middleware{stack.Authenticate()})
 
 	r := mux.NewRouter()
 	api := r.PathPrefix("/v1").Subrouter()

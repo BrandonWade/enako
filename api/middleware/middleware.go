@@ -44,7 +44,7 @@ func NewMiddlewareStack(logger *logrus.Logger, store helpers.CookieStorer) *Stac
 }
 
 // Apply applies a middleware stack to the given HTTP handler.
-func (s *Stack) Apply(f http.HandlerFunc, middlewares []Middleware) http.HandlerFunc {
+func Apply(f http.HandlerFunc, middlewares []Middleware) http.HandlerFunc {
 	for _, m := range middlewares {
 		f = m(f)
 	}

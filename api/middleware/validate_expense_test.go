@@ -121,6 +121,19 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 				Expect(w.Code).To(Equal(http.StatusUnprocessableEntity))
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
+
+			It("calls the next function with no error if the request is valid", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
+				payload := models.Expense{CategoryID: 5, Description: "test", Amount: 1234, ExpenseDate: "2019-01-01"}
+				ctx := context.WithValue(r.Context(), middleware.ContextExpenseKey, payload)
+				r = r.WithContext(ctx)
+
+				handler := mw(decorator)
+				handler(w, r)
+
+				Expect(w.Code).To(Equal(http.StatusOK))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEmpty())
+			})
 		})
 	})
 })

@@ -72,11 +72,29 @@ var _ = Describe("AuthenticateMiddleware", func() {
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
 			})
 
+			It("returns an error if an error occurs while attempting to read the session cookie", func() {
+				accountID := int64(1)
+				session.GetReturns(1)
+				store.IsAuthenticatedReturns(true, nil)
+				store.GetReturns(nil, errors.New("session error"))
+				r = httptest.NewRequest("POST", "/v1/accounts", nil)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
+				r = r.WithContext(ctx)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorFetchingSession())
+
+				handler := mw(decorator)
+				handler(w, r)
+
+				Expect(store.IsAuthenticatedCallCount()).To(Equal(1))
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
+
 			It("calls the next function with no error if the session is authenticated", func() {
 				accountID := int64(1)
 				session.GetReturns(1)
-				store.GetReturns(session, nil)
 				store.IsAuthenticatedReturns(true, nil)
+				store.GetReturns(session, nil)
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)

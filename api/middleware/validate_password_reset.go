@@ -30,6 +30,14 @@ func (s *Stack) ValidatePasswordReset() Middleware {
 				return
 			}
 
+			if reset.Password != reset.ConfirmPassword {
+				s.logger.WithField("method", "middleware.ValidatePasswordReset").Info(helpers.ErrorPasswordsDoNotMatch())
+
+				w.WriteHeader(http.StatusUnprocessableEntity)
+				json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorPasswordsDoNotMatch()))
+				return
+			}
+
 			f(w, r)
 		}
 	}
