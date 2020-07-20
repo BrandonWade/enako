@@ -59,6 +59,15 @@ var _ = Describe("ExpenseController", func() {
 
 	Describe("GetExpenses", func() {
 		Context("when requesting the list of expenses", func() {
+			It("returns an error when one is encountered retrieving the Expense from the request Context", func() {
+				r = httptest.NewRequest("GET", "/v1/expenses", nil)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
+
+				expenseController.GetExpenses(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
+			})
+
 			It("returns an error when the expense service returns an error", func() {
 				accountID := int64(1)
 				r = httptest.NewRequest("GET", "/v1/expenses", nil)
@@ -89,6 +98,15 @@ var _ = Describe("ExpenseController", func() {
 
 	Describe("CreateExpense", func() {
 		Context("when creating a new expense", func() {
+			It("returns an error when one is encountered retrieving the Expense from the request Context", func() {
+				r = httptest.NewRequest("POST", "/v1/expenses", nil)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
+
+				expenseController.CreateExpense(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
+			})
+
 			It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
 				accountID := int64(1)
 				session.GetReturns(1)
@@ -145,6 +163,15 @@ var _ = Describe("ExpenseController", func() {
 
 	Describe("UpdateExpense", func() {
 		Context("when updating an expense", func() {
+			It("returns an error when one is encountered retrieving the Expense from the request Context", func() {
+				r = httptest.NewRequest("PUT", "/v1/expenses", nil)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
+
+				expenseController.UpdateExpense(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
+			})
+
 			It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
 				accountID := int64(1)
 				session.GetReturns(1)
@@ -249,6 +276,15 @@ var _ = Describe("ExpenseController", func() {
 
 	Describe("DeleteExpense", func() {
 		Context("when deleting an expense", func() {
+			It("returns an error when one is encountered retrieving the Expense from the request Context", func() {
+				r = httptest.NewRequest("DELETE", "/v1/expenses", nil)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
+
+				expenseController.DeleteExpense(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
+			})
+
 			It("returns an error if an invalid expense id is provided", func() {
 				accountID := int64(1)
 				session.GetReturns(1)

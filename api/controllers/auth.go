@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// AuthController an interface for wotking with accounts and sessions.
+// AuthController an interface for working with accounts and sessions.
 //go:generate counterfeiter -o fakes/fake_auth_controller.go . AuthController
 type AuthController interface {
 	CSRF(w http.ResponseWriter, r *http.Request)
@@ -37,7 +37,7 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 
 // CSRF returns a new anti-CSRF token for the SPA frontend.
 func (a *authController) CSRF(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("X-CSRF-Token", csrf.Token(r))
+	w.Header().Set("X-Csrf-Token", csrf.Token(r))
 	w.WriteHeader(http.StatusOK)
 	return
 }
