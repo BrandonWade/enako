@@ -92,6 +92,7 @@ func main() {
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
 	// Set up route middleware
+	loginHandler := middleware.Apply(authController.Login, []middleware.Middleware{stack.DecodeLogin()})
 	registerUserHandler := middleware.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 
 	requestPasswordResetHander := middleware.Apply(passwordResetController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
@@ -111,7 +112,7 @@ func main() {
 	authAPI := api.PathPrefix("").Subrouter()
 	authAPI.Use(csrfMiddleware)
 	authAPI.HandleFunc("/csrf", authController.CSRF).Methods("HEAD")
-	authAPI.HandleFunc("/login", authController.Login).Methods("POST")
+	authAPI.HandleFunc("/login", loginHandler).Methods("POST")
 	authAPI.HandleFunc("/logout", authController.Logout).Methods("GET")
 
 	// Accounts

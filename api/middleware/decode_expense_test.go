@@ -73,7 +73,7 @@ var _ = Describe("DecodeExpenseMiddleware", func() {
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEmpty())
 			})
 
-			It("stores the Expense in the request Context", func() {
+			It("stores the Expense in the request context", func() {
 				categoryID := int64(5)
 				description := "test"
 				amount := float64(1234)

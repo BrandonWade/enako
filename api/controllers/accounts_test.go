@@ -40,7 +40,7 @@ var _ = Describe("AccountController", func() {
 
 	Describe("RegisterUser", func() {
 		Context("when attempting to register a new account", func() {
-			It("returns an error if one was encountered while retrieving the CreateAccount from the request Context", func() {
+			It("returns an error if one was encountered while retrieving the CreateAccount from the request context", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorCreatingAccount())
 

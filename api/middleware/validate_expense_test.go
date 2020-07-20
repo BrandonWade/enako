@@ -41,7 +41,7 @@ var _ = Describe("ValidateExpenseMiddleware", func() {
 
 	Describe("ValidateExpense", func() {
 		Context("when validating an Expense from an incoming request", func() {
-			It("returns an error if an error is encountered retrieving the Expense from the request Context", func() {
+			It("returns an error if an error is encountered retrieving the Expense from the request context", func() {
 				r = httptest.NewRequest("POST", "/v1/expenses", nil)
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
 

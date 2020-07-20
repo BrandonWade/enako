@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/BrandonWade/enako/api/helpers"
+	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/gorilla/csrf"
@@ -53,12 +54,11 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var account models.Account
-	err = json.NewDecoder(r.Body).Decode(&account)
-	if err != nil {
-		a.logger.WithField("method", "AuthController.Login").Error(err.Error())
+	account, ok := r.Context().Value(middleware.ContextLoginKey).(models.Account)
+	if !ok {
+		a.logger.WithField("method", "AuthController.Login").Error(helpers.ErrorRetrievingAccount())
 
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidAccountPayload()))
 		return
 	}

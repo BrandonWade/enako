@@ -1,7 +1,7 @@
 package controllers_test
 
 import (
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +12,7 @@ import (
 	"github.com/BrandonWade/enako/api/controllers"
 	"github.com/BrandonWade/enako/api/helpers"
 	helperfakes "github.com/BrandonWade/enako/api/helpers/fakes"
+	"github.com/BrandonWade/enako/api/middleware"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services/fakes"
 
@@ -68,13 +69,13 @@ var _ = Describe("AuthController", func() {
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
 			})
 
-			It("returns an error if a malformed payload is submitted", func() {
+			It("returns an error if one occurred while retrieving the Account with the login credentials from the request context", func() {
 				store.GetReturns(session, nil)
-				r = httptest.NewRequest("POST", "/v1/login", strings.NewReader("{foo}"))
+				r = httptest.NewRequest("POST", "/v1/login", nil)
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidAccountPayload())
 
 				authController.Login(w, r)
-				Expect(w.Code).To(Equal(http.StatusBadRequest))
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(string(resBody)))
 			})
 
@@ -82,11 +83,12 @@ var _ = Describe("AuthController", func() {
 				accountEmail := "foo@bar.net"
 
 				store.GetReturns(session, nil)
-				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
-				payloadJSON, _ := json.Marshal(payload)
-				r = httptest.NewRequest("POST", "/v1/login", strings.NewReader(string(payloadJSON)))
+				r = httptest.NewRequest("POST", "/v1/login", nil)
 				accountService.VerifyAccountReturns(0, helpers.ErrorActivationEmailResent())
+				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"info"}]}`, helpers.MessageActivationEmailSent(accountEmail))
+				ctx := context.WithValue(r.Context(), middleware.ContextLoginKey, payload)
+				r = r.WithContext(ctx)
 
 				authController.Login(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnauthorized))
@@ -97,11 +99,12 @@ var _ = Describe("AuthController", func() {
 				accountEmail := "foo@bar.net"
 
 				store.GetReturns(session, nil)
-				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
-				payloadJSON, _ := json.Marshal(payload)
-				r = httptest.NewRequest("POST", "/v1/login", strings.NewReader(string(payloadJSON)))
+				r = httptest.NewRequest("POST", "/v1/login", nil)
 				accountService.VerifyAccountReturns(0, helpers.ErrorAccountNotActivated())
+				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorAccountNotActivated())
+				ctx := context.WithValue(r.Context(), middleware.ContextLoginKey, payload)
+				r = r.WithContext(ctx)
 
 				authController.Login(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnauthorized))
@@ -112,11 +115,12 @@ var _ = Describe("AuthController", func() {
 				accountEmail := "foo@bar.net"
 
 				store.GetReturns(session, nil)
-				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
-				payloadJSON, _ := json.Marshal(payload)
-				r = httptest.NewRequest("POST", "/v1/login", strings.NewReader(string(payloadJSON)))
+				r = httptest.NewRequest("POST", "/v1/login", nil)
 				accountService.VerifyAccountReturns(0, helpers.ErrorInvalidEmailOrPassword())
+				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidEmailOrPassword())
+				ctx := context.WithValue(r.Context(), middleware.ContextLoginKey, payload)
+				r = r.WithContext(ctx)
 
 				authController.Login(w, r)
 				Expect(w.Code).To(Equal(http.StatusUnauthorized))
@@ -128,11 +132,12 @@ var _ = Describe("AuthController", func() {
 				accountEmail := "foo@bar.net"
 
 				store.GetReturns(session, nil)
-				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
-				payloadJSON, _ := json.Marshal(payload)
-				r = httptest.NewRequest("POST", "/v1/login", strings.NewReader(string(payloadJSON)))
+				r = httptest.NewRequest("POST", "/v1/login", nil)
 				accountService.VerifyAccountReturns(accountID, nil)
+				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
 				resBody := fmt.Sprintf(`{"id":%d,"email":"%s"}`, accountID, accountEmail)
+				ctx := context.WithValue(r.Context(), middleware.ContextLoginKey, payload)
+				r = r.WithContext(ctx)
 
 				authController.Login(w, r)
 				Expect(session.SetCallCount()).To(Equal(2))

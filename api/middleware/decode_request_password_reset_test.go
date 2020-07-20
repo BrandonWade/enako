@@ -70,7 +70,7 @@ var _ = Describe("DecodeRequestPasswordResetMiddleware", func() {
 				Expect(strings.TrimSpace(w.Body.String())).To(BeEmpty())
 			})
 
-			It("stores the RequestPasswordReset in the request Context", func() {
+			It("stores the RequestPasswordReset in the request context", func() {
 				email := "foo@bar.net"
 
 				payload := models.RequestPasswordReset{Email: email}

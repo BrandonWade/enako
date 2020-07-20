@@ -41,7 +41,7 @@ var _ = Describe("ValidateCreateAccountMiddleware", func() {
 
 	Describe("ValidateCreateAccount", func() {
 		Context("when validating a CreateAccount from an incoming request", func() {
-			It("returns an error if one is encountered retrieving the CreateAccount from the request Context", func() {
+			It("returns an error if one is encountered retrieving the CreateAccount from the request context", func() {
 				r = httptest.NewRequest("POST", "/v1/accounts", nil)
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidAccountPayload())
 

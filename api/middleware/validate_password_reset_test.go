@@ -41,7 +41,7 @@ var _ = Describe("ValidatePasswordResetMiddleware", func() {
 
 	Describe("ValidatePasswordReset", func() {
 		Context("when validating a PasswordReset from an incoming request", func() {
-			It("returns an error if one is encountered retrieving the PasswordReset from the request Context", func() {
+			It("returns an error if one is encountered retrieving the PasswordReset from the request context", func() {
 				r = httptest.NewRequest("POST", "/v1/password/reset", nil)
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidPasswordResetPayload())
 

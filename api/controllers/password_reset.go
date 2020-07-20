@@ -13,8 +13,11 @@ import (
 )
 
 const (
-	passwordResetCookieName   = "_password_reset"
-	passwordResetCookieMaxAge = 86400 // 24 hours
+	// PasswordResetCookieName the name for the cookie used to hold a password reset token
+	PasswordResetCookieName = "_password_reset"
+
+	// PasswordResetCookieMaxAge the time to live in seconds for the password reset token cookie
+	PasswordResetCookieMaxAge = 86400 // 24 hours
 )
 
 // PasswordResetController an interface for working with password resets.
@@ -104,10 +107,10 @@ func (a *passwordResetController) SetPasswordResetToken(w http.ResponseWriter, r
 	}
 
 	cookie := http.Cookie{
-		Name:     passwordResetCookieName,
+		Name:     PasswordResetCookieName,
 		Value:    t,
 		Path:     "/",
-		MaxAge:   passwordResetCookieMaxAge,
+		MaxAge:   PasswordResetCookieMaxAge,
 		HttpOnly: true,
 		Secure:   true,
 	}
@@ -118,19 +121,11 @@ func (a *passwordResetController) SetPasswordResetToken(w http.ResponseWriter, r
 }
 
 func (a *passwordResetController) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie(passwordResetCookieName)
+	cookie, err := r.Cookie(PasswordResetCookieName)
 	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			a.logger.WithField("method", "PasswordResetController.ResetPassword").Info(err.Error())
+		a.logger.WithField("method", "PasswordResetController.ResetPassword").Info(err.Error())
 
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRetrievingPasswordReset()))
-			return
-		}
-
-		a.logger.WithField("method", "PasswordResetController.ResetPassword").Error(err.Error())
-
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRetrievingPasswordReset()))
 		return
 	}

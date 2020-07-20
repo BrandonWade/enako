@@ -42,9 +42,8 @@ func (p *passwordHasher) Compare(hash, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	if err != nil {
 		p.logger.WithFields(logrus.Fields{
-			"method":   "PasswordHasher.Compare",
-			"hash":     hash,
-			"password": password,
+			"method": "PasswordHasher.Compare",
+			"hash":   hash,
 		}).Error(err.Error())
 		return err
 	}
