@@ -3,8 +3,10 @@ package services_test
 import (
 	"errors"
 	"io/ioutil"
+	"time"
 
-	helpers "github.com/BrandonWade/enako/api/helpers/fakes"
+	helpers "github.com/BrandonWade/enako/api/helpers"
+	helperFakes "github.com/BrandonWade/enako/api/helpers/fakes"
 	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/repositories/fakes"
 	"github.com/BrandonWade/enako/api/services"
@@ -18,8 +20,8 @@ import (
 var _ = Describe("AccountService", func() {
 	var (
 		logger         *logrus.Logger
-		hasher         *helpers.FakePasswordHasher
-		generator      *helpers.FakeTokenGenerator
+		hasher         *helperFakes.FakePasswordHasher
+		generator      *helperFakes.FakeTokenGenerator
 		emailService   *servicefakes.FakeEmailService
 		accountRepo    *fakes.FakeAccountRepository
 		accountService services.AccountService
@@ -33,8 +35,8 @@ var _ = Describe("AccountService", func() {
 		logger = logrus.New()
 		logger.Out = ioutil.Discard
 
-		hasher = &helpers.FakePasswordHasher{}
-		generator = &helpers.FakeTokenGenerator{}
+		hasher = &helperFakes.FakePasswordHasher{}
+		generator = &helperFakes.FakeTokenGenerator{}
 		emailService = &servicefakes.FakeEmailService{}
 		accountRepo = &fakes.FakeAccountRepository{}
 		accountService = services.NewAccountService(logger, hasher, generator, emailService, accountRepo)
@@ -157,6 +159,75 @@ var _ = Describe("AccountService", func() {
 				Expect(err).To(HaveOccurred())
 			})
 
+			It("returns an error if one occurred while parsing the last sent at time from the activation token", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: false}
+				accountRepo.GetAccountByEmailReturns(account, nil)
+				hasher.CompareReturns(nil)
+				activationToken := &models.ActivationToken{AccountID: accountID, ActivationToken: token, IsUsed: false, LastSentAt: ""}
+				accountRepo.GetActivationTokenByAccountIDReturns(activationToken, nil)
+
+				id, err := accountService.VerifyAccount(email, password)
+				Expect(id).To(BeEquivalentTo(0))
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the account exists but is not activated", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: false}
+				accountRepo.GetAccountByEmailReturns(account, nil)
+				hasher.CompareReturns(nil)
+				lastSentAt := time.Now().Add(12 * time.Hour).Format("2006-01-02 15:04:05")
+				activationToken := &models.ActivationToken{AccountID: accountID, ActivationToken: token, IsUsed: false, LastSentAt: lastSentAt}
+				accountRepo.GetActivationTokenByAccountIDReturns(activationToken, nil)
+
+				id, err := accountService.VerifyAccount(email, password)
+				Expect(id).To(BeEquivalentTo(0))
+				Expect(err).To(Equal(helpers.ErrorAccountNotActivated()))
+			})
+
+			It("returns an error if one occurred while sending an account activation email", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: false}
+				accountRepo.GetAccountByEmailReturns(account, nil)
+				hasher.CompareReturns(nil)
+				lastSentAt := time.Now().Add(-12 * time.Hour).Format("2006-01-02 15:04:05")
+				activationToken := &models.ActivationToken{AccountID: accountID, ActivationToken: token, IsUsed: false, LastSentAt: lastSentAt}
+				accountRepo.GetActivationTokenByAccountIDReturns(activationToken, nil)
+				emailService.SendAccountActivationEmailReturns(errors.New("email error"))
+
+				id, err := accountService.VerifyAccount(email, password)
+				Expect(id).To(BeEquivalentTo(0))
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if one occurred while updating the last sent at timestamp for an activation token", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: false}
+				accountRepo.GetAccountByEmailReturns(account, nil)
+				hasher.CompareReturns(nil)
+				lastSentAt := time.Now().Add(-12 * time.Hour).Format("2006-01-02 15:04:05")
+				activationToken := &models.ActivationToken{AccountID: accountID, ActivationToken: token, IsUsed: false, LastSentAt: lastSentAt}
+				accountRepo.GetActivationTokenByAccountIDReturns(activationToken, nil)
+				emailService.SendAccountActivationEmailReturns(nil)
+				accountRepo.UpdateActivationTokenLastSentAtReturns(0, errors.New("repo error"))
+
+				id, err := accountService.VerifyAccount(email, password)
+				Expect(id).To(BeEquivalentTo(0))
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the account exists but is not activated and an activation email was resent", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: false}
+				accountRepo.GetAccountByEmailReturns(account, nil)
+				hasher.CompareReturns(nil)
+				lastSentAt := time.Now().Add(-12 * time.Hour).Format("2006-01-02 15:04:05")
+				activationToken := &models.ActivationToken{AccountID: accountID, ActivationToken: token, IsUsed: false, LastSentAt: lastSentAt}
+				accountRepo.GetActivationTokenByAccountIDReturns(activationToken, nil)
+				emailService.SendAccountActivationEmailReturns(nil)
+				accountRepo.UpdateActivationTokenLastSentAtReturns(1, nil)
+
+				id, err := accountService.VerifyAccount(email, password)
+				Expect(id).To(BeEquivalentTo(0))
+				Expect(err).To(Equal(helpers.ErrorActivationEmailResent()))
+			})
+
 			It("returns the id of the new account and no error", func() {
 				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: true}
 				accountRepo.GetAccountByEmailReturns(account, nil)
@@ -164,6 +235,26 @@ var _ = Describe("AccountService", func() {
 
 				id, err := accountService.VerifyAccount(email, password)
 				Expect(id).To(BeEquivalentTo(accountID))
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+	})
+
+	Describe("ActivateAccount", func() {
+		Context("when activating an account", func() {
+			It("returns an error if one occurred", func() {
+				accountRepo.ActivateAccountReturns(false, errors.New("repo error"))
+
+				success, err := accountService.ActivateAccount(token)
+				Expect(success).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns true and no error", func() {
+				accountRepo.ActivateAccountReturns(true, nil)
+
+				success, err := accountService.ActivateAccount(token)
+				Expect(success).To(BeTrue())
 				Expect(err).NotTo(HaveOccurred())
 			})
 		})

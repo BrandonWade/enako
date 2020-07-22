@@ -81,7 +81,7 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 	return nil
 }
 
-// SendPasswordResetEmail sends an email with a paeset, ssword link to the provided email.
+// SendPasswordResetEmail sends an email with a password reset link to the provided email.
 func (e *emailService) SendPasswordResetEmail(email, token string) error {
 	link := fmt.Sprintf("%s/api/v1/accounts/password/reset?t=%s", os.Getenv("API_HOST"), token)
 
