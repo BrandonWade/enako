@@ -103,7 +103,7 @@ func (a *accountService) RegisterUser(email, password string) (int64, error) {
 
 // VerifyAccount checks whether or not an account exists for the given email and password.
 func (a *accountService) VerifyAccount(email, password string) (int64, error) {
-	account, err := a.repo.GetAccount(email)
+	account, err := a.repo.GetAccountByEmail(email)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method": "AccountService.VerifyAccount",

@@ -11,11 +11,10 @@ import (
 // AccountRepository an interface for working with accounts.
 //go:generate counterfeiter -o fakes/fake_account_repository.go . AccountRepository
 type AccountRepository interface {
-	GetAccount(email string) (*models.Account, error)
+	GetAccountByEmail(email string) (*models.Account, error)
 	CreateAccount(email, password string) (int64, error)
 	CreateActivationToken(accountID int64, activationToken string) (int64, error)
 	ActivateAccount(token string) (bool, error)
-	GetAccountByEmail(email string) (*models.Account, error)
 	GetAccountByPasswordResetToken(token string) (*models.Account, error)
 
 	GetActivationTokenByAccountID(accountID int64) (*models.ActivationToken, error)
@@ -33,9 +32,9 @@ func NewAccountRepository(DB *sqlx.DB) AccountRepository {
 	}
 }
 
-// GetAccount returns an account with the given email.
-func (a *accountRepository) GetAccount(email string) (*models.Account, error) {
-	account := models.Account{}
+// GetAccountByEmail returns the account with the given email.
+func (a *accountRepository) GetAccountByEmail(email string) (*models.Account, error) {
+	var account models.Account
 
 	err := a.DB.Get(&account, `SELECT
 		*
@@ -148,24 +147,6 @@ func (a *accountRepository) ActivateAccount(token string) (bool, error) {
 	}
 
 	return true, nil
-}
-
-// GetAccountByEmail returns the account with the given email.
-func (a *accountRepository) GetAccountByEmail(email string) (*models.Account, error) {
-	var account models.Account
-
-	err := a.DB.Get(&account, `SELECT
-		*
-		FROM accounts a
-		WHERE a.email = ?;
-	`,
-		email,
-	)
-	if err != nil {
-		return &models.Account{}, err
-	}
-
-	return &account, nil
 }
 
 // GetAccountByPasswordResetToken returns the account associated with the given password reset token.
