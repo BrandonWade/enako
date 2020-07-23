@@ -22,13 +22,12 @@ const (
 //go:generate counterfeiter -o fakes/fake_password_reset_service.go . PasswordResetService
 type PasswordResetService interface {
 	RequestPasswordReset(email string) (string, error)
-	CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) error
-	VerifyPasswordResetToken(token string) error
+	CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) (bool, error)
+	VerifyPasswordResetToken(token string) (bool, error)
 	ResetPassword(token, password string) (bool, error)
-	NotifyOfPasswordReset(token string) error
 }
 
-type passwordResetToken struct {
+type passwordResetService struct {
 	logger       *logrus.Logger
 	hasher       helpers.PasswordHasher
 	obfuscator   helpers.EmailObfuscator
@@ -40,7 +39,7 @@ type passwordResetToken struct {
 
 // NewPasswordResetService returns a new instance of an PasswordResetService.
 func NewPasswordResetService(logger *logrus.Logger, hasher helpers.PasswordHasher, obfuscator helpers.EmailObfuscator, generator helpers.TokenGenerator, emailService EmailService, repo repositories.PasswordResetRepository, accountRepo repositories.AccountRepository) PasswordResetService {
-	return &passwordResetToken{
+	return &passwordResetService{
 		logger,
 		hasher,
 		obfuscator,
@@ -52,11 +51,11 @@ func NewPasswordResetService(logger *logrus.Logger, hasher helpers.PasswordHashe
 }
 
 // RequestPasswordReset requests a password reset for the account with the given email.
-func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) {
-	account, err := a.accountRepo.GetAccountByEmail(email)
+func (p *passwordResetService) RequestPasswordReset(email string) (string, error) {
+	account, err := p.accountRepo.GetAccountByEmail(email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			a.logger.WithFields(logrus.Fields{
+			p.logger.WithFields(logrus.Fields{
 				"method": "PasswordResetService.RequestPasswordReset",
 				"email":  email,
 			}).Info(err.Error())
@@ -64,7 +63,7 @@ func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) 
 			return "", helpers.ErrorAccountNotFound()
 		}
 
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.RequestPasswordReset",
 			"email":  email,
 		}).Error(err.Error())
@@ -72,10 +71,10 @@ func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) 
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	token := a.generator.CreateToken(PasswordResetTokenLength)
-	_, err = a.repo.CreatePasswordResetToken(account.ID, token)
+	token := p.generator.CreateToken(PasswordResetTokenLength)
+	_, err = p.repo.CreatePasswordResetToken(account.ID, token)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method":    "PasswordResetService.RequestPasswordReset",
 			"accountID": account.ID,
 			"token":     token,
@@ -83,9 +82,9 @@ func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) 
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	err = a.emailService.SendPasswordResetEmail(account.Email, token)
+	err = p.emailService.SendPasswordResetEmail(account.Email, token)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.RequestPasswordReset",
 			"email":  account.Email,
 			"token":  token,
@@ -93,9 +92,9 @@ func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) 
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	obfuscatedEmail, err := a.obfuscator.Obfuscate(account.Email)
+	obfuscatedEmail, err := p.obfuscator.Obfuscate(account.Email)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.RequestPasswordReset",
 			"email":  account.Email,
 		}).Error(err.Error())
@@ -107,83 +106,92 @@ func (a *passwordResetToken) RequestPasswordReset(email string) (string, error) 
 }
 
 // CheckPasswordResetTokenIsValid checks whether the given password reset token has a status of pending and is not expired.
-func (a *passwordResetToken) CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) error {
+func (p *passwordResetService) CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) (bool, error) {
 	now := time.Now()
 	expiresAt, err := time.Parse("2006-01-02 03:04:05", resetToken.ExpiresAt)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method":    "PasswordResetService.CheckPasswordResetTokenIsValid",
 			"token":     resetToken.ResetToken,
 			"expiresAt": resetToken.ExpiresAt,
 		}).Error(err.Error())
-		return err
+		return false, err
 	}
 
 	if resetToken.Status != "pending" || now.After(expiresAt) {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.CheckPasswordResetTokenIsValid",
 			"token":  resetToken.ResetToken,
 		}).Info(helpers.ErrorResetTokenExpiredOrInvalid())
-		return helpers.ErrorResetTokenExpiredOrInvalid()
+		return false, helpers.ErrorResetTokenExpiredOrInvalid()
 	}
 
-	return nil
+	return true, nil
 }
 
 // VerifyPasswordResetToken retrieves the password reset token model using the given token and checks whether it is valid.
-func (a *passwordResetToken) VerifyPasswordResetToken(token string) error {
-	resetToken, err := a.repo.GetPasswordResetTokenByPasswordResetToken(token)
+func (p *passwordResetService) VerifyPasswordResetToken(token string) (bool, error) {
+	resetToken, err := p.repo.GetPasswordResetTokenByPasswordResetToken(token)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.VerifyPasswordResetToken",
 			"token":  token,
 		}).Error(err.Error())
 	}
 
-	return a.CheckPasswordResetTokenIsValid(resetToken)
+	return p.CheckPasswordResetTokenIsValid(resetToken)
 }
 
 // ResetPassword sets the password for the account associated with the reset token.
-func (a *passwordResetToken) ResetPassword(token, password string) (bool, error) {
-	resetToken, err := a.repo.GetPasswordResetTokenByPasswordResetToken(token)
+func (p *passwordResetService) ResetPassword(token, password string) (bool, error) {
+	resetToken, err := p.repo.GetPasswordResetTokenByPasswordResetToken(token)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.ResetPassword",
 			"token":  token,
 		}).Error(err.Error())
 		return false, err
 	}
 
-	err = a.CheckPasswordResetTokenIsValid(resetToken)
+	_, err = p.CheckPasswordResetTokenIsValid(resetToken)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.ResetPassword",
 			"token":  token,
 		}).Error(err.Error())
 		return false, err
 	}
 
-	hash, err := a.hasher.Generate(password)
+	hash, err := p.hasher.Generate(password)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method":   "PasswordResetService.ResetPassword",
 			"password": password,
 		}).Error(err.Error())
 		return false, err
 	}
 
-	_, err = a.repo.ResetPassword(token, string(hash))
+	_, err = p.repo.ResetPassword(token, string(hash))
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.ResetPassword",
 			"token":  token,
 		}).Error(err.Error())
 		return false, err
 	}
 
-	err = a.NotifyOfPasswordReset(token)
+	account, err := p.accountRepo.GetAccountByPasswordResetToken(token)
 	if err != nil {
-		a.logger.WithFields(logrus.Fields{
+		p.logger.WithFields(logrus.Fields{
+			"method": "PasswordResetService.ResetPassword",
+			"token":  token,
+		}).Error(err.Error())
+		return false, err
+	}
+
+	err = p.emailService.SendPasswordUpdatedEmail(account.Email)
+	if err != nil {
+		p.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetService.ResetPassword",
 			"token":  token,
 		}).Error(err.Error())
@@ -191,18 +199,4 @@ func (a *passwordResetToken) ResetPassword(token, password string) (bool, error)
 	}
 
 	return true, nil
-}
-
-// NotifyOfPasswordReset notifies the account owner that their password was reset.
-func (a *passwordResetToken) NotifyOfPasswordReset(token string) error {
-	account, err := a.accountRepo.GetAccountByPasswordResetToken(token)
-	if err != nil {
-		a.logger.WithFields(logrus.Fields{
-			"method": "PasswordResetService.NotifyOfPasswordReset",
-			"token":  token,
-		}).Error(err.Error())
-		return err
-	}
-
-	return a.emailService.SendPasswordUpdatedEmail(account.Email)
 }

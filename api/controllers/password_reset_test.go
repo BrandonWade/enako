@@ -107,7 +107,7 @@ var _ = Describe("PasswordResetController", func() {
 			})
 
 			It("redirects to the login page when an invalid reset token is provided", func() {
-				passwordResetService.VerifyPasswordResetTokenReturns(errors.New("service error"))
+				passwordResetService.VerifyPasswordResetTokenReturns(false, errors.New("service error"))
 				r = httptest.NewRequest("GET", "/v1/password/reset?t=thisisareallylongtokenthatneedstobesuperlongtopassvalidation1234", nil)
 
 				passwordResetController.SetPasswordResetToken(w, r)
@@ -116,7 +116,7 @@ var _ = Describe("PasswordResetController", func() {
 
 			It("redirects to the password reset page and sets the given reset token as a cookie in the response", func() {
 				token := "thisisareallylongtokenthatneedstobesuperlongtopassvalidation1234"
-				passwordResetService.VerifyPasswordResetTokenReturns(nil)
+				passwordResetService.VerifyPasswordResetTokenReturns(true, nil)
 				r = httptest.NewRequest("GET", fmt.Sprintf("/v1/password/reset?t=%s", token), nil)
 
 				passwordResetController.SetPasswordResetToken(w, r)

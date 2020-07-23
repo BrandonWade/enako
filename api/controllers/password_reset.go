@@ -93,7 +93,7 @@ func (a *passwordResetController) SetPasswordResetToken(w http.ResponseWriter, r
 		return
 	}
 
-	err := a.service.VerifyPasswordResetToken(t)
+	_, err := a.service.VerifyPasswordResetToken(t)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method": "PasswordResetController.SetPasswordResetToken",
