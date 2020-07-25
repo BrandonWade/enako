@@ -125,7 +125,9 @@ func (e *emailService) SendPasswordResetEmail(email, token string) error {
 
 // SendPasswordUpdatedEmail sends an email when a password has been updated.
 func (e *emailService) SendPasswordUpdatedEmail(email string) error {
-	template, err := e.templateService.GeneratePasswordUpdatedEmail()
+	link := fmt.Sprintf("http://%s/password", os.Getenv("API_HOST"))
+
+	template, err := e.templateService.GeneratePasswordUpdatedEmail(link)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
 			"method": "EmailService.SendPasswordUpdatedEmail",

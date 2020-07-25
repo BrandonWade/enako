@@ -36,7 +36,6 @@ var (
 	errRetrievingRequestPasswordReset     = errors.New("error retrieving request password reset from context")
 	errRequestingPasswordReset            = errors.New("error requesting password reset")
 	errAccountNotFound                    = errors.New("error account not found")
-	errObfuscatingEmail                   = errors.New("error obfuscating email")
 	errRetrievingPasswordReset            = errors.New("error retrieving password reset from context")
 	errInvalidPasswordResetPayload        = errors.New("invalid password reset payload")
 	errRetrievingResetToken               = errors.New("error retrieving reset token")
@@ -202,11 +201,6 @@ func ErrorRequestingPasswordReset() error {
 // ErrorAccountNotFound returned when an account is not found in the database.
 func ErrorAccountNotFound() error {
 	return errAccountNotFound
-}
-
-// ErrorObfuscatingEmail returned when an error occurs when attempting to obfuscate an email.
-func ErrorObfuscatingEmail() error {
-	return errObfuscatingEmail
 }
 
 // ErrorInvalidPasswordResetPayload returned when an error occurs when a submitted password reset is malformed.

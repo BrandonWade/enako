@@ -31,6 +31,7 @@ var (
 
 	mjClient *mailjet.Client
 
+	basePath     string
 	cookieSecret string
 	csrfSecret   string
 )
@@ -58,13 +59,18 @@ func init() {
 	cookieSecret = os.Getenv("COOKIE_SECRET")
 	csrfSecret = os.Getenv("CSRF_SECRET")
 
+	basePath, err = os.Getwd()
+	if err != nil {
+		log.Fatalf("error fetching base path: %s\n", err.Error())
+	}
+
 	validation.InitValidator()
 }
 
 func main() {
 	csrfMiddleware := csrf.Protect([]byte(csrfSecret))
 	hasher := helpers.NewPasswordHasher(logger)
-	obfuscator := helpers.NewEmailObfuscator(logger)
+	templater := helpers.NewTemplater(logger)
 	generator := helpers.NewTokenGenerator()
 	store := helpers.NewCookieStore([]byte(cookieSecret))
 
@@ -72,7 +78,7 @@ func main() {
 
 	mailjetClient := clients.NewMailjetClient(logger, mjClient)
 
-	templateService := services.NewTemplateService(logger)
+	templateService := services.NewTemplateService(logger, templater, basePath)
 	emailService := services.NewEmailService(logger, templateService, mailjetClient)
 
 	accountRepository := repositories.NewAccountRepository(DB)
@@ -81,7 +87,7 @@ func main() {
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
 	accountService := services.NewAccountService(logger, hasher, generator, emailService, accountRepository)
-	passwordResetService := services.NewPasswordResetService(logger, hasher, obfuscator, generator, emailService, passwordResetRepository, accountRepository)
+	passwordResetService := services.NewPasswordResetService(logger, hasher, generator, emailService, passwordResetRepository, accountRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 

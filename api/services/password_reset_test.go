@@ -22,7 +22,6 @@ var _ = Describe("PasswordResetService", func() {
 	var (
 		logger               *logrus.Logger
 		hasher               *helperfakes.FakePasswordHasher
-		obfuscator           *helperfakes.FakeEmailObfuscator
 		generator            *helperfakes.FakeTokenGenerator
 		emailService         *servicefakes.FakeEmailService
 		accountRepo          *repositoryfakes.FakeAccountRepository
@@ -40,12 +39,11 @@ var _ = Describe("PasswordResetService", func() {
 		logger.Out = ioutil.Discard
 
 		hasher = &helperfakes.FakePasswordHasher{}
-		obfuscator = &helperfakes.FakeEmailObfuscator{}
 		generator = &helperfakes.FakeTokenGenerator{}
 		emailService = &servicefakes.FakeEmailService{}
 		accountRepo = &repositoryfakes.FakeAccountRepository{}
 		passwordResetRepo = &repositoryfakes.FakePasswordResetRepository{}
-		passwordResetService = services.NewPasswordResetService(logger, hasher, obfuscator, generator, emailService, passwordResetRepo, accountRepo)
+		passwordResetService = services.NewPasswordResetService(logger, hasher, generator, emailService, passwordResetRepo, accountRepo)
 
 		accountID = int64(18742356)
 		token = "thisisareallylongtokenthatneedstobesuperlongtopassvalidation1234"
@@ -93,28 +91,14 @@ var _ = Describe("PasswordResetService", func() {
 				Expect(err).To(Equal(helpers.ErrorRequestingPasswordReset()))
 			})
 
-			It("returns an error if one occurred while obfuscating an email", func() {
+			It("returns the email and no error", func() {
 				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: true}
 				accountRepo.GetAccountByEmailReturns(account, nil)
 				passwordResetRepo.CreatePasswordResetTokenReturns(1, nil)
 				emailService.SendPasswordResetEmailReturns(nil)
-				obfuscator.ObfuscateReturns("", errors.New("obfuscator error"))
 
 				email, err := passwordResetService.RequestPasswordReset(email)
-				Expect(email).To(BeEmpty())
-				Expect(err).To(Equal(helpers.ErrorRequestingPasswordReset()))
-			})
-
-			It("returns the obfuscated email and no error", func() {
-				account := &models.Account{ID: accountID, Email: email, Password: password, IsActivated: true}
-				accountRepo.GetAccountByEmailReturns(account, nil)
-				passwordResetRepo.CreatePasswordResetTokenReturns(1, nil)
-				emailService.SendPasswordResetEmailReturns(nil)
-				obfuscatedEmail := "f**@bar.net"
-				obfuscator.ObfuscateReturns(obfuscatedEmail, nil)
-
-				email, err := passwordResetService.RequestPasswordReset(email)
-				Expect(email).To(Equal(obfuscatedEmail))
+				Expect(email).To(Equal(email))
 				Expect(err).NotTo(HaveOccurred())
 			})
 		})

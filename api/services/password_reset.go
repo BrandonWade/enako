@@ -30,7 +30,6 @@ type PasswordResetService interface {
 type passwordResetService struct {
 	logger       *logrus.Logger
 	hasher       helpers.PasswordHasher
-	obfuscator   helpers.EmailObfuscator
 	generator    helpers.TokenGenerator
 	emailService EmailService
 	repo         repositories.PasswordResetRepository
@@ -38,11 +37,10 @@ type passwordResetService struct {
 }
 
 // NewPasswordResetService returns a new instance of an PasswordResetService.
-func NewPasswordResetService(logger *logrus.Logger, hasher helpers.PasswordHasher, obfuscator helpers.EmailObfuscator, generator helpers.TokenGenerator, emailService EmailService, repo repositories.PasswordResetRepository, accountRepo repositories.AccountRepository) PasswordResetService {
+func NewPasswordResetService(logger *logrus.Logger, hasher helpers.PasswordHasher, generator helpers.TokenGenerator, emailService EmailService, repo repositories.PasswordResetRepository, accountRepo repositories.AccountRepository) PasswordResetService {
 	return &passwordResetService{
 		logger,
 		hasher,
-		obfuscator,
 		generator,
 		emailService,
 		repo,
@@ -92,17 +90,7 @@ func (p *passwordResetService) RequestPasswordReset(email string) (string, error
 		return "", helpers.ErrorRequestingPasswordReset()
 	}
 
-	obfuscatedEmail, err := p.obfuscator.Obfuscate(account.Email)
-	if err != nil {
-		p.logger.WithFields(logrus.Fields{
-			"method": "PasswordResetService.RequestPasswordReset",
-			"email":  account.Email,
-		}).Error(err.Error())
-
-		return "", helpers.ErrorRequestingPasswordReset()
-	}
-
-	return obfuscatedEmail, nil
+	return email, nil
 }
 
 // CheckPasswordResetTokenIsValid checks whether the given password reset token has a status of pending and is not expired.

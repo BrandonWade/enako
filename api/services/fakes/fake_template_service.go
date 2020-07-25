@@ -34,9 +34,10 @@ type FakeTemplateService struct {
 		result1 string
 		result2 error
 	}
-	GeneratePasswordUpdatedEmailStub        func() (string, error)
+	GeneratePasswordUpdatedEmailStub        func(string) (string, error)
 	generatePasswordUpdatedEmailMutex       sync.RWMutex
 	generatePasswordUpdatedEmailArgsForCall []struct {
+		arg1 string
 	}
 	generatePasswordUpdatedEmailReturns struct {
 		result1 string
@@ -176,15 +177,16 @@ func (fake *FakeTemplateService) GeneratePasswordResetEmailReturnsOnCall(i int, 
 	}{result1, result2}
 }
 
-func (fake *FakeTemplateService) GeneratePasswordUpdatedEmail() (string, error) {
+func (fake *FakeTemplateService) GeneratePasswordUpdatedEmail(arg1 string) (string, error) {
 	fake.generatePasswordUpdatedEmailMutex.Lock()
 	ret, specificReturn := fake.generatePasswordUpdatedEmailReturnsOnCall[len(fake.generatePasswordUpdatedEmailArgsForCall)]
 	fake.generatePasswordUpdatedEmailArgsForCall = append(fake.generatePasswordUpdatedEmailArgsForCall, struct {
-	}{})
-	fake.recordInvocation("GeneratePasswordUpdatedEmail", []interface{}{})
+		arg1 string
+	}{arg1})
+	fake.recordInvocation("GeneratePasswordUpdatedEmail", []interface{}{arg1})
 	fake.generatePasswordUpdatedEmailMutex.Unlock()
 	if fake.GeneratePasswordUpdatedEmailStub != nil {
-		return fake.GeneratePasswordUpdatedEmailStub()
+		return fake.GeneratePasswordUpdatedEmailStub(arg1)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -199,10 +201,17 @@ func (fake *FakeTemplateService) GeneratePasswordUpdatedEmailCallCount() int {
 	return len(fake.generatePasswordUpdatedEmailArgsForCall)
 }
 
-func (fake *FakeTemplateService) GeneratePasswordUpdatedEmailCalls(stub func() (string, error)) {
+func (fake *FakeTemplateService) GeneratePasswordUpdatedEmailCalls(stub func(string) (string, error)) {
 	fake.generatePasswordUpdatedEmailMutex.Lock()
 	defer fake.generatePasswordUpdatedEmailMutex.Unlock()
 	fake.GeneratePasswordUpdatedEmailStub = stub
+}
+
+func (fake *FakeTemplateService) GeneratePasswordUpdatedEmailArgsForCall(i int) string {
+	fake.generatePasswordUpdatedEmailMutex.RLock()
+	defer fake.generatePasswordUpdatedEmailMutex.RUnlock()
+	argsForCall := fake.generatePasswordUpdatedEmailArgsForCall[i]
+	return argsForCall.arg1
 }
 
 func (fake *FakeTemplateService) GeneratePasswordUpdatedEmailReturns(result1 string, result2 error) {
