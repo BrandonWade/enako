@@ -2,18 +2,18 @@ import React from 'react';
 import InputField from '../InputField';
 import './PasswordField.scss';
 
-const okayLegth = 20;
+const okayLength = 20;
 const strongLength = 30;
 
-const PasswordField = props => {
+const PasswordField = ({ type = 'password', value = '', name = '', label = '', autoComplete = '', onChange = () => {} }) => {
     let passwordClass = '';
     let passwordDescription = '';
 
-    if (props.type === 'password') {
-        if (props.value.length < okayLegth) {
+    if (type === 'password') {
+        if (value.length < okayLength) {
             passwordClass = 'PasswordField--weak';
             passwordDescription = 'Weak';
-        } else if (props.value.length < strongLength) {
+        } else if (value.length < strongLength) {
             passwordClass = 'PasswordField--okay';
             passwordDescription = 'Okay';
         } else {
@@ -25,13 +25,13 @@ const PasswordField = props => {
     return (
         <InputField
             type='password'
-            name={props.name}
-            value={props.value}
+            name={name}
+            value={value}
             className={passwordClass}
-            label={props.label || ''}
-            description={passwordDescription || ''}
-            autoComplete={props.autoComplete || ''}
-            onChange={props.onChange}
+            label={label}
+            description={passwordDescription}
+            autoComplete={autoComplete}
+            onChange={onChange}
         />
     );
 };

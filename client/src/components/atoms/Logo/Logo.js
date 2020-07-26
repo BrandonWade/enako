@@ -1,8 +1,8 @@
 import React from 'react';
 import './Logo.scss';
 
-const Logo = props => {
-    return <h1 className={`Logo ${props.className || ''}`}>Enako</h1>;
+const Logo = ({ className = '' }) => {
+    return <h1 className={`Logo ${className}`}>Enako</h1>;
 };
 
 export default Logo;

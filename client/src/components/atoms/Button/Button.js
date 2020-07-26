@@ -1,14 +1,14 @@
 import React from 'react';
 import './Button.scss';
 
-const Button = props => {
-    const color = props.color ? `Button--${props.color}` : '';
-    const full = props.full ? 'Button--full' : '';
-    const isDisabled = props.disabled ?? false;
+const Button = ({ color = '', full = '', disabled = false, className = '', onClick = () => {}, text = '' }) => {
+    const colorClass = color ? `Button--${color}` : '';
+    const fullClass = full ? 'Button--full' : '';
+    const isDisabled = disabled ?? false;
 
     return (
-        <button className={`Button ${color} ${full} ${props.className || ''}`} onClick={props.onClick} disabled={isDisabled}>
-            {props.text}
+        <button className={`Button ${colorClass} ${fullClass} ${className}`} onClick={onClick} disabled={isDisabled}>
+            {text}
         </button>
     );
 };

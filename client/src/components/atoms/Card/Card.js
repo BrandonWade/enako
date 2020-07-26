@@ -1,11 +1,11 @@
 import React from 'react';
 import './Card.scss';
 
-const Card = props => {
+const Card = ({ className = '', heading = '', children = [] }) => {
     return (
-        <div className={`Card ${props.className || ''}`}>
-            {props.heading && <h2 className='Card-heading'>{props.heading}</h2>}
-            {props.children}
+        <div className={`Card ${className}`}>
+            {heading && <h2 className='Card-heading'>{heading}</h2>}
+            {children}
         </div>
     );
 };
