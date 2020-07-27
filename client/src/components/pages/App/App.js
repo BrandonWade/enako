@@ -15,6 +15,7 @@ import Register from '../Register';
 import Login from '../Login';
 import ForgotPassword from '../ForgotPassword';
 import Editor from '../Editor';
+import Account from '../Account';
 import './App.scss';
 
 const App = () => {
@@ -102,6 +103,7 @@ const App = () => {
                                         setExpenses={setExpenses}
                                         setSelectedDate={setSelectedDate}
                                     />
+                                    <AuthenticatedRoute path='/account' component={Account} />
                                     <AuthenticatedRedirect />
                                 </Switch>
                             </BrowserRouter>

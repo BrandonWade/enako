@@ -1,0 +1,16 @@
+.Account {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-content {
+        width: 50rem;
+        font-size: 1.2rem;
+    }
+
+    &-buttons {
+        display: flex;
+        justify-content: flex-end;
+    }
+}

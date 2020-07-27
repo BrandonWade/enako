@@ -10,4 +10,16 @@ const Card = ({ className = '', heading = '', children = [] }) => {
     );
 };
 
+export const CardSection = ({ heading = '', description = '', children = [] }) => {
+    return (
+        <section className='CardSection'>
+            <h6 className='CardSection-heading'>{heading}</h6>
+            <div className='CardSection-description'>{description}</div>
+            {children}
+        </section>
+    );
+};
+
+Card.Section = CardSection;
+
 export default Card;

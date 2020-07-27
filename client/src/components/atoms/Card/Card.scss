@@ -1,5 +1,5 @@
 .Card {
-    padding: 1rem;
+    padding: 2.5rem;
     border: var(--line);
     box-shadow: var(--box-shadow);
     border-radius: var(--border-radius);
@@ -8,5 +8,23 @@
     &-heading {
         text-align: center;
         margin-bottom: 1rem;
+    }
+}
+
+.CardSection {
+    margin-bottom: 2.5rem;
+    font-size: 1.3rem;
+
+    &:not(:last-of-type) {
+        padding-bottom: 2.5rem;
+        border-bottom: var(--line);
+    }
+
+    &-heading {
+        font-size: 1.4rem;
+    }
+
+    &-description {
+        margin-bottom: 0.75rem;
     }
 }
