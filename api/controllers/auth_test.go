@@ -170,7 +170,7 @@ var _ = Describe("AuthController", func() {
 				r = httptest.NewRequest("GET", "/v1/logout", nil)
 
 				authController.Logout(w, r)
-				Expect(w.Code).To(Equal(http.StatusFound))
+				Expect(w.Code).To(Equal(http.StatusNoContent))
 				Expect(session.DeleteCallCount()).To(Equal(1))
 				Expect(session.SaveCallCount()).To(Equal(1))
 			})

@@ -11,9 +11,11 @@ const Card = ({ className = '', heading = '', children = [] }) => {
 };
 
 export const CardSection = ({ heading = '', description = '', children = [] }) => {
+    const renderHeading = () => (heading ? <h6 className='CardSection-heading'>{heading}</h6> : null);
+
     return (
         <section className='CardSection'>
-            <h6 className='CardSection-heading'>{heading}</h6>
+            {renderHeading()}
             <div className='CardSection-description'>{description}</div>
             {children}
         </section>

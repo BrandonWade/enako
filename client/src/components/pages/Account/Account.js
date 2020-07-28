@@ -4,12 +4,19 @@ import { Link } from 'react-router-dom';
 import Button from '../../atoms/Button';
 import './Account.scss';
 
-const Account = ({ email = '' }) => {
+const Account = ({ email = 'foo@bar.net' }) => {
     return (
         <div className='Account'>
             <Card className='Account-content' heading='Account'>
+                <Card.Section>
+                    <div className='Account-header'>
+                        <p className='Account-email'>{email}</p>
+                        <Link to='/logout'>
+                            <Button color='orange' text='Logout' />
+                        </Link>
+                    </div>
+                </Card.Section>
                 <Card.Section heading='Update Email' description='Update the email address associated with your account.'>
-                    <p className='Account-sectionDescription'>{`Current Email: ${email}`}</p>
                     <Button text='Update Email' />
                 </Card.Section>
                 <Card.Section heading='Change Password' description='Change your account password.'>

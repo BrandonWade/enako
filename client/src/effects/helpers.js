@@ -14,7 +14,13 @@ export const fetchFromServer = async (url, headers = {}) => {
             ...headers,
         },
     });
-    return await response.json();
+
+    const res = await response;
+    if (res.status === 204) {
+        return null;
+    } else {
+        return res.json();
+    }
 };
 
 export const postToServer = async (url, data, headers = {}) => {
@@ -30,7 +36,12 @@ export const postToServer = async (url, data, headers = {}) => {
         body: JSON.stringify(data),
     });
 
-    return await response.json();
+    const res = await response;
+    if (res.status === 204) {
+        return null;
+    } else {
+        return res.json();
+    }
 };
 
 export const putToServer = async (url, data, headers = {}) => {
@@ -46,7 +57,12 @@ export const putToServer = async (url, data, headers = {}) => {
         body: JSON.stringify(data),
     });
 
-    return await response.json();
+    const res = await response;
+    if (res.status === 204) {
+        return null;
+    } else {
+        return res.json();
+    }
 };
 
 export const deleteFromServer = async (url, headers = {}) => {
@@ -61,5 +77,10 @@ export const deleteFromServer = async (url, headers = {}) => {
         },
     });
 
-    return await response.json();
+    const res = await response;
+    if (res.status === 204) {
+        return null;
+    } else {
+        return res.json();
+    }
 };

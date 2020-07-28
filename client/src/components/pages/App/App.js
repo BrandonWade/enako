@@ -16,6 +16,7 @@ import Login from '../Login';
 import ForgotPassword from '../ForgotPassword';
 import Editor from '../Editor';
 import Account from '../Account';
+import Logout from '../Logout';
 import './App.scss';
 
 const App = () => {
@@ -64,7 +65,7 @@ const App = () => {
 
     return (
         <MessageContext.Provider value={{ messages, setMessages }}>
-            <AuthenticatedContext.Provider value={authenticated}>
+            <AuthenticatedContext.Provider value={{ authenticated, setAuthenticated }}>
                 <SelectedDateContext.Provider value={selectedDate}>
                     <CategoryContext.Provider value={categories}>
                         <ExpenseContext.Provider value={expenses}>
@@ -104,6 +105,7 @@ const App = () => {
                                         setSelectedDate={setSelectedDate}
                                     />
                                     <AuthenticatedRoute path='/account' component={Account} />
+                                    <AuthenticatedRoute path='/logout' component={Logout} />
                                     <AuthenticatedRedirect />
                                 </Switch>
                             </BrowserRouter>
