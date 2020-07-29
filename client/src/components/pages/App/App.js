@@ -10,6 +10,7 @@ import ExpenseContext from '../../../contexts/ExpenseContext';
 import MessageContext from '../../../contexts/MessageContext';
 import AuthenticatedRoute from '../../routing/AuthenticatedRoute';
 import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
+import MenuButton from '../../molecules/MenuButton';
 import Home from '../Home';
 import Register from '../Register';
 import Login from '../Login';
@@ -70,6 +71,7 @@ const App = () => {
                     <CategoryContext.Provider value={categories}>
                         <ExpenseContext.Provider value={expenses}>
                             <BrowserRouter>
+                                <MenuButton />
                                 <Switch>
                                     <Route
                                         path='/login'
