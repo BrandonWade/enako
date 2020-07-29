@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useEffect } from 'react';
 import logoutOfAccount from '../../../effects/logoutOfAccount';
 
 const Logout = () => {
@@ -10,9 +9,9 @@ const Logout = () => {
         logout();
     }, []);
 
-    // TODO: This causes an error when accessing /logout directly
-    return <Redirect to='/login' />;
-    // window.location = '/login';
+    window.location = '/login';
+
+    return null;
 };
 
 export default Logout;

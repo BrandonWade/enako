@@ -65,7 +65,7 @@ const App = () => {
 
     return (
         <MessageContext.Provider value={{ messages, setMessages }}>
-            <AuthenticatedContext.Provider value={{ authenticated, setAuthenticated }}>
+            <AuthenticatedContext.Provider value={authenticated}>
                 <SelectedDateContext.Provider value={selectedDate}>
                     <CategoryContext.Provider value={categories}>
                         <ExpenseContext.Provider value={expenses}>

@@ -3,8 +3,8 @@ import { Redirect } from 'react-router-dom';
 import AuthenticatedContext from '../../contexts/AuthenticatedContext';
 
 const AuthenticatedRedirect = () => {
-    const auth = useContext(AuthenticatedContext);
-    return auth.authenticated ? <Redirect to='/' /> : <Redirect to='/login' />;
+    const authenticated = useContext(AuthenticatedContext);
+    return authenticated ? <Redirect to='/' /> : <Redirect to='/login' />;
 };
 
 export default AuthenticatedRedirect;
