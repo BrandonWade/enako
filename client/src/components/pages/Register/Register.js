@@ -4,10 +4,10 @@ import createAccount from '../../../effects/createAccount';
 import resetPassword from '../../../effects/resetPassword';
 import Logo from '../../atoms/Logo';
 import Card from '../../atoms/Card';
-import InputField from '../../molecules/InputField';
-import PasswordField from '../../molecules/PasswordField';
-import ValidationRow from '../../atoms/ValidationRow';
 import MessageList from '../../organisms/MessageList';
+import InputField from '../../molecules/InputField';
+import ValidationRow from '../../atoms/ValidationRow';
+import PasswordChangeForm from '../../organisms/PasswordChangeForm';
 import Button from '../../atoms/Button';
 import MessageContext from '../../../contexts/MessageContext';
 import { ValidateEmailFormat } from '../../../validators/email';
@@ -31,12 +31,12 @@ const Register = props => {
 
     const renderEmail = () => {
         return !props.passwordReset ? (
-            <>
+            <div className='ChangePassword-grid'>
                 <InputField label='Email' value={email} onChange={e => setEmail(e.target.value)} />
                 <div className='Register-validatorRules'>
                     <ValidationRow valid={validEmailFormat} description='Email is well formatted' />
                 </div>
-            </>
+            </div>
         ) : null;
     };
 
@@ -89,35 +89,21 @@ const Register = props => {
                 <Logo />
                 <Card className='Register-form'>
                     <MessageList />
-                    <div className='Register-formGrid'>
-                        {renderEmail()}
-                        <PasswordField
-                            type='password'
-                            label='Password'
-                            value={password}
-                            autoComplete='current-password'
-                            onChange={e => setPassword(e.target.value)}
+                    {renderEmail()}
+                    <PasswordChangeForm
+                        changePassword
+                        password={password}
+                        confirmPassword={confirmPassword}
+                        setPassword={setPassword}
+                        setConfirmPassword={setConfirmPassword}
+                    >
+                        <ValidationRow valid={validPasswordLength} description='Password is between 15 and 50 characters' />
+                        <ValidationRow
+                            valid={validPasswordCharacters}
+                            description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
                         />
-                        <div
-                            className={`Register-validatorRules ${
-                                props.passwordReset ? 'Register-passwordRules--passwordReset' : 'Register-passwordRules'
-                            }`}
-                        >
-                            <ValidationRow valid={validPasswordLength} description='Password is between 15 and 50 characters' />
-                            <ValidationRow
-                                valid={validPasswordCharacters}
-                                description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
-                            />
-                            <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
-                        </div>
-                        <PasswordField
-                            type='password'
-                            label='Confirm Password'
-                            value={confirmPassword}
-                            autoComplete='new-password'
-                            onChange={e => setConfirmPassword(e.target.value)}
-                        />
-                    </div>
+                        <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
+                    </PasswordChangeForm>
                     <div className='Register-buttons'>
                         <Link to='/login'>
                             <Button text='Cancel' />

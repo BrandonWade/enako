@@ -1,9 +1,13 @@
 .ValidationRow {
     font-size: 1.3rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.75rem;
     display: flex;
     align-items: center;
     position: relative;
+
+    &:first-child {
+        margin-top: 1rem;
+    }
 }
 
 .ValidationRow-message {

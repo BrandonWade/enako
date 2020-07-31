@@ -19,5 +19,5 @@ func MessageAccountWithEmailNotFound(email string) string {
 
 // MessagePasswordUpdated returned when a password reset was successful.
 func MessagePasswordUpdated() string {
-	return "Hey we were able to successfully update your account - please login using your new password."
+	return "Hey we were able to successfully update your account! Now please login using your new password."
 }

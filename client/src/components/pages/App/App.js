@@ -15,6 +15,7 @@ import Home from '../Home';
 import Register from '../Register';
 import Login from '../Login';
 import ForgotPassword from '../ForgotPassword';
+import ChangePassword from '../ChangePassword';
 import Editor from '../Editor';
 import Account from '../Account';
 import Logout from '../Logout';
@@ -106,7 +107,8 @@ const App = () => {
                                         setExpenses={setExpenses}
                                         setSelectedDate={setSelectedDate}
                                     />
-                                    <AuthenticatedRoute path='/account' component={Account} />
+                                    <AuthenticatedRoute path='/account' exact component={Account} />
+                                    <AuthenticatedRoute path='/account/password' component={ChangePassword} />
                                     <AuthenticatedRoute path='/logout' component={Logout} />
                                     <AuthenticatedRedirect />
                                 </Switch>

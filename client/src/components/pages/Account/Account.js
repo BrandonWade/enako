@@ -16,11 +16,13 @@ const Account = ({ email = 'foo@bar.net' }) => {
                         </Link>
                     </div>
                 </Card.Section>
+                <Card.Section heading='Change Password' description='Change your account password.'>
+                    <Link to='/account/password'>
+                        <Button text='Change Password' />
+                    </Link>
+                </Card.Section>
                 <Card.Section heading='Update Email' description='Update the email address associated with your account.'>
                     <Button text='Update Email' />
-                </Card.Section>
-                <Card.Section heading='Change Password' description='Change your account password.'>
-                    <Button text='Change Password' />
                 </Card.Section>
                 <Card.Section heading='Download Data' description='Download a copy of your data.'>
                     <Button text='Download Data' />
