@@ -6,4 +6,8 @@
     height: 3.5rem;
     color: #fff;
     fill: #fff;
+
+    &:hover {
+        filter: drop-shadow(0 0 3px currentColor);
+    }
 }

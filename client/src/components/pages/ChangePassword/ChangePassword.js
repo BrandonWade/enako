@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Card from '../../atoms/Card';
-import InputField from '../../molecules/InputField';
-import PasswordChangeForm from '../../organisms/PasswordChangeForm';
 import Button from '../../atoms/Button';
 import ValidationRow from '../../atoms/ValidationRow';
+import InputField from '../../molecules/InputField';
+import PasswordChangeForm from '../../organisms/PasswordChangeForm';
 import {
     ValidateNewPassword,
     ValidatePasswordLength,

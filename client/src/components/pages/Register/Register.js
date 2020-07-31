@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import AuthenticatedRedirect from '../../routing/AuthenticatedRedirect';
 import createAccount from '../../../effects/createAccount';
 import resetPassword from '../../../effects/resetPassword';
 import Logo from '../../atoms/Logo';
@@ -84,35 +85,38 @@ const Register = props => {
     };
 
     return (
-        <div className='Register'>
-            <div className='Register-content'>
-                <Logo />
-                <Card className='Register-form'>
-                    <MessageList />
-                    {renderEmail()}
-                    <PasswordChangeForm
-                        changePassword
-                        password={password}
-                        confirmPassword={confirmPassword}
-                        setPassword={setPassword}
-                        setConfirmPassword={setConfirmPassword}
-                    >
-                        <ValidationRow valid={validPasswordLength} description='Password is between 15 and 50 characters' />
-                        <ValidationRow
-                            valid={validPasswordCharacters}
-                            description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
-                        />
-                        <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
-                    </PasswordChangeForm>
-                    <div className='Register-buttons'>
-                        <Link to='/login'>
-                            <Button text='Cancel' />
-                        </Link>
-                        {renderSubmit()}
-                    </div>
-                </Card>
+        <>
+            <AuthenticatedRedirect authenticatedOnly />
+            <div className='Register'>
+                <div className='Register-content'>
+                    <Logo />
+                    <Card className='Register-form'>
+                        <MessageList />
+                        {renderEmail()}
+                        <PasswordChangeForm
+                            changePassword
+                            password={password}
+                            confirmPassword={confirmPassword}
+                            setPassword={setPassword}
+                            setConfirmPassword={setConfirmPassword}
+                        >
+                            <ValidationRow valid={validPasswordLength} description='Password is between 15 and 50 characters' />
+                            <ValidationRow
+                                valid={validPasswordCharacters}
+                                description='Password contains only numbers, letters, and valid symbols: ! @ # $ % ^ * _'
+                            />
+                            <ValidationRow valid={validPasswordsMatch} description='Password and Confirm Password match' />
+                        </PasswordChangeForm>
+                        <div className='Register-buttons'>
+                            <Link to='/login'>
+                                <Button text='Cancel' />
+                            </Link>
+                            {renderSubmit()}
+                        </div>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
