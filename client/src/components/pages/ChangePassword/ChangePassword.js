@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import MessageContext from '../../../contexts/MessageContext';
+import changePassword from '../../../effects/changePassword';
 import Card from '../../atoms/Card';
 import Button from '../../atoms/Button';
 import ValidationRow from '../../atoms/ValidationRow';
@@ -14,6 +16,8 @@ import {
 import './ChangePassword.scss';
 
 const ChangePassword = () => {
+    const history = useHistory();
+    const { setMessages } = useContext(MessageContext);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('testpassword123');
     const [confirmPassword, setConfirmPassword] = useState('testpassword123');
@@ -24,8 +28,21 @@ const ChangePassword = () => {
     const validPasswordsMatch = ValidatePasswordsMatch(newPassword, confirmPassword);
     const isPasswordValid = validNewPassword && validPasswordLength && validPasswordCharacters && validPasswordsMatch;
 
-    const onChangePassword = () => {
-        console.log('change password'); // TODO: Implement
+    const onSubmit = async () => {
+        const data = {
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+        };
+
+        const response = await changePassword(data);
+        if (response?.messages?.length > 0) {
+            setMessages(response.messages);
+            return;
+        }
+
+        history.push('/logout');
+        console.log('LOGOUT');
     };
 
     return (
@@ -59,7 +76,12 @@ const ChangePassword = () => {
                     <Link to='/account'>
                         <Button text='Cancel' />
                     </Link>
-                    <Button color='orange' text='Submit' onClick={onChangePassword} disabled={!isPasswordValid} />
+                    <Button
+                        color='orange'
+                        text='Submit'
+                        onClick={onSubmit}
+                        disabled={!(currentPassword.length > 0 && isPasswordValid)}
+                    />
                 </div>
             </Card>
         </div>

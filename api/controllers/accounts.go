@@ -16,6 +16,7 @@ import (
 type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
+	ChangePassword(w http.ResponseWriter, r *http.Request)
 }
 
 type accountController struct {
@@ -31,7 +32,7 @@ func NewAccountController(logger *logrus.Logger, service services.AccountService
 	}
 }
 
-// RegisterUser creates an account, generates an activation token, and sends an activation email.
+// RegisterUser creates a new account.
 func (a *accountController) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	createAccount, ok := r.Context().Value(middleware.ContextCreateAccountKey).(models.CreateAccount)
 	if !ok {
@@ -77,5 +78,14 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 	}
 
 	http.Redirect(w, r, helpers.LoginRoute, http.StatusSeeOther)
+	return
+}
+
+// ChangePassword changes the password for the account in the current session.
+func (a *accountController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("{}"))
 	return
 }

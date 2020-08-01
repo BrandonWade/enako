@@ -27,6 +27,9 @@ const (
 
 	// ContextLoginKey a key used to store & retrieve an account model containing login information from the request context.
 	ContextLoginKey
+
+	// ContextChangePasswordKey a key used to store & retrieve a change password model from the request context.
+	ContextChangePasswordKey
 )
 
 // Middleware is a type alias for working with middleware.

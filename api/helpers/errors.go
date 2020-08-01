@@ -41,6 +41,9 @@ var (
 	errRetrievingResetToken               = errors.New("error retrieving reset token")
 	errResettingPassword                  = errors.New("error resetting password")
 	errResetTokenExpiredOrInvalid         = errors.New("password reset token is either expired or invalid")
+	errInvalidChangePasswordPayload       = errors.New("invalid change password payload")
+	errRetrievingChangePassword           = errors.New("error retrieving change password from context")
+	errPasswordsShouldNotMatch            = errors.New("passwords should not match")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -226,4 +229,19 @@ func ErrorResettingPassword() error {
 // ErrorResetTokenExpiredOrInvalid returned when a given password reset token is either expired or invalid.
 func ErrorResetTokenExpiredOrInvalid() error {
 	return errResetTokenExpiredOrInvalid
+}
+
+// ErrorInvalidChangePasswordPayload returned when an error occurs when a submitted change password is malformed.
+func ErrorInvalidChangePasswordPayload() error {
+	return errInvalidChangePasswordPayload
+}
+
+// ErrorRetrievingChangePassword returned when an error occurs when attempting to retrieve the change password model from the request.
+func ErrorRetrievingChangePassword() error {
+	return errRetrievingChangePassword
+}
+
+// ErrorPasswordsShouldNotMatch returned when an error occurs when attempting to change a password and the current password and new password match.
+func ErrorPasswordsShouldNotMatch() error {
+	return errPasswordsShouldNotMatch
 }
