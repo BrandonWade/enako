@@ -96,7 +96,7 @@ func (p *passwordResetService) RequestPasswordReset(email string) (string, error
 // CheckPasswordResetTokenIsValid checks whether the given password reset token has a status of pending and is not expired.
 func (p *passwordResetService) CheckPasswordResetTokenIsValid(resetToken *models.PasswordResetToken) (bool, error) {
 	now := time.Now()
-	expiresAt, err := time.Parse("2006-01-02 03:04:05", resetToken.ExpiresAt)
+	expiresAt, err := time.Parse("2006-01-02 15:04:05", resetToken.ExpiresAt)
 	if err != nil {
 		p.logger.WithFields(logrus.Fields{
 			"method":    "PasswordResetService.CheckPasswordResetTokenIsValid",

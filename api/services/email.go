@@ -41,7 +41,7 @@ func NewEmailService(logger *logrus.Logger, templateService TemplateService, ema
 
 // SendAccountActivationEmail sends an email with an activation link to the provided email.
 func (e *emailService) SendAccountActivationEmail(email, token string) error {
-	link := fmt.Sprintf("%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
+	link := fmt.Sprintf("http://%s/api/v1/accounts/activate?t=%s", os.Getenv("API_HOST"), token)
 
 	template, err := e.templateService.GenerateAccountActivationEmail(link)
 	if err != nil {
@@ -83,7 +83,7 @@ func (e *emailService) SendAccountActivationEmail(email, token string) error {
 
 // SendPasswordResetEmail sends an email with a password reset link to the provided email.
 func (e *emailService) SendPasswordResetEmail(email, token string) error {
-	link := fmt.Sprintf("%s/api/v1/accounts/password/reset?t=%s", os.Getenv("API_HOST"), token)
+	link := fmt.Sprintf("http://%s/api/v1/accounts/password/reset?t=%s", os.Getenv("API_HOST"), token)
 
 	template, err := e.templateService.GeneratePasswordResetEmail(link)
 	if err != nil {

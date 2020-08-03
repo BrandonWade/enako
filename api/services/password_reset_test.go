@@ -123,7 +123,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns no error", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 
 				success, err := passwordResetService.CheckPasswordResetTokenIsValid(resetToken)
@@ -144,7 +144,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns no error", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 
@@ -166,7 +166,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns an error if one occurred while checking if the password reset token is valid", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "used", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 
@@ -176,7 +176,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns an error if one occurred while hashing the new password", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 				hasher.GenerateReturns("", errors.New("hasher error"))
@@ -187,7 +187,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns an error if one occurred while updating the account with the new password", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 				hasher.GenerateReturns(hashedPassword, nil)
@@ -199,7 +199,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns an error if one occurred while retrieving the account associated with the password reset token", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 				hasher.GenerateReturns(hashedPassword, nil)
@@ -212,7 +212,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns an error if one occurred while sending a password updated notification email", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 				hasher.GenerateReturns(hashedPassword, nil)
@@ -227,7 +227,7 @@ var _ = Describe("PasswordResetService", func() {
 			})
 
 			It("returns no error", func() {
-				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 03:04:05")
+				expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
 				resetToken := &models.PasswordResetToken{ID: 1, AccountID: accountID, ResetToken: token, Status: "pending", ExpiresAt: expiresAt}
 				passwordResetRepo.GetPasswordResetTokenByPasswordResetTokenReturns(resetToken, nil)
 				hasher.GenerateReturns(hashedPassword, nil)
