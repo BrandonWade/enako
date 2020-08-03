@@ -29,6 +29,7 @@ var _ = Describe("AccountService", func() {
 		token          string
 		email          string
 		password       string
+		newPassword    string
 	)
 
 	BeforeEach(func() {
@@ -45,6 +46,7 @@ var _ = Describe("AccountService", func() {
 		token = "thisisareallylongtokenthatneedstobesuperlongtopassvalidation1234"
 		email = "foo@bar.net"
 		password = "testpassword123"
+		newPassword = "testpassword12345"
 	})
 
 	Describe("CreateAccount", func() {
@@ -254,6 +256,77 @@ var _ = Describe("AccountService", func() {
 				accountRepo.ActivateAccountReturns(true, nil)
 
 				success, err := accountService.ActivateAccount(token)
+				Expect(success).To(BeTrue())
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+	})
+
+	Describe("ChangePassword", func() {
+		Context("when changing the password for an account", func() {
+			It("returns an error if one occurred while retrieving the account ID", func() {
+				accountRepo.GetAccountByIDReturns(&models.Account{}, errors.New("repo error"))
+
+				success, err := accountService.ChangePassword(accountID, password, newPassword)
+				Expect(success).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the provided password doesn't match the one associated with the account", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password}
+				accountRepo.GetAccountByIDReturns(account, nil)
+				hasher.CompareReturns(errors.New("hasher error"))
+
+				success, err := accountService.ChangePassword(accountID, "thispasswordwontmatch", newPassword)
+				Expect(success).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the provided password doesn't match the one associated with the account", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password}
+				accountRepo.GetAccountByIDReturns(account, nil)
+				hasher.CompareReturns(nil)
+				hasher.GenerateReturns("", errors.New("hasher error"))
+
+				success, err := accountService.ChangePassword(accountID, password, newPassword)
+				Expect(success).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the provided password doesn't match the one associated with the account", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password}
+				accountRepo.GetAccountByIDReturns(account, nil)
+				hasher.CompareReturns(nil)
+				hasher.GenerateReturns(newPassword, nil)
+				accountRepo.ChangePasswordReturns(0, errors.New("repo error"))
+
+				success, err := accountService.ChangePassword(accountID, password, newPassword)
+				Expect(success).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the provided password doesn't match the one associated with the account", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password}
+				accountRepo.GetAccountByIDReturns(account, nil)
+				hasher.CompareReturns(nil)
+				hasher.GenerateReturns(newPassword, nil)
+				accountRepo.ChangePasswordReturns(12345, nil)
+				emailService.SendPasswordUpdatedEmailReturns(errors.New("email error"))
+
+				success, err := accountService.ChangePassword(accountID, password, newPassword)
+				Expect(success).To(BeFalse())
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("returns an error if the provided password doesn't match the one associated with the account", func() {
+				account := &models.Account{ID: accountID, Email: email, Password: password}
+				accountRepo.GetAccountByIDReturns(account, nil)
+				hasher.CompareReturns(nil)
+				hasher.GenerateReturns(newPassword, nil)
+				accountRepo.ChangePasswordReturns(12345, nil)
+				emailService.SendPasswordUpdatedEmailReturns(nil)
+
+				success, err := accountService.ChangePassword(accountID, password, newPassword)
 				Expect(success).To(BeTrue())
 				Expect(err).NotTo(HaveOccurred())
 			})

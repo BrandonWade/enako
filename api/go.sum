@@ -8,6 +8,7 @@ github.com/BrandonWade/enako v0.0.0-20200720052138-ebef1cae87df h1:rso58b3vkDukk
 github.com/BrandonWade/enako v0.0.0-20200722002921-1091aa293346 h1:jp0TtWO5E1AnxHKMS5WieBnHpezWC3VtrjRRKLYK/6Y=
 github.com/BrandonWade/enako v0.0.0-20200722060414-5bd74ec86df3 h1:IrSGpCs3hFJsf6ywfJC8vQyT04HepfhLm0R0NzCCy9M=
 github.com/BrandonWade/enako v0.0.0-20200723051425-7c796629e528 h1:zSfbe2jKRhVEQ0s61jV26KSiQa9OaHHRDxQnu3UikS8=
+github.com/BrandonWade/enako v0.0.0-20200803010510-da8ffc738d85 h1:TU4M9lYGsXS9TN0fwBn19vt6PR3iZGaH0Sa2f4LIYOA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5 h1:RAV05c0xOkJ3dZGS0JFybxFKZ2WMLabgx3uXnd7rpGs=

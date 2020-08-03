@@ -21,7 +21,7 @@ type AccountService interface {
 	RegisterUser(email, password string) (int64, error)
 	VerifyAccount(email, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
-	ChangePassword(accountID int64, currentPassword, password string) (int64, error)
+	ChangePassword(accountID int64, currentPassword, newPassword string) (bool, error)
 }
 
 type accountService struct {
@@ -179,14 +179,14 @@ func (a *accountService) ActivateAccount(token string) (bool, error) {
 }
 
 // ChangePassword updates the password for the account with the given id.
-func (a *accountService) ChangePassword(accountID int64, currentPassword, password string) (int64, error) {
+func (a *accountService) ChangePassword(accountID int64, currentPassword, newPassword string) (bool, error) {
 	account, err := a.repo.GetAccountByID(accountID)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":    "AccountService.ChangePassword",
 			"accountID": accountID,
 		}).Error(err.Error())
-		return 0, err
+		return false, err
 	}
 
 	err = a.hasher.Compare(account.Password, currentPassword)
@@ -195,25 +195,25 @@ func (a *accountService) ChangePassword(accountID int64, currentPassword, passwo
 			"method":    "AccountService.ChangePassword",
 			"accountID": accountID,
 		}).Error(helpers.ErrorPasswordsDoNotMatch())
-		return 0, err
+		return false, err
 	}
 
-	hash, err := a.hasher.Generate(password)
+	hash, err := a.hasher.Generate(newPassword)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":    "AccountService.ChangePassword",
 			"accountID": accountID,
 		}).Error(err.Error())
-		return 0, err
+		return false, err
 	}
 
-	count, err := a.repo.ChangePassword(accountID, hash)
+	_, err = a.repo.ChangePassword(accountID, hash)
 	if err != nil {
 		a.logger.WithFields(logrus.Fields{
 			"method":    "AccountService.ChangePassword",
 			"accountID": accountID,
 		}).Error(err.Error())
-		return 0, err
+		return false, err
 	}
 
 	err = a.emailService.SendPasswordUpdatedEmail(account.Email)
@@ -222,8 +222,8 @@ func (a *accountService) ChangePassword(accountID int64, currentPassword, passwo
 			"method":    "AccountService.ChangePassword",
 			"accountID": accountID,
 		}).Error(err.Error())
-		return 0, err
+		return false, err
 	}
 
-	return count, nil
+	return true, nil
 }

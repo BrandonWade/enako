@@ -112,4 +112,61 @@ var _ = Describe("AccountController", func() {
 			})
 		})
 	})
+
+	Describe("ChangePassword", func() {
+		Context("when attempting to change the password for an account", func() {
+			It("returns an error if one was encountered while retrieving the account ID from the request context", func() {
+				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorChangingPassword())
+
+				accountController.ChangePassword(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
+
+			It("returns an error if one was encountered while retrieving the ChangePassword from the request context", func() {
+				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				accountID := int64(12345)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
+				r = r.WithContext(ctx)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorChangingPassword())
+
+				accountController.ChangePassword(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
+
+			It("returns an error if one was encountered while communicating with the service", func() {
+				accountService.ChangePasswordReturns(false, errors.New("service error"))
+				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				accountID := int64(12345)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
+				r = r.WithContext(ctx)
+				payload := models.ChangePassword{CurrentPassword: "testpassword123", NewPassword: "testpassword12345", ConfirmPassword: "testpassword12345"}
+				ctx = context.WithValue(r.Context(), middleware.ContextChangePasswordKey, payload)
+				r = r.WithContext(ctx)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorChangingPassword())
+
+				accountController.ChangePassword(w, r)
+				Expect(w.Code).To(Equal(http.StatusInternalServerError))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
+
+			It("returns a message indicating the password was updated and no error", func() {
+				accountService.ChangePasswordReturns(true, nil)
+				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				accountID := int64(12345)
+				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
+				r = r.WithContext(ctx)
+				payload := models.ChangePassword{CurrentPassword: "testpassword123", NewPassword: "testpassword12345", ConfirmPassword: "testpassword12345"}
+				ctx = context.WithValue(r.Context(), middleware.ContextChangePasswordKey, payload)
+				r = r.WithContext(ctx)
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"info"}]}`, helpers.MessagePasswordUpdated())
+
+				accountController.ChangePassword(w, r)
+				Expect(w.Code).To(Equal(http.StatusOK))
+				Expect(strings.TrimSpace(w.Body.String())).To(BeEquivalentTo(resBody))
+			})
+		})
+	})
 })
