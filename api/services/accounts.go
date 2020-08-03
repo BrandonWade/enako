@@ -21,6 +21,7 @@ type AccountService interface {
 	RegisterUser(email, password string) (int64, error)
 	VerifyAccount(email, password string) (int64, error)
 	ActivateAccount(token string) (bool, error)
+	ChangePassword(accountID int64, currentPassword, password string) (int64, error)
 }
 
 type accountService struct {
@@ -175,4 +176,54 @@ func (a *accountService) VerifyAccount(email, password string) (int64, error) {
 // ActivateAccount activates the account with the given token.
 func (a *accountService) ActivateAccount(token string) (bool, error) {
 	return a.repo.ActivateAccount(token)
+}
+
+// ChangePassword updates the password for the account with the given id.
+func (a *accountService) ChangePassword(accountID int64, currentPassword, password string) (int64, error) {
+	account, err := a.repo.GetAccountByID(accountID)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.ChangePassword",
+			"accountID": accountID,
+		}).Error(err.Error())
+		return 0, err
+	}
+
+	err = a.hasher.Compare(account.Password, currentPassword)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.ChangePassword",
+			"accountID": accountID,
+		}).Error(helpers.ErrorPasswordsDoNotMatch())
+		return 0, err
+	}
+
+	hash, err := a.hasher.Generate(password)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.ChangePassword",
+			"accountID": accountID,
+		}).Error(err.Error())
+		return 0, err
+	}
+
+	count, err := a.repo.ChangePassword(accountID, hash)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.ChangePassword",
+			"accountID": accountID,
+		}).Error(err.Error())
+		return 0, err
+	}
+
+	err = a.emailService.SendPasswordUpdatedEmail(account.Email)
+	if err != nil {
+		a.logger.WithFields(logrus.Fields{
+			"method":    "AccountService.ChangePassword",
+			"accountID": accountID,
+		}).Error(err.Error())
+		return 0, err
+	}
+
+	return count, nil
 }

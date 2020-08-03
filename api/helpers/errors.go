@@ -44,6 +44,7 @@ var (
 	errInvalidChangePasswordPayload       = errors.New("invalid change password payload")
 	errRetrievingChangePassword           = errors.New("error retrieving change password from context")
 	errPasswordsShouldNotMatch            = errors.New("passwords should not match")
+	errChangingPassword                   = errors.New("error resetting password")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -244,4 +245,9 @@ func ErrorRetrievingChangePassword() error {
 // ErrorPasswordsShouldNotMatch returned when an error occurs when attempting to change a password and the current password and new password match.
 func ErrorPasswordsShouldNotMatch() error {
 	return errPasswordsShouldNotMatch
+}
+
+// ErrorChangingPassword returned when an error occurs when trying to change a password.
+func ErrorChangingPassword() error {
+	return errChangingPassword
 }

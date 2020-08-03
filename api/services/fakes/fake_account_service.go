@@ -21,6 +21,21 @@ type FakeAccountService struct {
 		result1 bool
 		result2 error
 	}
+	ChangePasswordStub        func(int64, string, string) (int64, error)
+	changePasswordMutex       sync.RWMutex
+	changePasswordArgsForCall []struct {
+		arg1 int64
+		arg2 string
+		arg3 string
+	}
+	changePasswordReturns struct {
+		result1 int64
+		result2 error
+	}
+	changePasswordReturnsOnCall map[int]struct {
+		result1 int64
+		result2 error
+	}
 	CreateAccountStub        func(string, string) (int64, error)
 	createAccountMutex       sync.RWMutex
 	createAccountArgsForCall []struct {
@@ -126,6 +141,71 @@ func (fake *FakeAccountService) ActivateAccountReturnsOnCall(i int, result1 bool
 	}
 	fake.activateAccountReturnsOnCall[i] = struct {
 		result1 bool
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountService) ChangePassword(arg1 int64, arg2 string, arg3 string) (int64, error) {
+	fake.changePasswordMutex.Lock()
+	ret, specificReturn := fake.changePasswordReturnsOnCall[len(fake.changePasswordArgsForCall)]
+	fake.changePasswordArgsForCall = append(fake.changePasswordArgsForCall, struct {
+		arg1 int64
+		arg2 string
+		arg3 string
+	}{arg1, arg2, arg3})
+	fake.recordInvocation("ChangePassword", []interface{}{arg1, arg2, arg3})
+	fake.changePasswordMutex.Unlock()
+	if fake.ChangePasswordStub != nil {
+		return fake.ChangePasswordStub(arg1, arg2, arg3)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	fakeReturns := fake.changePasswordReturns
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeAccountService) ChangePasswordCallCount() int {
+	fake.changePasswordMutex.RLock()
+	defer fake.changePasswordMutex.RUnlock()
+	return len(fake.changePasswordArgsForCall)
+}
+
+func (fake *FakeAccountService) ChangePasswordCalls(stub func(int64, string, string) (int64, error)) {
+	fake.changePasswordMutex.Lock()
+	defer fake.changePasswordMutex.Unlock()
+	fake.ChangePasswordStub = stub
+}
+
+func (fake *FakeAccountService) ChangePasswordArgsForCall(i int) (int64, string, string) {
+	fake.changePasswordMutex.RLock()
+	defer fake.changePasswordMutex.RUnlock()
+	argsForCall := fake.changePasswordArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3
+}
+
+func (fake *FakeAccountService) ChangePasswordReturns(result1 int64, result2 error) {
+	fake.changePasswordMutex.Lock()
+	defer fake.changePasswordMutex.Unlock()
+	fake.ChangePasswordStub = nil
+	fake.changePasswordReturns = struct {
+		result1 int64
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeAccountService) ChangePasswordReturnsOnCall(i int, result1 int64, result2 error) {
+	fake.changePasswordMutex.Lock()
+	defer fake.changePasswordMutex.Unlock()
+	fake.ChangePasswordStub = nil
+	if fake.changePasswordReturnsOnCall == nil {
+		fake.changePasswordReturnsOnCall = make(map[int]struct {
+			result1 int64
+			result2 error
+		})
+	}
+	fake.changePasswordReturnsOnCall[i] = struct {
+		result1 int64
 		result2 error
 	}{result1, result2}
 }
@@ -327,6 +407,8 @@ func (fake *FakeAccountService) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.activateAccountMutex.RLock()
 	defer fake.activateAccountMutex.RUnlock()
+	fake.changePasswordMutex.RLock()
+	defer fake.changePasswordMutex.RUnlock()
 	fake.createAccountMutex.RLock()
 	defer fake.createAccountMutex.RUnlock()
 	fake.registerUserMutex.RLock()

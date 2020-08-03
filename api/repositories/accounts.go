@@ -11,14 +11,15 @@ import (
 // AccountRepository an interface for working with accounts.
 //go:generate counterfeiter -o fakes/fake_account_repository.go . AccountRepository
 type AccountRepository interface {
+	GetAccountByID(accountID int64) (*models.Account, error)
 	GetAccountByEmail(email string) (*models.Account, error)
 	CreateAccount(email, password string) (int64, error)
 	CreateActivationToken(accountID int64, activationToken string) (int64, error)
 	ActivateAccount(token string) (bool, error)
 	GetAccountByPasswordResetToken(token string) (*models.Account, error)
-
 	GetActivationTokenByAccountID(accountID int64) (*models.ActivationToken, error)
 	UpdateActivationTokenLastSentAt(tokenID int64) (int64, error)
+	ChangePassword(accountID int64, hash string) (int64, error)
 }
 
 type accountRepository struct {
@@ -32,12 +33,30 @@ func NewAccountRepository(DB *sqlx.DB) AccountRepository {
 	}
 }
 
+// GetAccountByID returns the account with the given ID.
+func (a *accountRepository) GetAccountByID(accountID int64) (*models.Account, error) {
+	var account models.Account
+
+	err := a.DB.Get(&account, `SELECT
+		a.*
+		FROM accounts a
+		WHERE a.id = ?;
+	`,
+		accountID,
+	)
+	if err != nil {
+		return &models.Account{}, err
+	}
+
+	return &account, nil
+}
+
 // GetAccountByEmail returns the account with the given email.
 func (a *accountRepository) GetAccountByEmail(email string) (*models.Account, error) {
 	var account models.Account
 
 	err := a.DB.Get(&account, `SELECT
-		*
+		a.*
 		FROM accounts a
 		WHERE a.email = ?;
 	`,
@@ -193,6 +212,27 @@ func (a *accountRepository) UpdateActivationTokenLastSentAt(tokenID int64) (int6
 		WHERE id = ?;
 	`,
 		tokenID,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+// ChangePassword sets the password for the account with the given ID.
+func (a *accountRepository) ChangePassword(accountID int64, hash string) (int64, error) {
+	result, err := a.DB.Exec(`UPDATE accounts a
+		SET a.password = ?
+		WHERE a.id = ?;
+	`,
+		hash,
+		accountID,
 	)
 	if err != nil {
 		return 0, err

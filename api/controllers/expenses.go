@@ -116,7 +116,7 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 		e.logger.WithField("method", "ExpenseController.UpdateExpenses").Error(helpers.ErrorRetrievingAccountID())
 
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidExpensePayload()))
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorUpdatingExpense()))
 		return
 	}
 

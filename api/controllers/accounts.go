@@ -83,9 +83,34 @@ func (a *accountController) ActivateAccount(w http.ResponseWriter, r *http.Reque
 
 // ChangePassword changes the password for the account in the current session.
 func (a *accountController) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement
+	accountID, ok := r.Context().Value(middleware.ContextAccountIDKey).(int64)
+	if !ok {
+		a.logger.WithField("method", "AccountController.ChangePassword").Error(helpers.ErrorRetrievingAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorChangingPassword()))
+		return
+	}
+
+	changePassword, ok := r.Context().Value(middleware.ContextChangePasswordKey).(models.ChangePassword)
+	if !ok {
+		a.logger.WithField("method", "AccountController.ChangePassword").Error(helpers.ErrorRetrievingChangePassword())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorChangingPassword()))
+		return
+	}
+
+	_, err := a.service.ChangePassword(accountID, changePassword.CurrentPassword, changePassword.NewPassword)
+	if err != nil {
+		a.logger.WithField("method", "AccountController.ChangePassword").Error(err.Error())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorChangingPassword()))
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("{}"))
+	json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessagePasswordUpdated()))
 	return
 }

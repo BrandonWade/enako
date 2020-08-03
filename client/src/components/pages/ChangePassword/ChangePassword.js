@@ -42,7 +42,6 @@ const ChangePassword = () => {
         }
 
         history.push('/logout');
-        console.log('LOGOUT');
     };
 
     return (

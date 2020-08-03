@@ -15,6 +15,12 @@ type FakeAccountController struct {
 		arg1 http.ResponseWriter
 		arg2 *http.Request
 	}
+	ChangePasswordStub        func(http.ResponseWriter, *http.Request)
+	changePasswordMutex       sync.RWMutex
+	changePasswordArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
 	RegisterUserStub        func(http.ResponseWriter, *http.Request)
 	registerUserMutex       sync.RWMutex
 	registerUserArgsForCall []struct {
@@ -57,6 +63,38 @@ func (fake *FakeAccountController) ActivateAccountArgsForCall(i int) (http.Respo
 	return argsForCall.arg1, argsForCall.arg2
 }
 
+func (fake *FakeAccountController) ChangePassword(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.changePasswordMutex.Lock()
+	fake.changePasswordArgsForCall = append(fake.changePasswordArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("ChangePassword", []interface{}{arg1, arg2})
+	fake.changePasswordMutex.Unlock()
+	if fake.ChangePasswordStub != nil {
+		fake.ChangePasswordStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAccountController) ChangePasswordCallCount() int {
+	fake.changePasswordMutex.RLock()
+	defer fake.changePasswordMutex.RUnlock()
+	return len(fake.changePasswordArgsForCall)
+}
+
+func (fake *FakeAccountController) ChangePasswordCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.changePasswordMutex.Lock()
+	defer fake.changePasswordMutex.Unlock()
+	fake.ChangePasswordStub = stub
+}
+
+func (fake *FakeAccountController) ChangePasswordArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.changePasswordMutex.RLock()
+	defer fake.changePasswordMutex.RUnlock()
+	argsForCall := fake.changePasswordArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
 func (fake *FakeAccountController) RegisterUser(arg1 http.ResponseWriter, arg2 *http.Request) {
 	fake.registerUserMutex.Lock()
 	fake.registerUserArgsForCall = append(fake.registerUserArgsForCall, struct {
@@ -94,6 +132,8 @@ func (fake *FakeAccountController) Invocations() map[string][][]interface{} {
 	defer fake.invocationsMutex.RUnlock()
 	fake.activateAccountMutex.RLock()
 	defer fake.activateAccountMutex.RUnlock()
+	fake.changePasswordMutex.RLock()
+	defer fake.changePasswordMutex.RUnlock()
 	fake.registerUserMutex.RLock()
 	defer fake.registerUserMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}

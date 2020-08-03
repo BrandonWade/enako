@@ -165,7 +165,7 @@ var _ = Describe("ExpenseController", func() {
 		Context("when updating an expense", func() {
 			It("returns an error when one is encountered retrieving the Expense from the request context", func() {
 				r = httptest.NewRequest("PUT", "/v1/expenses", nil)
-				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidExpensePayload())
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorUpdatingExpense())
 
 				expenseController.UpdateExpense(w, r)
 				Expect(w.Code).To(Equal(http.StatusInternalServerError))
