@@ -5,6 +5,7 @@ export const headToServer = async (url, headers = {}) => {
             ...headers,
         },
     });
+
     return response;
 };
 
@@ -15,12 +16,7 @@ export const fetchFromServer = async (url, headers = {}) => {
         },
     });
 
-    const res = await response;
-    if (res.status === 204) {
-        return null;
-    } else {
-        return res.json();
-    }
+    return response;
 };
 
 export const postToServer = async (url, data, headers = {}) => {
@@ -36,12 +32,9 @@ export const postToServer = async (url, data, headers = {}) => {
         body: JSON.stringify(data),
     });
 
-    const res = await response;
-    if (res.status === 204) {
-        return null;
-    } else {
-        return res.json();
-    }
+    // TODO: Handle CSRF token fail
+
+    return response;
 };
 
 export const putToServer = async (url, data, headers = {}) => {
@@ -57,12 +50,9 @@ export const putToServer = async (url, data, headers = {}) => {
         body: JSON.stringify(data),
     });
 
-    const res = await response;
-    if (res.status === 204) {
-        return null;
-    } else {
-        return res.json();
-    }
+    // TODO: Handle CSRF token fail
+
+    return response;
 };
 
 export const deleteFromServer = async (url, headers = {}) => {
@@ -77,10 +67,7 @@ export const deleteFromServer = async (url, headers = {}) => {
         },
     });
 
-    const res = await response;
-    if (res.status === 204) {
-        return null;
-    } else {
-        return res.json();
-    }
+    // TODO: Handle CSRF token fail
+
+    return response;
 };

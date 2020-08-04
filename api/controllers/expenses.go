@@ -121,7 +121,6 @@ func (e *expenseController) UpdateExpense(w http.ResponseWriter, r *http.Request
 	}
 
 	params := mux.Vars(r)
-
 	ID, err := strconv.ParseInt(params["id"], 10, 64)
 	if err != nil {
 		e.logger.WithFields(logrus.Fields{
