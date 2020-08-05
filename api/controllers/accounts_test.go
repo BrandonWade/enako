@@ -116,7 +116,7 @@ var _ = Describe("AccountController", func() {
 	Describe("ChangePassword", func() {
 		Context("when attempting to change the password for an account", func() {
 			It("returns an error if one was encountered while retrieving the account ID from the request context", func() {
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", nil)
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorChangingPassword())
 
 				accountController.ChangePassword(w, r)
@@ -125,7 +125,7 @@ var _ = Describe("AccountController", func() {
 			})
 
 			It("returns an error if one was encountered while retrieving the ChangePassword from the request context", func() {
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", nil)
 				accountID := int64(12345)
 				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
@@ -138,7 +138,7 @@ var _ = Describe("AccountController", func() {
 
 			It("returns an error if one was encountered while communicating with the service", func() {
 				accountService.ChangePasswordReturns(false, errors.New("service error"))
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", nil)
 				accountID := int64(12345)
 				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)
@@ -154,7 +154,7 @@ var _ = Describe("AccountController", func() {
 
 			It("returns a message indicating the password was updated and no error", func() {
 				accountService.ChangePasswordReturns(true, nil)
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", nil)
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", nil)
 				accountID := int64(12345)
 				ctx := context.WithValue(r.Context(), middleware.ContextAccountIDKey, accountID)
 				r = r.WithContext(ctx)

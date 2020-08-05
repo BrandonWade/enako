@@ -44,7 +44,7 @@ var _ = Describe("DecodeChangePasswordMiddleware", func() {
 	Describe("DecodeChangePassword", func() {
 		Context("when decoding a ChangePassword from an incoming request", func() {
 			It("returns an error if a malformed payload is submitted", func() {
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", strings.NewReader("{foo}"))
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", strings.NewReader("{foo}"))
 				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorInvalidChangePasswordPayload())
 
 				handler := mw(decorator)
@@ -62,7 +62,7 @@ var _ = Describe("DecodeChangePasswordMiddleware", func() {
 				payload := models.ChangePassword{CurrentPassword: currentPassword, NewPassword: newPassword, ConfirmPassword: confirmPassword}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", bytes.NewBuffer(payloadJSON))
 
 				handler := mw(decorator)
 				handler(w, r)
@@ -79,7 +79,7 @@ var _ = Describe("DecodeChangePasswordMiddleware", func() {
 				payload := models.ChangePassword{CurrentPassword: currentPassword, NewPassword: newPassword, ConfirmPassword: confirmPassword}
 				payloadJSON, _ := json.Marshal(payload)
 
-				r = httptest.NewRequest("POST", "/v1/accounts/password/change", bytes.NewBuffer(payloadJSON))
+				r = httptest.NewRequest("PUT", "/v1/accounts/password/change", bytes.NewBuffer(payloadJSON))
 				decorator = func(w http.ResponseWriter, r *http.Request) {
 					changePassword, ok := r.Context().Value(middleware.ContextChangePasswordKey).(models.ChangePassword)
 

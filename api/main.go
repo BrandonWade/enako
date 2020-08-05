@@ -131,7 +131,7 @@ func main() {
 	accountAPI.HandleFunc("/password", requestPasswordResetHander).Methods("POST")
 	accountAPI.HandleFunc("/password/reset", passwordResetController.SetPasswordResetToken).Methods("GET")
 	accountAPI.HandleFunc("/password/reset", passwordResetHander).Methods("POST")
-	accountAPI.HandleFunc("/password/change", changePasswordHandler).Methods("POST")
+	accountAPI.HandleFunc("/password/change", changePasswordHandler).Methods("PUT")
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()

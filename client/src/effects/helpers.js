@@ -32,8 +32,6 @@ export const postToServer = async (url, data, headers = {}) => {
         body: JSON.stringify(data),
     });
 
-    // TODO: Handle CSRF token fail
-
     return response;
 };
 
@@ -50,8 +48,6 @@ export const putToServer = async (url, data, headers = {}) => {
         body: JSON.stringify(data),
     });
 
-    // TODO: Handle CSRF token fail
-
     return response;
 };
 
@@ -66,8 +62,6 @@ export const deleteFromServer = async (url, headers = {}) => {
             'X-Csrf-Token': csrfToken,
         },
     });
-
-    // TODO: Handle CSRF token fail
 
     return response;
 };
