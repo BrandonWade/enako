@@ -8,7 +8,7 @@ export default async data => {
         case 200:
             return;
         case 401:
-            return await response.json(); // TODO: This represents multiple sub-cases that need handling
+            return await response.json();
         default:
             return handleResponseError(response);
     }

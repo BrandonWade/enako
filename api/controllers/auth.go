@@ -74,7 +74,7 @@ func (a *authController) Login(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, helpers.ErrorActivationEmailResent()) {
 			json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageActivationEmailSent(account.Email)))
 		} else if errors.Is(err, helpers.ErrorAccountNotActivated()) {
-			json.NewEncoder(w).Encode(models.MessagesFromErrors(err))
+			json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageActivationEmailAlreadySent(account.Email)))
 		} else {
 			json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorInvalidEmailOrPassword()))
 		}

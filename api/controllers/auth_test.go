@@ -102,7 +102,7 @@ var _ = Describe("AuthController", func() {
 				r = httptest.NewRequest("POST", "/v1/login", nil)
 				accountService.VerifyAccountReturns(0, helpers.ErrorAccountNotActivated())
 				payload := models.Account{Email: accountEmail, Password: "testpassword123"}
-				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"error"}]}`, helpers.ErrorAccountNotActivated())
+				resBody := fmt.Sprintf(`{"messages":[{"text":"%s","type":"info"}]}`, helpers.MessageActivationEmailAlreadySent(accountEmail))
 				ctx := context.WithValue(r.Context(), middleware.ContextLoginKey, payload)
 				r = r.WithContext(ctx)
 
