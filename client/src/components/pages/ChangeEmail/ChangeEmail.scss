@@ -1,0 +1,27 @@
+.ChangeEmail {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-content {
+        width: 45vw;
+    }
+
+    &-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 1rem;
+    }
+
+    &-password {
+        grid-row: 2 / 3;
+        grid-column: 1 / 2;
+    }
+
+    &-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+}

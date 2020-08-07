@@ -7,18 +7,13 @@ import Button from '../../atoms/Button';
 import ValidationRow from '../../atoms/ValidationRow';
 import InputField from '../../molecules/InputField';
 import PasswordChangeForm from '../../organisms/PasswordChangeForm';
-import {
-    ValidateNewPassword,
-    ValidatePasswordLength,
-    ValidatePasswordCharacters,
-    ValidatePasswordsMatch,
-} from '../../../validators/password';
+import { ValidateNewPassword, ValidatePasswordLength, ValidatePasswordCharacters, ValidatePasswordsMatch } from '../../../validators/password';
 import './ChangePassword.scss';
 
 const ChangePassword = () => {
     const history = useHistory();
     const { setMessages } = useContext(MessageContext);
-    const [currentPassword, setCurrentPassword] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('testpassword123');
     const [newPassword, setNewPassword] = useState('testpassword123');
     const [confirmPassword, setConfirmPassword] = useState('testpassword123');
 
@@ -75,12 +70,7 @@ const ChangePassword = () => {
                     <Link to='/account'>
                         <Button text='Cancel' />
                     </Link>
-                    <Button
-                        color='orange'
-                        text='Submit'
-                        onClick={onSubmit}
-                        disabled={!(currentPassword.length > 0 && isPasswordValid)}
-                    />
+                    <Button color='orange' text='Submit' onClick={onSubmit} disabled={!(currentPassword.length > 0 && isPasswordValid)} />
                 </div>
             </Card>
         </div>

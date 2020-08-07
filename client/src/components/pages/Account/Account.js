@@ -21,8 +21,10 @@ const Account = ({ email = 'foo@bar.net' }) => {
                         <Button text='Change Password' />
                     </Link>
                 </Card.Section>
-                <Card.Section heading='Update Email' description='Update the email address associated with your account.'>
-                    <Button text='Update Email' />
+                <Card.Section heading='Change Email' description='Change the email address associated with your account.'>
+                    <Link to='/account/email'>
+                        <Button text='Change Email' />
+                    </Link>
                 </Card.Section>
                 <Card.Section heading='Download Data' description='Download a copy of your data.'>
                     <Button text='Download Data' />

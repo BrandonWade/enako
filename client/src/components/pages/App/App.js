@@ -16,6 +16,7 @@ import Register from '../Register';
 import Login from '../Login';
 import ForgotPassword from '../ForgotPassword';
 import ChangePassword from '../ChangePassword';
+import ChangeEmail from '../ChangeEmail';
 import Editor from '../Editor';
 import Account from '../Account';
 import Logout from '../Logout';
@@ -77,11 +78,7 @@ const App = () => {
                                     <Route
                                         path='/login'
                                         render={() => (
-                                            <Login
-                                                setAuthenticated={setAuthenticated}
-                                                setCategories={setCategories}
-                                                setExpenses={setExpenses}
-                                            />
+                                            <Login setAuthenticated={setAuthenticated} setCategories={setCategories} setExpenses={setExpenses} />
                                         )}
                                     />
                                     <Route path='/password' exact render={() => <ForgotPassword />} />
@@ -109,6 +106,7 @@ const App = () => {
                                     />
                                     <AuthenticatedRoute path='/account' exact component={Account} />
                                     <AuthenticatedRoute path='/account/password' component={ChangePassword} />
+                                    <AuthenticatedRoute path='/account/email' component={ChangeEmail} />
                                     <AuthenticatedRoute path='/logout' component={Logout} />
                                     <AuthenticatedRedirect />
                                 </Switch>
