@@ -17,6 +17,7 @@ type AccountController interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
 	ActivateAccount(w http.ResponseWriter, r *http.Request)
 	ChangePassword(w http.ResponseWriter, r *http.Request)
+	RequestChangeEmail(w http.ResponseWriter, r *http.Request)
 }
 
 type accountController struct {
@@ -112,5 +113,13 @@ func (a *accountController) ChangePassword(w http.ResponseWriter, r *http.Reques
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessagePasswordUpdated()))
+	return
+}
+
+//RequestChangeEmail initiates a request to change the email for the account in the current session.
+func (a *accountController) RequestChangeEmail(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement
+
+	w.WriteHeader(http.StatusOK)
 	return
 }

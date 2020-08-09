@@ -102,6 +102,7 @@ func main() {
 
 	registerUserHandler := middleware.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 	changePasswordHandler := middleware.Apply(accountController.ChangePassword, []middleware.Middleware{stack.ValidateChangePassword(), stack.DecodeChangePassword(), stack.Authenticate()})
+	requestChangeEmailHandler := middleware.Apply(accountController.RequestChangeEmail, []middleware.Middleware{stack.Authenticate()}) // TODO: Decode and validate the request
 
 	requestPasswordResetHander := middleware.Apply(passwordResetController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
 	passwordResetHander := middleware.Apply(passwordResetController.ResetPassword, []middleware.Middleware{stack.ValidatePasswordReset(), stack.DecodePasswordReset()})
@@ -132,6 +133,7 @@ func main() {
 	accountAPI.HandleFunc("/password/reset", passwordResetController.SetPasswordResetToken).Methods("GET")
 	accountAPI.HandleFunc("/password/reset", passwordResetHander).Methods("POST")
 	accountAPI.HandleFunc("/password/change", changePasswordHandler).Methods("PUT")
+	accountAPI.HandleFunc("/email/change", requestChangeEmailHandler).Methods("POST")
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()

@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '../../atoms/Card';
 import { Link } from 'react-router-dom';
 import Button from '../../atoms/Button';
+import requestChangeEmail from '../../../effects/requestChangeEmail';
 import './Account.scss';
 
 const Account = ({ email = 'foo@bar.net' }) => {
@@ -22,9 +23,7 @@ const Account = ({ email = 'foo@bar.net' }) => {
                     </Link>
                 </Card.Section>
                 <Card.Section heading='Change Email' description='Change the email address associated with your account.'>
-                    <Link to='/account/email'>
-                        <Button text='Change Email' />
-                    </Link>
+                    <Button text='Change Email' onClick={() => requestChangeEmail()} />
                 </Card.Section>
                 <Card.Section heading='Download Data' description='Download a copy of your data.'>
                     <Button text='Download Data' />

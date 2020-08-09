@@ -41,6 +41,7 @@ func NewPasswordResetController(logger *logrus.Logger, service services.Password
 	}
 }
 
+// RequestPasswordReset initiates a request to change the password for the account in the current session.
 func (a *passwordResetController) RequestPasswordReset(w http.ResponseWriter, r *http.Request) {
 	resetRequest, ok := r.Context().Value(middleware.ContextRequestPasswordResetKey).(models.RequestPasswordReset)
 	if !ok {
@@ -79,6 +80,7 @@ func (a *passwordResetController) RequestPasswordReset(w http.ResponseWriter, r 
 	return
 }
 
+// SetPasswordResetToken retrieves the token from the query parameters and writes it to a cookie before redirecting.
 func (a *passwordResetController) SetPasswordResetToken(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 
@@ -120,6 +122,7 @@ func (a *passwordResetController) SetPasswordResetToken(w http.ResponseWriter, r
 	return
 }
 
+// ResetPassword resets the password for the account in the current session.
 func (a *passwordResetController) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(PasswordResetCookieName)
 	if err != nil {
