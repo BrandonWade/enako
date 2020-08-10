@@ -81,19 +81,22 @@ func main() {
 	templateService := services.NewTemplateService(logger, templater, basePath)
 	emailService := services.NewEmailService(logger, templateService, mailjetClient)
 
-	accountRepository := repositories.NewAccountRepository(DB)
 	passwordResetRepository := repositories.NewPasswordResetRepository(DB)
+	accountRepository := repositories.NewAccountRepository(DB)
+	changeEmailRepository := repositories.NewChangeEmailRepository(DB)
 	categoryRepository := repositories.NewCategoryRepository(DB)
 	expenseRepository := repositories.NewExpenseRepository(DB)
 
-	accountService := services.NewAccountService(logger, hasher, generator, emailService, accountRepository)
 	passwordResetService := services.NewPasswordResetService(logger, hasher, generator, emailService, passwordResetRepository, accountRepository)
+	accountService := services.NewAccountService(logger, hasher, generator, emailService, accountRepository)
+	changeEmailService := services.NewChangeEmailService(logger, changeEmailRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 
 	authController := controllers.NewAuthController(logger, store, accountService)
 	passwordResetController := controllers.NewPasswordResetController(logger, passwordResetService)
 	accountController := controllers.NewAccountController(logger, accountService)
+	changeEmailController := controllers.NewChangeEmailController(logger, changeEmailService)
 	categoryController := controllers.NewCategoryController(logger, store, categoryService)
 	expenseController := controllers.NewExpenseController(logger, store, expenseService)
 
@@ -102,10 +105,11 @@ func main() {
 
 	registerUserHandler := middleware.Apply(accountController.RegisterUser, []middleware.Middleware{stack.ValidateCreateAccount(), stack.DecodeCreateAccount()})
 	changePasswordHandler := middleware.Apply(accountController.ChangePassword, []middleware.Middleware{stack.ValidateChangePassword(), stack.DecodeChangePassword(), stack.Authenticate()})
-	requestChangeEmailHandler := middleware.Apply(accountController.RequestChangeEmail, []middleware.Middleware{stack.Authenticate()}) // TODO: Decode and validate the request
 
 	requestPasswordResetHander := middleware.Apply(passwordResetController.RequestPasswordReset, []middleware.Middleware{stack.ValidateRequestPasswordReset(), stack.DecodeRequestPasswordReset()})
 	passwordResetHander := middleware.Apply(passwordResetController.ResetPassword, []middleware.Middleware{stack.ValidatePasswordReset(), stack.DecodePasswordReset()})
+
+	requestChangeEmailHandler := middleware.Apply(changeEmailController.RequestEmailChange, []middleware.Middleware{stack.Authenticate()})
 
 	getCategoriesHandler := middleware.Apply(categoryController.GetCategories, []middleware.Middleware{stack.Authenticate()})
 
@@ -133,7 +137,7 @@ func main() {
 	accountAPI.HandleFunc("/password/reset", passwordResetController.SetPasswordResetToken).Methods("GET")
 	accountAPI.HandleFunc("/password/reset", passwordResetHander).Methods("POST")
 	accountAPI.HandleFunc("/password/change", changePasswordHandler).Methods("PUT")
-	accountAPI.HandleFunc("/email/change", requestChangeEmailHandler).Methods("POST")
+	accountAPI.HandleFunc("/email/change", requestChangeEmailHandler).Methods("GET")
 
 	// Categories
 	categoryAPI := api.PathPrefix("/categories").Subrouter()

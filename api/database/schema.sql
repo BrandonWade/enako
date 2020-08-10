@@ -59,3 +59,16 @@ CREATE TABLE expenses (
   updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 );
+
+DROP TABLE IF EXISTS change_email_tokens;
+CREATE TABLE change_email_tokens (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  account_id int unsigned NOT NULL DEFAULT 0,
+  change_token char(64) NOT NULL DEFAULT '',
+  status enum('pending', 'used', 'disabled') NOT NULL DEFAULT 'pending',
+  expires_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY U_change_token (change_token)
+);
