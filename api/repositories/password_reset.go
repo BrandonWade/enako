@@ -53,6 +53,7 @@ func (a *passwordResetRepository) CreatePasswordResetToken(accountID int64, rese
 		return 0, err
 	}
 
+	// Disable all other pending tokens for this account
 	_, err = tx.Exec(`UPDATE password_reset_tokens p
 		INNER JOIN accounts a ON a.id = p.account_id
 		SET p.status = 'disabled'

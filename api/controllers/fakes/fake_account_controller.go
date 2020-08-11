@@ -27,6 +27,12 @@ type FakeAccountController struct {
 		arg1 http.ResponseWriter
 		arg2 *http.Request
 	}
+	RequestChangeEmailStub        func(http.ResponseWriter, *http.Request)
+	requestChangeEmailMutex       sync.RWMutex
+	requestChangeEmailArgsForCall []struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -127,6 +133,38 @@ func (fake *FakeAccountController) RegisterUserArgsForCall(i int) (http.Response
 	return argsForCall.arg1, argsForCall.arg2
 }
 
+func (fake *FakeAccountController) RequestChangeEmail(arg1 http.ResponseWriter, arg2 *http.Request) {
+	fake.requestChangeEmailMutex.Lock()
+	fake.requestChangeEmailArgsForCall = append(fake.requestChangeEmailArgsForCall, struct {
+		arg1 http.ResponseWriter
+		arg2 *http.Request
+	}{arg1, arg2})
+	fake.recordInvocation("RequestChangeEmail", []interface{}{arg1, arg2})
+	fake.requestChangeEmailMutex.Unlock()
+	if fake.RequestChangeEmailStub != nil {
+		fake.RequestChangeEmailStub(arg1, arg2)
+	}
+}
+
+func (fake *FakeAccountController) RequestChangeEmailCallCount() int {
+	fake.requestChangeEmailMutex.RLock()
+	defer fake.requestChangeEmailMutex.RUnlock()
+	return len(fake.requestChangeEmailArgsForCall)
+}
+
+func (fake *FakeAccountController) RequestChangeEmailCalls(stub func(http.ResponseWriter, *http.Request)) {
+	fake.requestChangeEmailMutex.Lock()
+	defer fake.requestChangeEmailMutex.Unlock()
+	fake.RequestChangeEmailStub = stub
+}
+
+func (fake *FakeAccountController) RequestChangeEmailArgsForCall(i int) (http.ResponseWriter, *http.Request) {
+	fake.requestChangeEmailMutex.RLock()
+	defer fake.requestChangeEmailMutex.RUnlock()
+	argsForCall := fake.requestChangeEmailArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
 func (fake *FakeAccountController) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -136,6 +174,8 @@ func (fake *FakeAccountController) Invocations() map[string][][]interface{} {
 	defer fake.changePasswordMutex.RUnlock()
 	fake.registerUserMutex.RLock()
 	defer fake.registerUserMutex.RUnlock()
+	fake.requestChangeEmailMutex.RLock()
+	defer fake.requestChangeEmailMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

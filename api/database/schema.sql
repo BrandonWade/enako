@@ -72,3 +72,13 @@ CREATE TABLE change_email_tokens (
   PRIMARY KEY (id),
   UNIQUE KEY U_change_token (change_token)
 );
+
+DROP TABLE IF EXISTS account_previous_emails;
+CREATE TABLE account_previous_emails (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  account_id int unsigned NOT NULL DEFAULT 0,
+  previous_email varchar(256) NOT NULL DEFAULT '',
+  new_email varchar(256) NOT NULL DEFAULT '',
+  PRIMARY KEY (id),
+  UNIQUE KEY U_account_id (account_id)
+)

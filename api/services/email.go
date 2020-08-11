@@ -22,6 +22,7 @@ type EmailService interface {
 	SendAccountActivationEmail(email, token string) error
 	SendPasswordResetEmail(email, token string) error
 	SendPasswordUpdatedEmail(email string) error
+	SentChangeEmailEmail(email, token string) error
 }
 
 type emailService struct {
@@ -159,6 +160,13 @@ func (e *emailService) SendPasswordUpdatedEmail(email string) error {
 		}).Error(err.Error())
 		return err
 	}
+
+	return nil
+}
+
+// SentChangeEmailEmail sends an email with a change email link to the provided email.
+func (e *emailService) SentChangeEmailEmail(email, token string) error {
+	// TODO: Implement
 
 	return nil
 }

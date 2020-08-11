@@ -45,6 +45,7 @@ var (
 	errRetrievingChangePassword           = errors.New("error retrieving change password from context")
 	errPasswordsShouldNotMatch            = errors.New("passwords should not match")
 	errChangingPassword                   = errors.New("error resetting password")
+	errRequestingEmailChange              = errors.New("error requesting email change")
 )
 
 // ErrorInvalidAccountPayload returned when an error occurs when a submitted account is malformed.
@@ -250,4 +251,9 @@ func ErrorPasswordsShouldNotMatch() error {
 // ErrorChangingPassword returned when an error occurs when trying to change a password.
 func ErrorChangingPassword() error {
 	return errChangingPassword
+}
+
+// ErrorRequestingEmailChange returned when an error occurs when attempting to request an email change.
+func ErrorRequestingEmailChange() error {
+	return errRequestingEmailChange
 }

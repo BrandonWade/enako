@@ -1,8 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"github.com/BrandonWade/enako/api/helpers"
+	"github.com/BrandonWade/enako/api/middleware"
+	"github.com/BrandonWade/enako/api/models"
 	"github.com/BrandonWade/enako/api/services"
 	"github.com/sirupsen/logrus"
 )
@@ -28,8 +32,21 @@ func NewChangeEmailController(logger *logrus.Logger, service services.ChangeEmai
 
 // RequestEmailChange initiates a request to change the email for the account in the current session.
 func (a *changeEmailController) RequestEmailChange(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement
+	accountID, ok := r.Context().Value(middleware.ContextAccountIDKey).(int64)
+	if !ok {
+		a.logger.WithField("method", "ChangeEmailController.RequestEmailChange").Error(helpers.ErrorRetrievingAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRequestingEmailChange()))
+		return
+	}
+
+	_, err := a.service.RequestEmailChange(accountID)
+	if err != nil {
+		// TODO: Handle
+	}
 
 	w.WriteHeader(http.StatusOK)
+	// TODO: Set response
 	return
 }

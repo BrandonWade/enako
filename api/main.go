@@ -89,7 +89,7 @@ func main() {
 
 	passwordResetService := services.NewPasswordResetService(logger, hasher, generator, emailService, passwordResetRepository, accountRepository)
 	accountService := services.NewAccountService(logger, hasher, generator, emailService, accountRepository)
-	changeEmailService := services.NewChangeEmailService(logger, changeEmailRepository)
+	changeEmailService := services.NewChangeEmailService(logger, generator, emailService, changeEmailRepository, accountRepository)
 	categoryService := services.NewCategoryService(logger, categoryRepository)
 	expenseService := services.NewExpenseService(logger, expenseRepository)
 
