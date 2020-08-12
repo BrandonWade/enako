@@ -26,3 +26,8 @@ func MessageAccountWithEmailNotFound(email string) string {
 func MessagePasswordUpdated() string {
 	return "Hey we were able to successfully update your account! Now please login using your new password."
 }
+
+// MessageChangeEmailEmailSent returned when a change email request is made.
+func MessageChangeEmailEmailSent(email string) string {
+	return fmt.Sprintf("Heads up! A change email link was sent to %s.", email)
+}

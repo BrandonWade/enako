@@ -26,7 +26,48 @@ func NewChangeEmailRepository(DB *sqlx.DB) ChangeEmailRepository {
 
 // CreateChangeEmailToken creates a change email token for the given account ID.
 func (c *changeEmailRepository) CreateChangeEmailToken(accountID int64, token string) (int64, error) {
-	// TODO: Implement
+	tx, err := c.DB.Begin()
+	result, err := c.DB.Exec(`INSERT
+		INTO change_email_tokens(
+			account_id,
+			change_token,
+			expires_at
+		) VALUES (
+			?,
+			?,
+			DATE_ADD(NOW(), INTERVAL 1 HOUR)
+		);
+	`,
+		accountID,
+		token,
+	)
+	if err != nil {
+		return 0, err
+	}
 
-	return 0, nil
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	// Disable all other pending tokens for this account
+	_, err = tx.Exec(`UPDATE change_email_tokens p
+		SET p.status = 'disabled'
+		WHERE p.account_id = ?
+		AND p.status = 'pending'
+		AND p.id != ?;
+	`,
+		accountID,
+		id,
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }

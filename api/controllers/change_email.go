@@ -41,12 +41,16 @@ func (a *changeEmailController) RequestEmailChange(w http.ResponseWriter, r *htt
 		return
 	}
 
-	_, err := a.service.RequestEmailChange(accountID)
+	email, err := a.service.RequestEmailChange(accountID)
 	if err != nil {
-		// TODO: Handle
+		a.logger.WithField("method", "ChangeEmailController.RequestEmailChange").Error(helpers.ErrorRetrievingAccountID())
+
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(models.MessagesFromErrors(helpers.ErrorRequestingEmailChange()))
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	// TODO: Set response
+	json.NewEncoder(w).Encode(models.MessagesFromStrings(helpers.MessageChangeEmailEmailSent(email)))
 	return
 }

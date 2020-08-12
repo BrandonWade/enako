@@ -14,7 +14,7 @@ const (
 // ChangeEmailService an interface for changing the email address associated with an account.
 //go:generate counterfeiter -o fakes/fake_change_email_service.go . ChangeEmailService
 type ChangeEmailService interface {
-	RequestEmailChange(accountID int64) (bool, error)
+	RequestEmailChange(accountID int64) (string, error)
 }
 
 type changeEmailService struct {
@@ -36,23 +36,37 @@ func NewChangeEmailService(logger *logrus.Logger, generator helpers.TokenGenerat
 	}
 }
 
-// RequestEmailChange
-func (c *changeEmailService) RequestEmailChange(accountID int64) (bool, error) {
+// RequestEmailChange requests an email change for the account with the given ID.
+func (c *changeEmailService) RequestEmailChange(accountID int64) (string, error) {
 	account, err := c.accountRepo.GetAccountByID(accountID)
 	if err != nil {
-		// TODO: Handle
+		c.logger.WithFields(logrus.Fields{
+			"method":    "ChangeEmailService.RequestEmailChange",
+			"accountID": accountID,
+		}).Error(err.Error())
+		return "", helpers.ErrorRequestingEmailChange()
 	}
 
 	token := c.generator.CreateToken(ChangeEmailTokenLength)
 	_, err = c.repo.CreateChangeEmailToken(accountID, token)
 	if err != nil {
-		// TODO: Handle
+		c.logger.WithFields(logrus.Fields{
+			"method":    "ChangeEmailService.RequestEmailChange",
+			"accountID": accountID,
+			"token":     token,
+		}).Error(err.Error())
+		return "", helpers.ErrorRequestingEmailChange()
 	}
 
 	err = c.emailService.SentChangeEmailEmail(account.Email, token)
 	if err != nil {
-		// TODO: Handle
+		c.logger.WithFields(logrus.Fields{
+			"method":    "ChangeEmailService.RequestEmailChange",
+			"accountID": accountID,
+			"token":     token,
+		}).Error(err.Error())
+		return "", helpers.ErrorRequestingEmailChange()
 	}
 
-	return true, nil
+	return account.Email, nil
 }

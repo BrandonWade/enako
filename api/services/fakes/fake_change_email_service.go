@@ -8,24 +8,24 @@ import (
 )
 
 type FakeChangeEmailService struct {
-	RequestEmailChangeStub        func(int64) (bool, error)
+	RequestEmailChangeStub        func(int64) (string, error)
 	requestEmailChangeMutex       sync.RWMutex
 	requestEmailChangeArgsForCall []struct {
 		arg1 int64
 	}
 	requestEmailChangeReturns struct {
-		result1 bool
+		result1 string
 		result2 error
 	}
 	requestEmailChangeReturnsOnCall map[int]struct {
-		result1 bool
+		result1 string
 		result2 error
 	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeChangeEmailService) RequestEmailChange(arg1 int64) (bool, error) {
+func (fake *FakeChangeEmailService) RequestEmailChange(arg1 int64) (string, error) {
 	fake.requestEmailChangeMutex.Lock()
 	ret, specificReturn := fake.requestEmailChangeReturnsOnCall[len(fake.requestEmailChangeArgsForCall)]
 	fake.requestEmailChangeArgsForCall = append(fake.requestEmailChangeArgsForCall, struct {
@@ -49,7 +49,7 @@ func (fake *FakeChangeEmailService) RequestEmailChangeCallCount() int {
 	return len(fake.requestEmailChangeArgsForCall)
 }
 
-func (fake *FakeChangeEmailService) RequestEmailChangeCalls(stub func(int64) (bool, error)) {
+func (fake *FakeChangeEmailService) RequestEmailChangeCalls(stub func(int64) (string, error)) {
 	fake.requestEmailChangeMutex.Lock()
 	defer fake.requestEmailChangeMutex.Unlock()
 	fake.RequestEmailChangeStub = stub
@@ -62,28 +62,28 @@ func (fake *FakeChangeEmailService) RequestEmailChangeArgsForCall(i int) int64 {
 	return argsForCall.arg1
 }
 
-func (fake *FakeChangeEmailService) RequestEmailChangeReturns(result1 bool, result2 error) {
+func (fake *FakeChangeEmailService) RequestEmailChangeReturns(result1 string, result2 error) {
 	fake.requestEmailChangeMutex.Lock()
 	defer fake.requestEmailChangeMutex.Unlock()
 	fake.RequestEmailChangeStub = nil
 	fake.requestEmailChangeReturns = struct {
-		result1 bool
+		result1 string
 		result2 error
 	}{result1, result2}
 }
 
-func (fake *FakeChangeEmailService) RequestEmailChangeReturnsOnCall(i int, result1 bool, result2 error) {
+func (fake *FakeChangeEmailService) RequestEmailChangeReturnsOnCall(i int, result1 string, result2 error) {
 	fake.requestEmailChangeMutex.Lock()
 	defer fake.requestEmailChangeMutex.Unlock()
 	fake.RequestEmailChangeStub = nil
 	if fake.requestEmailChangeReturnsOnCall == nil {
 		fake.requestEmailChangeReturnsOnCall = make(map[int]struct {
-			result1 bool
+			result1 string
 			result2 error
 		})
 	}
 	fake.requestEmailChangeReturnsOnCall[i] = struct {
-		result1 bool
+		result1 string
 		result2 error
 	}{result1, result2}
 }
