@@ -38,7 +38,7 @@ func NewAuthController(logger *logrus.Logger, store helpers.CookieStorer, servic
 
 // CSRF returns a new anti-CSRF token for the SPA frontend.
 func (a *authController) CSRF(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("X-Csrf-Token", csrf.Token(r))
+	w.Header().Set("X-Csrf-Token", csrf.Token(r)) // TODO: This is insecure! Token should be sent back in a cookie instead!
 	w.WriteHeader(http.StatusOK)
 	return
 }
